@@ -1,0 +1,31 @@
+TCAdefaults {
+	pages {
+		# Access rights
+		#
+		# 1  | Show page
+		# 2  | Edit page
+		# 4  | Delete pages
+		# 8  | New pages
+		# 16 | Edit content
+		#
+		# ... Add things up for more than 1 right
+		#
+		# 31 | Full access
+
+		# The groupId gets adjusted per rootline
+		perms_groupid = 1
+		perms_user = 31
+		perms_group = 31
+		perms_everybody = 1
+	}
+
+	tt_content {
+		sectionIndex = 0
+		imagecols = 1
+		imageorient = 2
+	}
+
+	sys_category {
+		sys_language_uid = -1
+	}
+}

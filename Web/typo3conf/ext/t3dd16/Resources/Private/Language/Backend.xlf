@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-09-01T00:00:00Z"
+		  product-name="t3dd16">
+		<header/>
+		<body>
+			<trans-unit id="fce.2column.title">
+				<source xml:lang="en">Two Columns</source>
+				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+			<trans-unit id="fce.2column.description">
+				<source xml:lang="en">An element to represent two columns.</source>
+				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+			<trans-unit id="fce.column.grid">
+				<source xml:lang="en">Select column layout</source>
+				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+			<trans-unit id="fce.column.left">
+				<source xml:lang="en">Left column</source>
+				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+			<trans-unit id="fce.column.right">
+				<source xml:lang="en">Right column</source>
+				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

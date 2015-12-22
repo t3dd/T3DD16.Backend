@@ -1,0 +1,29 @@
+tx_gridelements.setup {
+	2-column {
+		title = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.2column.title
+		description = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.2column.description
+		flexformDS = FILE:EXT:t3dd16/Resources/Private/BackendLayouts/Fce/2-Column.xml
+
+		#topLevelLayout = 1
+		config {
+			colCount = 2
+			rowCount = 1
+
+			rows {
+				1 {
+					columns {
+						1 {
+							name = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.column.left
+							colPos = 0
+						}
+
+						2 {
+							name = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.column.right
+							colPos = 1
+						}
+					}
+				}
+			}
+		}
+	}
+}

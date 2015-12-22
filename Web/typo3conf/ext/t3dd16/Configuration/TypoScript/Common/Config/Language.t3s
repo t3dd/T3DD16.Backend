@@ -1,0 +1,18 @@
+#####################################
+# Languages: Common
+#####################################
+config {
+	# Language Settings
+	uniqueLinkVars = 1
+	linkVars = L(0)
+	defaultGetVars {
+		L = 0
+	}
+
+	sys_language_uid = {$language.id}
+	sys_language_overlay = hideNonTranslated
+	sys_language_mode = content_fallback
+	language = {$language.code}
+	locale_all = {$language.locale}
+	htmlTag_langKey = {$language.code}
+}

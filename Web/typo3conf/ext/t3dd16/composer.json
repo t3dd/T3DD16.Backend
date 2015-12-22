@@ -1,0 +1,18 @@
+{
+  "name": "typo3/t3dd16",
+  "type": "typo3-cms-extension",
+  "description": "",
+  "require": {
+    "typo3/cms-core": ">=7.6.0,<8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TYPO3\\T3DD16\\": "Web/typo3conf/ext/t3dd16/Classes/"
+    }
+  },
+  "replace": {
+    "typo3/t3dd16": "self.version"
+  },
+  "extra": {
+  }
+}

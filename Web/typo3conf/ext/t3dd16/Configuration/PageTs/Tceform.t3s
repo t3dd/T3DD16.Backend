@@ -1,0 +1,118 @@
+TCEFORM {
+	tt_content {
+		# Remove unused content elements
+		CType.removeItems := addToList(bullets,table,uploads,menu,html,shortcut,shortcut,div)
+
+		date.disabled = 1
+		header_link.disabled = 1
+		subheader.disabled = 1
+		rowDescription.disabled = 1
+
+		layout.disabled = 1
+		imagewidth.disabled = 1
+		imageheight.disabled = 1
+		imageborder.disabled = 1
+
+		# Disable image orientations that don't work in responsive layout, even though textpic is disabled in general.
+		imageorient.removeItems = 17,18,25,26
+
+		sectionIndex.disabled = 1
+		linkToTop.disabled = 1
+
+		starttime.disabled = 1
+		endtime.disabled = 1
+		fe_group.disabled = 1
+		editlock.disabled = 1
+		categories.disabled = 1
+
+		tx_gridelements_children.disabled = 1
+
+		header_layout {
+			types.gridelements_pi1.disabled = 1
+		}
+
+		media {
+			types.gridelements_pi1.disabled = 1
+		}
+	}
+
+	pages {
+		nav_title.disabled = 1
+		subtitle.disabled = 1
+		tx_realurl_pathsegment.disabled = 1
+		tx_realurl_exclude.disabled = 1
+		tx_realurl_exclude {
+			types.254.disabled = 0
+		}
+
+		extendToSubpages.disabled = 1
+		starttime.disabled = 1
+		endtime.disabled = 1
+		fe_group.disabled = 1
+		fe_login_mode.disabled = 1
+
+		abstract.disabled = 1
+		author.disabled = 1
+		author_email.disabled = 1
+		lastUpdated.disabled = 1
+
+		layout.disabled = 1
+		newUntil.disabled = 1
+		content_from_pid.disabled = 1
+
+		alias.disabled = 1
+		target.disabled = 1
+		url_scheme.disabled = 1
+
+		cache_timeout.disabled = 1
+		cache_tags.disabled = 1
+		no_cache.disabled = 1
+		editlock.disabled = 1
+		php_tree_stop.disabled = 1
+
+		TSconfig.disabled = 1
+		categories.disabled = 1
+
+		urltype {
+			removeItems = 0,2,3
+		}
+	}
+
+	sys_file_metadata {
+		#General
+		keywords.disabled = 1
+		alternative.disabled = 1
+		download_name.disabled = 1
+		ranking.disabled = 1
+
+		#Access
+		visible.disabled = 1
+		status.disabled = 1
+		ranking.disabled = 1
+		fe_groups.disabled = 1
+
+		#Metadata
+		creator.disabled = 1
+		creator_tool.disabled = 1
+		publisher.disabled = 1
+		source.disabled = 1
+		location_country.disabled = 1
+		location_region.disabled = 1
+		location_city.disabled = 1
+		latitude.disabled = 1
+		longitude.disabled = 1
+		content_modification_date.disabled = 1
+		pages.disabled = 1
+		copyright.disabled = 1
+
+		#Categories
+		color_space.disabled = 1
+		width.disabled = 1
+		height.disabled = 1
+		unit.disabled = 1
+
+		#Categories
+		categories.disabled = 1
+		language.disabled = 1
+	}
+}

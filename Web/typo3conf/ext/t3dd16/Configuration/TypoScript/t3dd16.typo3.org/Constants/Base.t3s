@@ -1,0 +1,6 @@
+#####################################
+# This is also used in the base URL
+#####################################
+[globalString = IENV:HTTP_HOST= t3dd16.typo3.org]
+	server.base = https://t3dd16.typo3.org/
+[GLOBAL]

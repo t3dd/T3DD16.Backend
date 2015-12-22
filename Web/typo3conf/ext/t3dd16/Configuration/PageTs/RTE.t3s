@@ -1,0 +1,73 @@
+RTE.default {
+	contentCSS = EXT:t3dd16/Resources/Public/Build/Styles/Build.min.css
+
+	# Buttons die gezeigt/versteckt werden
+	showButtons = justifyfull, left, center, right, bold, italic, superscript, copy, cut, paste, orderedlist, unorderedlist, outdent, indent, insertcharacter, link, removeformat, insertcharacter, undo, redo, table, toggleborders, rowinsertabove, rowinsertunder, rowdelete, rowsplit, columninsertbefore, columninsertafter, columndelete, columnsplit, cellinsertbefore, cellinsertafter, celldelete, cellsplit, cellmerge, tableproperties, chMode, blockquote
+	hideButtons = subscript, underline, textstyle, textstylelabel, blockstyle, blockstylelabel, line, fontstyle, formatblock, fontsize, strikethrough, lefttoright, righttoleft, textcolor, bgcolor, textindicator, emoticon, user, spellcheck, inserttag, acronym, image, findreplace, showhelp, about, rowproperties, cellproperties
+	#showButtons = *
+
+	## Default proc rules
+	proc {
+		exitHTMLparser_db = 1
+		exitHTMLparser_db {
+			## REMAP B AND I TAGS
+			## b and i tags are used by Mozilla/Firefox in editing mode.
+			## This must be done on exit because the default HTMLparser_db parsing executes the reverse mapping.
+
+			tags.b.remap = strong
+			tags.i.remap = em
+
+			removeTags := removeFromList(u)
+		}
+	}
+
+	removeTags := removeFromList(u)
+}
+
+################################################
+# Plaintext settings
+################################################
+RTE.default {
+	enableWordClean = 1
+	removeTrailingBR = 1
+	removeComments = 1
+	removeTags = center, font, o:p, sdfield, u
+	removeTagsAndContents = link, meta, script, style, title
+
+	hidePStyleItems = h5,h6,pre,address,div
+
+	// buttons
+	showButtons := addToList(copy, cut, paste, pastetoggle, pastebehaviour, pasteastext)
+	hideButtons := removeFromList(copy, cut, paste, pastetoggle, pastebehaviour, pasteastext)
+
+	buttons.pastetoggle.setActiveOnRteOpen = 1
+	buttons.pastetoggle.hidden = 1
+}
+
+RTE.classes := removeFromList(csc-frame-frame1, csc-frame-frame2, important, name-of-person, detail)
+RTE.default.buttons {
+	link.properties.class.allowedClasses := removeFromList(external-link-new-window,internal-link-new-window,internal-link)
+}
+
+RTE.classesAnchor {
+	externalLink {
+		class = external-link
+		type = url
+		image >
+		titleText >
+	}
+
+	download {
+		class = download
+		type = file
+		image >
+		titleText >
+	}
+
+	mail {
+		class = mail
+		type = mail
+		image >
+		titleText >
+	}
+}

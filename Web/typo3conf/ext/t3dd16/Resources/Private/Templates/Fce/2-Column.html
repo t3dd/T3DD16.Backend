@@ -1,0 +1,30 @@
+<div class="row">
+	<f:switch expression="{data.flexform_grid}">
+
+		<f:case value="25-75">
+			<div class="col-sm-3">{data.tx_gridelements_view_columns.0 -> f:format.raw()}</div>
+			<div class="col-sm-9">{data.tx_gridelements_view_columns.1 -> f:format.raw()}</div>
+		</f:case>
+
+		<f:case value="33-66">
+			<div class="col-sm-4">{data.tx_gridelements_view_columns.0 -> f:format.raw()}</div>
+			<div class="col-sm-8">{data.tx_gridelements_view_columns.1 -> f:format.raw()}</div>
+		</f:case>
+
+		<f:case value="66-33">
+			<div class="col-sm-8">{data.tx_gridelements_view_columns.0 -> f:format.raw()}</div>
+			<div class="col-sm-4">{data.tx_gridelements_view_columns.1 -> f:format.raw()}</div>
+		</f:case>
+
+		<f:case value="75-25">
+			<div class="col-sm-9">{data.tx_gridelements_view_columns.0 -> f:format.raw()}</div>
+			<div class="col-sm-3">{data.tx_gridelements_view_columns.1 -> f:format.raw()}</div>
+		</f:case>
+
+		<f:case value="50-50" default="TRUE">
+			<div class="col-sm-6">{data.tx_gridelements_view_columns.0 -> f:format.raw()}</div>
+			<div class="col-sm-6">{data.tx_gridelements_view_columns.1 -> f:format.raw()}</div>
+		</f:case>
+
+	</f:switch>
+</div>

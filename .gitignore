@@ -1,0 +1,15 @@
+.DS_Store
+*.sass-cache*
+.idea
+.vagrant
+.bundle
+vendor
+Build
+node_modules
+bin
+Web/index.php
+Web/typo3
+Web/typo3conf/ENABLE_INSTALL_TOOL
+Web/typo3conf/EnvironmentConfiguration.php
+Web/typo3conf/ext/*
+!Web/typo3conf/ext/t3dd16

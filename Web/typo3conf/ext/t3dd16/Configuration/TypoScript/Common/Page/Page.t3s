@@ -1,0 +1,21 @@
+#####################################
+# Page Config
+#####################################
+page = PAGE
+page {
+	10 = FLUIDTEMPLATE
+	10 {
+		file = EXT:t3dd16/Resources/Private/Templates/Page/Default.html
+		settings {
+			rootpage = {$pageId.rootpage}
+		}
+
+		variables {
+			content < styles.content.get
+		}
+	}
+}
+
+// Enforce distinct frontend rendering if user has backend cookie
+[globalVar = TSFE : beUserLogin > 0]
+[GLOBAL]

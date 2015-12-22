@@ -1,0 +1,27 @@
+#####################################
+# Max imagesizes in this installation
+#####################################
+styles.content.textmedia {
+	maxW = 1170
+	maxWInText = 1170
+	layoutKey = data
+	colSpace = 10
+	rowSpace = 10
+	textMargin = 10
+}
+
+styles.content.textmedia.mobileMaxW = 720
+styles.content.textmedia.tabletMaxW = 720
+styles.content.textmedia.desktopMaxW = 1170
+styles.content.textmedia.layoutKey = data
+
+#####################################
+# Lightbox
+#####################################
+styles.content.textmedia.linkWrap {
+	width = 1140m
+	height = 600m
+	lightboxEnabled = 1
+	lightboxCssClass = image-lightbox
+	lightboxRelAttribute = lightbox_{field:uid}
+}

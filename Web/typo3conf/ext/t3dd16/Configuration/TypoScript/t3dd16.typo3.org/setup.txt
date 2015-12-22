@@ -1,0 +1,1 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/TypoScript/Common/Setup.t3s">

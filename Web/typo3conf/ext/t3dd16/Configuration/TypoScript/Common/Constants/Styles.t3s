@@ -1,0 +1,9 @@
+# Fluid Content Rendering Paths fallback
+styles.templates {
+	templateRootPath = EXT:t3dd16/Resources/Private/Templates/Content/
+	partialRootPath = EXT:t3dd16/Resources/Private/Templates/Content/Partials/
+	layoutRootPath = EXT:t3dd16/Resources/Private/Layouts/
+}
+
+# Default new CE header is h2
+styles.content.defaultHeaderType = 2

@@ -1,0 +1,11 @@
+mod.wizards {
+	newContentElement {
+		wizardItems {
+			common.elements {
+
+			}
+
+			common.show := addToList()
+		}
+	}
+}

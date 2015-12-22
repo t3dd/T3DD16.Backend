@@ -1,0 +1,11 @@
+# Configure all possible languages
+languages {
+	en {
+		id = 0
+		code = en
+		name = English
+		locale_all = en_US.UTF-8
+	}
+}
+
+language < languages.en

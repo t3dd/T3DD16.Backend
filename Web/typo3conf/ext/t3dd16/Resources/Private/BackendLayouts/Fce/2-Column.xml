@@ -1,0 +1,42 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT type="array">
+		<type>array</type>
+		<el type="array">
+			<grid type="array">
+				<TCEforms type="array">
+					<label>LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.column.grid</label>
+					<config type="array">
+						<type>select</type>
+						<size>1</size>
+						<items type="array">
+							<numIndex index="0" type="array">
+								<numIndex index="0">25:75</numIndex>
+								<numIndex index="1">25-75</numIndex>
+							</numIndex>
+							<numIndex index="1" type="array">
+								<numIndex index="0">33:66</numIndex>
+								<numIndex index="1">33-66</numIndex>
+							</numIndex>
+							<numIndex index="2" type="array">
+								<numIndex index="0">50:50</numIndex>
+								<numIndex index="1">50-50</numIndex>
+							</numIndex>
+							<numIndex index="3" type="array">
+								<numIndex index="0">66:33</numIndex>
+								<numIndex index="1">66-33</numIndex>
+							</numIndex>
+							<numIndex index="4" type="array">
+								<numIndex index="0">75:25</numIndex>
+								<numIndex index="1">75-25</numIndex>
+							</numIndex>
+						</items>
+						<default>50-50</default>
+					</config>
+				</TCEforms>
+			</grid>
+		</el>
+	</ROOT>
+</T3DataStructure>

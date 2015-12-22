@@ -1,0 +1,26 @@
+#####################################
+# This is also used in the base URL
+#####################################
+domainname = t3dd16
+debug = 0
+
+#####################################
+# Base Scheme
+#####################################
+server.base.scheme = http
+[globalVar = IENV:TYPO3_SSL = 1]
+	server.base.scheme = https
+[GLOBAL]
+
+#####################################
+# Base URL
+#####################################
+server.base = {$server.base.scheme}://{$domainname}.typo3.org/
+
+#####################################
+# Local domains
+#####################################
+[globalString = IENV:HTTP_HOST= *.dev]
+	debug = 1
+	server.base = {$server.base.scheme}://{$domainname}.dev/
+[GLOBAL]

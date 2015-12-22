@@ -1,0 +1,70 @@
+#####################################
+# Config
+#####################################
+config {
+	admPanel = 0
+	debug = 0
+
+	# URL Settings
+	baseURL = {$server.base}
+	absRefPrefix = /
+	tx_realurl_enable = 1
+	simulateStaticDocuments = 0
+	typolinkCheckRootline = 1
+	typolinkEnableLinksAcrossDomains = 1
+
+	# Links
+	intTarget >
+	extTarget >
+	prefixLocalAnchors = all
+
+	# Charset / Header
+	metaCharset = utf-8
+	renderCharset = utf-8
+	additionalHeaders = Content-Type:text/html;charset=utf-8
+
+	# Spam Protection
+	spamProtectEmailAddresses = 10
+	spamProtectEmailAddresses_atSubst = &lrm;&#64;&lrm;
+
+	# Cache settings
+	cache_period = 18144000
+	sendCacheHeaders = 0
+	enforceSendCacheHeaders = 0
+
+	# Move default CSS and JS to external file
+	removeDefaultJS = external
+	inlineStyle2TempFile = 0
+
+	# Code cleaning
+	disablePrefixComment = 1
+	disableAllHeaderCode = 1
+
+	# Comment in the <head> tag
+	headerComment (
+		TYPO3 CMS development by netlogix Web Solutions (https://websolutions.netlogix.de/)
+	)
+
+	# Page indexing
+	index_enable = 1
+	index_externals = 1
+
+	# Compression
+	compressCss = 1
+	concatenateCss = 1
+	compressJs = 1
+	concatenateJs = 1
+
+	# Images
+	noScaleUp = 1
+
+	tx_extbase {
+		settings {
+			view {
+				formatToPageTypeMapping {
+
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,10 @@
+#####################################
+# Include Constants
+#####################################
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Configuration/TypoScript/Common/Constants">
+
+#####################################
+# Include Plugin
+#####################################
+<INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Gridelements/Constants.t3s">
+

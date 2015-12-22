@@ -1,0 +1,2 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/TypoScript/Common/Constants.t3s">
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Configuration/TypoScript/t3dd16.typo3.org/Constants/">

@@ -1,0 +1,8 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/PageTs/Listmodule.t3s">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/PageTs/RTE.t3s">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/PageTs/TCAdefaults.t3s">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/PageTs/Tceform.t3s">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/PageTs/Wizards.t3s">
+
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Resources/Private/BackendLayouts/Fce/">
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Resources/Private/BackendLayouts/Page/">

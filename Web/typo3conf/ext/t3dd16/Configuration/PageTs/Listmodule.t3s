@@ -1,0 +1,11 @@
+#####################################
+# Standardmäßig werden in der Listenansicht nur 20 Datensätze ausgegeben.
+# Will man mehr als Standard haben, so kann dies im PageTSconfig eingestellt werden:
+#####################################
+## table singleview limit
+mod.web_list.itemsLimitSingleTable = 50
+## listview of tables limit
+mod.web_list.itemsLimitPerTable = 20
+
+mod.web_list.enableDisplayBigControlPanel = activated
+mod.web_list.enableLocalizationView = activated

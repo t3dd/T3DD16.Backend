@@ -1,0 +1,17 @@
+#####################################
+# PAGE / Config
+#####################################
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Configuration/TypoScript/Common/Config/">
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Configuration/TypoScript/Common/Page/">
+
+#####################################
+# Include Lib
+#####################################
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:t3dd16/Configuration/TypoScript/Common/Lib/Fce/Default.t3s">
+<INCLUDE_TYPOSCRIPT: source="DIR:EXT:t3dd16/Configuration/TypoScript/Common/Lib/">
+
+#####################################
+# Include Plugin
+#####################################
+<INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Gridelements/Setup.t3s">
+

@@ -1,0 +1,17 @@
+lib.fce.default {
+	cObject = FLUIDTEMPLATE
+	cObject {
+		template = FILE
+		template.file = EXT:t3dd16/Resources/Private/Templates/Fce/Default.html
+		variables {
+
+		}
+	}
+
+	columns {
+		default.renderObj = COA
+		default.renderObj {
+			10 =< tt_content
+		}
+	}
+}
