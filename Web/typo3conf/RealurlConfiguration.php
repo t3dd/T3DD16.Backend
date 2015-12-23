@@ -9,10 +9,6 @@
 call_user_func(function () {
     global $TYPO3_CONF_VARS;
 
-    $languageMap = array(
-        'en' => '0',
-    );
-
     $TYPO3_CONF_VARS['EXTCONF']['realurl']['_DEFAULT'] = array(
         'init' => array(
             'enableCHashCache' => true,
@@ -23,13 +19,6 @@ call_user_func(function () {
             'emptyUrlReturnValue' => '/',
             'enableAllUnicodeLetters' => true,
             'enableDomainLookup' => true,
-        ),
-        'preVars' => array(
-            array(
-                'GETvar' => 'L',
-                'valueMap' => $languageMap,
-                'noMatch' => 'bypass',
-            ),
         ),
         'pagePath' => array(
             'type' => 'user',

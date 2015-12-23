@@ -3,16 +3,30 @@
 #####################################
 page = PAGE
 page {
-	10 = FLUIDTEMPLATE
+	10 = JSON
 	10 {
-		file = EXT:t3dd16/Resources/Private/Templates/Page/Default.html
-		settings {
-			rootpage = {$pageId.rootpage}
+		title = TEXT
+		title.field = title
+		title.noTrimWrap = || - TYPO3 Developer Days 2016|
+
+		description = TEXT
+		description.field = description
+		description.required = 1
+
+		self = TEXT
+		self {
+			typolink {
+				parameter.data = TSFE:id
+				parameter.insertData = 1
+				forceAbsoluteUrl = 1
+				returnLast = url
+			}
 		}
 
-		variables {
-			content < styles.content.get
-		}
+		header < styles.content.get
+		header.select.where = colPos=1
+
+		content < styles.content.get
 	}
 }
 

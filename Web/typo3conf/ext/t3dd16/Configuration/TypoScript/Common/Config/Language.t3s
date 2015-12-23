@@ -4,10 +4,6 @@
 config {
 	# Language Settings
 	uniqueLinkVars = 1
-	linkVars = L(0)
-	defaultGetVars {
-		L = 0
-	}
 
 	sys_language_uid = {$language.id}
 	sys_language_overlay = hideNonTranslated
