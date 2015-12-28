@@ -1,0 +1,20 @@
+navigationJsonResponse = PAGE
+navigationJsonResponse {
+	typeNum = 1450887489
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\T3DD16\Controller\NavigationController->listAction
+
+		export {
+			rootpage {
+				id = {$pageId.rootpage}
+				noCheck = 0
+			}
+			footer {
+				id = {$pageId.footer}
+				noCheck = 1
+			}
+		}
+	}
+}
