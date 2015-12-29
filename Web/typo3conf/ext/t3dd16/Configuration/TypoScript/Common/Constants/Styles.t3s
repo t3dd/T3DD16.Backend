@@ -2,7 +2,7 @@
 styles.templates {
 	templateRootPath = EXT:t3dd16/Resources/Private/Templates/Content/
 	partialRootPath = EXT:t3dd16/Resources/Private/Templates/Content/Partials/
-	layoutRootPath = EXT:t3dd16/Resources/Private/Layouts/
+	layoutRootPath = EXT:t3dd16/Resources/Private/Templates/Content/Layouts/
 }
 
 # Default new CE header is h2

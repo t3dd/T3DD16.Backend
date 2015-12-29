@@ -1,11 +1,15 @@
 <?php
 defined('TYPO3_MODE') or die();
 
-$domains = ['t3dd16.typo3.org'];
+call_user_func(function () {
 
-foreach ($domains as $domain) {
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('t3dd16',
-        'Configuration/TypoScript/' . $domain . '/', $domain);
-}
+    $domains = ['t3dd16.typo3.org'];
 
-unset($domains, $domain);
+    foreach ($domains as $domain) {
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+            't3dd16',
+            'Configuration/TypoScript/' . $domain . '/', $domain
+        );
+    }
+
+});

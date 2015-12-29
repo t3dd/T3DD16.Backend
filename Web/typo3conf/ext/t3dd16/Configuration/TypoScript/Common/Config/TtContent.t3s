@@ -1,0 +1,53 @@
+tt_content {
+
+	header {
+		variables {
+			layout = CASE
+			layout {
+				key.field = layout
+				1 = TEXT
+				1.value = text-left
+				2 = TEXT
+				2.value = text-center
+				3 = TEXT
+				3.value = text-right
+			}
+		}
+	}
+
+	card < .textmedia
+	card.templateName = Card
+
+	fullwidthimage < .textmedia
+	fullwidthimage.templateName = FullwidthImage
+
+	sponsors < .textmedia
+	sponsors.templateName = Sponsors
+
+	price < .textmedia
+	price {
+		templateName = Price
+
+		variables {
+			layout = CASE
+			layout {
+				key.field = layout
+				1 = TEXT
+				1.value = bg-orange
+				2 = TEXT
+				2.value = bg-light-blue
+				3 = TEXT
+				3.value = bg-mint
+				4 = TEXT
+				4.value = bg-brown
+				5 = TEXT
+				5.value = bg-dark-grey
+				6 = TEXT
+				6.value = bg-medium-blue
+
+				default = TEXT
+				default.value = bg-orange
+			}
+		}
+	}
+}

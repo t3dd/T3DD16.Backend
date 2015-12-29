@@ -71,3 +71,24 @@ RTE.classesAnchor {
 		titleText >
 	}
 }
+
+################################################
+# Add new RTE css class
+################################################
+RTE {
+	default {
+		proc.allowedClasses := addToList(button,button__white)
+		buttons.link.properties.class.allowedClasses := addToList(button,button__white)
+	}
+	classes {
+		button {
+			name = Button
+			selectable = 1
+		}
+		button__white {
+			name = Button White
+			requires = button
+			selectable = 1
+		}
+	}
+}

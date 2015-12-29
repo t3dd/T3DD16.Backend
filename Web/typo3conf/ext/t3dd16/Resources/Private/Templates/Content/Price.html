@@ -1,0 +1,16 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<div class="card card__price" vertical layout flex>
+	<f:if condition="{data.header}">
+		<div class="card__header {layout}" center justified layout>
+			<h4>{data.header}</h4>
+			<h3 class="price">{data.subheader}</h3>
+		</div>
+	</f:if>
+	<div class="card__content">
+		{data.bodytext -> f:format.html()}
+	</div>
+	<f:if condition="{data.header_layout} == 100">
+		<div class="card__soldout" fit layout center around-justified horizontal><span>Sold out</span></div>
+	</f:if>
+</div>
+</html>

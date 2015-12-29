@@ -2,8 +2,8 @@
 # Max imagesizes in this installation
 #####################################
 styles.content.textmedia {
-	maxW = 1170
-	maxWInText = 1170
+	maxW = 1950
+	maxWInText = 1950
 	layoutKey = data
 	colSpace = 10
 	rowSpace = 10
@@ -12,14 +12,14 @@ styles.content.textmedia {
 
 styles.content.textmedia.mobileMaxW = 720
 styles.content.textmedia.tabletMaxW = 720
-styles.content.textmedia.desktopMaxW = 1170
+styles.content.textmedia.desktopMaxW = 1950
 styles.content.textmedia.layoutKey = data
 
 #####################################
 # Lightbox
 #####################################
 styles.content.textmedia.linkWrap {
-	width = 1140m
+	width = 1950m
 	height = 600m
 	lightboxEnabled = 1
 	lightboxCssClass = image-lightbox

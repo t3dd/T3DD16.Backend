@@ -1,0 +1,12 @@
+lib.fce.container < lib.fce.default
+lib.fce.container {
+	cObject {
+		template.file = EXT:t3dd16/Resources/Private/Templates/Fce/Container.html
+		dataProcessing {
+			10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+			10 {
+				references.fieldName = media
+			}
+		}
+	}
+}

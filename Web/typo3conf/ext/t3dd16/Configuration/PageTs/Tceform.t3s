@@ -1,20 +1,65 @@
 TCEFORM {
 	tt_content {
 		# Remove unused content elements
-		CType.removeItems := addToList(bullets,table,uploads,menu,html,shortcut,shortcut,div)
+		CType.removeItems := addToList(bullets,table,uploads,menu,html,shortcut)
 
 		date.disabled = 1
 		header_link.disabled = 1
-		subheader.disabled = 1
 		rowDescription.disabled = 1
 
+		subheader.disabled = 1
+		subheader {
+			types.header.disabled = 0
+			types.price.disabled = 0
+		}
+
+		header_layout {
+			removeItems = 0,4,5,6
+			altLabels {
+				1 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.header_layout.1
+				2 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.header_layout.2
+				3 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.header_layout.3
+			}
+			types.gridelements_pi1.disabled = 1
+			types.fullwidthimage.disabled = 1
+			types.sponsors.disabled = 1
+			types.price.removeItems = 1,2,3,4,5,6
+			types.price.altLabels {
+				100 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.soldOut
+			}
+		}
+
 		layout.disabled = 1
+		layout {
+			types.header.disabled = 0
+			types.header.altLabels {
+				1 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.header.layout.1
+				2 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.header.layout.2
+				3 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.header.layout.3
+			}
+
+			types.price.disabled = 0
+			types.price.altLabels {
+				1 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.layout.1
+				2 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.layout.2
+				3 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.layout.3
+			}
+			types.price.addItems {
+				4 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.layout.4
+				5 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.layout.5
+				6 = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.layout.6
+			}
+		}
+
 		imagewidth.disabled = 1
 		imageheight.disabled = 1
 		imageborder.disabled = 1
 
 		# Disable image orientations that don't work in responsive layout, even though textpic is disabled in general.
 		imageorient.removeItems = 17,18,25,26
+		imageorient.disabled = 1
+		imagecols.disabled = 1
+		image_zoom.disabled = 1
 
 		sectionIndex.disabled = 1
 		linkToTop.disabled = 1
@@ -25,14 +70,26 @@ TCEFORM {
 		editlock.disabled = 1
 		categories.disabled = 1
 
+		sys_language_uid.disabled = 1
 		tx_gridelements_children.disabled = 1
 
-		header_layout {
-			types.gridelements_pi1.disabled = 1
+		header {
+			types.fullwidthimage.disabled = 1
+		}
+
+		bodytext {
+			types.fullwidthimage.disabled = 1
+			types.sponsors.disabled = 1
 		}
 
 		media {
-			types.gridelements_pi1.disabled = 1
+			types.card.disabled = 1
+			types.price.disabled = 1
+		}
+
+		assets {
+			types.card.disabled = 1
+			types.price.disabled = 1
 		}
 	}
 

@@ -1,0 +1,25 @@
+<div class="sponsors" flex>
+	<h3 class="text-center">{data.header}</h3>
+	<div around-justified layout row>
+		<f:for each="{gallery.rows}" as="row">
+			<f:for each="{row.columns}" as="column">
+				<f:if condition="{column.media}">
+					<f:if condition="{column.media.link}">
+						<f:then>
+							<f:link.typolink parameter="{column.media.link}" title="{column.media.title}" target="_blank">
+								<f:render section="media" arguments="{_all}" />
+							</f:link.typolink>
+						</f:then>
+						<f:else>
+							<f:render section="media" arguments="{_all}" />
+						</f:else>
+					</f:if>
+				</f:if>
+			</f:for>
+		</f:for>
+	</div>
+</div>
+
+<f:section name="media">
+	<img src="{column.media.publicUrl}" alt="{column.media.alternative}" title="{column.media.title}" responsive>
+</f:section>

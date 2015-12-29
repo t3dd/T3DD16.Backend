@@ -1,0 +1,54 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<type>array</type>
+		<el>
+			<color>
+				<TCEforms>
+					<label>LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.container.color</label>
+					<config>
+						<type>select</type>
+						<size>1</size>
+						<items>
+							<numIndex index="0">
+								<numIndex index="0">None</numIndex>
+								<numIndex index="1"></numIndex>
+							</numIndex>
+							<numIndex index="1">
+								<numIndex index="0">White</numIndex>
+								<numIndex index="1">bg-white</numIndex>
+							</numIndex>
+							<numIndex index="2">
+								<numIndex index="0">Dark grey</numIndex>
+								<numIndex index="1">bg-dark-grey</numIndex>
+							</numIndex>
+							<numIndex index="3">
+								<numIndex index="0">Medium Grey</numIndex>
+								<numIndex index="1">bg-medium-grey</numIndex>
+							</numIndex>
+							<numIndex index="4">
+								<numIndex index="0">Light Grey</numIndex>
+								<numIndex index="1">bg-light-grey</numIndex>
+							</numIndex>
+							<numIndex index="5">
+								<numIndex index="0">Medium Blue</numIndex>
+								<numIndex index="1">bg-medium-blue</numIndex>
+							</numIndex>
+							<numIndex index="6">
+								<numIndex index="0">Brown</numIndex>
+								<numIndex index="1">bg-brown</numIndex>
+							</numIndex>
+							<numIndex index="7">
+								<numIndex index="0">Orange</numIndex>
+								<numIndex index="1">bg-orange</numIndex>
+							</numIndex>
+						</items>
+						<default></default>
+					</config>
+				</TCEforms>
+			</color>
+		</el>
+	</ROOT>
+</T3DataStructure>

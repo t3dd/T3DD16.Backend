@@ -1,0 +1,7 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<div class="bg {data.flexform_color}{f:if(condition: files.0, then: ' bg-cover')}" {f:if(condition: files.0, then: 'style="background-image: url(\'{files.0.publicUrl}\')"')}>
+	<div class="container" {f:if(condition: '{data.colPos} == 1', then: 'layout center horizontal')}>
+		{data.tx_gridelements_view_columns.0 -> f:format.raw()}
+	</div>
+</div>
+</html>

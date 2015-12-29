@@ -2,10 +2,41 @@ mod.wizards {
 	newContentElement {
 		wizardItems {
 			common.elements {
-
+				card {
+					icon = sysext/core/Resources/Public/Icons/T3Icons/content/content-text.svg
+					title = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.card.title
+					description = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.card.description
+					tt_content_defValues {
+						CType = card
+					}
+				}
+				price {
+					icon = sysext/core/Resources/Public/Icons/T3Icons/content/content-text.svg
+					title = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.title
+					description = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.price.description
+					tt_content_defValues {
+						CType = price
+					}
+				}
+				fullwidthimage {
+					icon = sysext/core/Resources/Public/Icons/T3Icons/content/content-image.svg
+					title = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.fullwidthimage.title
+					description = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.fullwidthimage.description
+					tt_content_defValues {
+						CType = fullwidthimage
+					}
+				}
+				sponsors {
+					icon = sysext/core/Resources/Public/Icons/T3Icons/content/content-image.svg
+					title = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.sponsors.title
+					description = LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:tt_content.sponsors.description
+					tt_content_defValues {
+						CType = sponsors
+					}
+				}
 			}
 
-			common.show := addToList()
+			common.show := addToList(card,price,fullwidthimage,sponsors)
 		}
 	}
 }

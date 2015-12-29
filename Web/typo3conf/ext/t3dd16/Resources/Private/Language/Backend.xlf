@@ -6,23 +6,113 @@
 		<body>
 			<trans-unit id="fce.2column.title">
 				<source xml:lang="en">Two Columns</source>
-				<note xml:lang="en"><![CDATA[Backend only]]></note>
 			</trans-unit>
 			<trans-unit id="fce.2column.description">
 				<source xml:lang="en">An element to represent two columns.</source>
-				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+			<trans-unit id="fce.3column.title">
+				<source xml:lang="en">Three Columns</source>
+			</trans-unit>
+			<trans-unit id="fce.3column.description">
+				<source xml:lang="en">An element to represent three columns.</source>
 			</trans-unit>
 			<trans-unit id="fce.column.grid">
 				<source xml:lang="en">Select column layout</source>
-				<note xml:lang="en"><![CDATA[Backend only]]></note>
 			</trans-unit>
 			<trans-unit id="fce.column.left">
 				<source xml:lang="en">Left column</source>
-				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+			<trans-unit id="fce.column.middle">
+				<source xml:lang="en">Middle column</source>
 			</trans-unit>
 			<trans-unit id="fce.column.right">
 				<source xml:lang="en">Right column</source>
-				<note xml:lang="en"><![CDATA[Backend only]]></note>
+			</trans-unit>
+
+			<trans-unit id="fce.container.title">
+				<source xml:lang="en">Content container</source>
+			</trans-unit>
+			<trans-unit id="fce.container.description">
+				<source xml:lang="en">An container with background color or image</source>
+			</trans-unit>
+			<trans-unit id="fce.container.content">
+				<source xml:lang="en">Content</source>
+			</trans-unit>
+			<trans-unit id="fce.container.color">
+				<source xml:lang="en">Select background color</source>
+			</trans-unit>
+			<trans-unit id="fce.container.image">
+				<source xml:lang="en">Select background image</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.header_layout.1">
+				<source xml:lang="en">Headline H1</source>
+			</trans-unit>
+			<trans-unit id="tt_content.header_layout.2">
+				<source xml:lang="en">Headline H2</source>
+			</trans-unit>
+			<trans-unit id="tt_content.header_layout.3">
+				<source xml:lang="en">Headline H3</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.header.layout.1">
+				<source xml:lang="en">Headline Left</source>
+			</trans-unit>
+			<trans-unit id="tt_content.header.layout.2">
+				<source xml:lang="en">Headline Center</source>
+			</trans-unit>
+			<trans-unit id="tt_content.header.layout.3">
+				<source xml:lang="en">Headline Right</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.price.layout.1">
+				<source xml:lang="en">Orange</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.layout.2">
+				<source xml:lang="en">Lightblue</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.layout.3">
+				<source xml:lang="en">Mint</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.layout.4">
+				<source xml:lang="en">Brown</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.layout.5">
+				<source xml:lang="en">Dark Grey</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.layout.6">
+				<source xml:lang="en">Medium Blue</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.soldOut">
+				<source xml:lang="en">Sold out</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.card.title">
+				<source xml:lang="en">Card</source>
+			</trans-unit>
+			<trans-unit id="tt_content.card.description">
+				<source xml:lang="en">A card element</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.price.title">
+				<source xml:lang="en">Price</source>
+			</trans-unit>
+			<trans-unit id="tt_content.price.description">
+				<source xml:lang="en">A price element</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.fullwidthimage.title">
+				<source xml:lang="en">Fullwidth image</source>
+			</trans-unit>
+			<trans-unit id="tt_content.fullwidthimage.description">
+				<source xml:lang="en">An image that covers the whole page width</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.sponsors.title">
+				<source xml:lang="en">Sponsors</source>
+			</trans-unit>
+			<trans-unit id="tt_content.sponsors.description">
+				<source xml:lang="en">Render a list of sponsors images</source>
 			</trans-unit>
 		</body>
 	</file>

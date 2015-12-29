@@ -1,0 +1,6 @@
+lib.fce.3-column < lib.fce.default
+lib.fce.3-column {
+	cObject {
+		template.file = EXT:t3dd16/Resources/Private/Templates/Fce/3-Column.html
+	}
+}
