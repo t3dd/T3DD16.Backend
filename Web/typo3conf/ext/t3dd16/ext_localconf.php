@@ -12,3 +12,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObj
     \TYPO3\T3DD16\ContentObject\JsonContentObject::CONTENT_OBJECT_NAME,
     \TYPO3\T3DD16\ContentObject\JsonContentObject::class
 ];
+
+/** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
+$signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+$signalSlotDispatcher->connect(\TYPO3\CMS\Core\Resource\ResourceStorage::class, \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PreGeneratePublicUrl, \TYPO3\T3DD16\SignalSlot\ResourceStorage::class, 'getCdnPublicUrl');
