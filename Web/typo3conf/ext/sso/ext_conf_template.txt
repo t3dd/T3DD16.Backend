@@ -1,0 +1,2 @@
+# cat=basic/enable/40; type=string; label=Remote SSO servers RSA public key string:Format is "-----BEGIN PUBLIC KEY----- BASE64 -----END PUBLIC KEY-----"
+server.rsaPublicKey =

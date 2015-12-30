@@ -1,29 +1,34 @@
 {
-	"repositories": [
-		{ "type": "composer", "url": "http://composer.typo3.org/" }
-	],
-	"name": "TYPO3/T3DD16",
-	"description" : "TYPO3 T3DD16 Base Distribution",
-	"license": "GPL-2.0+",
-	"require": {
-		"typo3/cms": "7.6.*",
-		"etobi/coreapi": "dev-master",
-		"helhum/realurl": "2.0.*",
-		"gridelementsteam/gridelements": "7.0.*"
-	},
-	"extra": {
-		"typo3/cms": {
-			"cms-package-dir": "{$vendor-dir}/typo3/cms",
-			"web-dir": "Web"
-		}
-	},
-	"autoload": {
-		"psr-4": {
-			"TYPO3\\T3DD16\\": "Web/typo3conf/ext/t3dd16/Classes/"
-		}
-	},
-	"replace": {
-		"typo3/t3dd16": "self.version"
-	},
-	"scripts": {}
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.typo3.org/"
+    }
+  ],
+  "name": "TYPO3/T3DD16",
+  "description": "TYPO3 T3DD16 Base Distribution",
+  "license": "GPL-2.0+",
+  "require": {
+    "typo3/cms": "7.6.*",
+    "etobi/coreapi": "dev-master",
+    "helhum/realurl": "2.0.*",
+    "gridelementsteam/gridelements": "7.0.*"
+  },
+  "extra": {
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": "Web"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "TYPO3\\T3DD16\\": "Web/typo3conf/ext/t3dd16/Classes/",
+      "TYPO3\\Sso\\": "Web/typo3conf/ext/sso/Classes/"
+    }
+  },
+  "replace": {
+    "typo3/t3dd16": "self.version",
+    "typo3/sso": "self.version"
+  },
+  "scripts": {}
 }

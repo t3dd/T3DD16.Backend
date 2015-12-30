@@ -63,7 +63,7 @@ config {
 		settings {
 			view {
 				formatToPageTypeMapping {
-
+					json = 1450887489
 				}
 			}
 		}

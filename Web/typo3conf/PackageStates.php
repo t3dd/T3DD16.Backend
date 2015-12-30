@@ -308,6 +308,15 @@ return array (
       array (
       ),
     ),
+    'sso' =>
+    array (
+      'composerName' => 'typo3/sso',
+      'state' => 'active',
+      'packagePath' => 'typo3conf/ext/sso/',
+      'suggestions' => 
+      array (
+      ),
+    ),
     'about' => 
     array (
       'composerName' => 'typo3/cms-about',

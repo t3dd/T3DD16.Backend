@@ -1,4 +1,12 @@
 pageId {
 	rootpage = 1
 	footer = 7
+
+	user {
+		me = 14
+		login = 12
+		authenticate = 16
+		logout = 15
+		storage = 13
+	}
 }

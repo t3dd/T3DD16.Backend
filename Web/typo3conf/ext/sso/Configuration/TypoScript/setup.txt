@@ -1,0 +1,54 @@
+plugin.tx_sso {
+	view {
+		templateRootPaths {
+			100 = {$plugin.tx_sso.view.templateRootPath}
+		}
+
+		partialRootPaths {
+			100 = {$plugin.tx_sso.view.partialRootPath}
+		}
+
+		layoutRootPaths {
+			100 = {$plugin.tx_sso.view.layoutRootPath}
+		}
+	}
+
+	persistence {
+		storagePid = {$plugin.tx_sso.persistence.storagePid}
+	}
+
+	view {
+		defaultPid = auto
+	}
+
+	mvc {
+		throwPageNotFoundExceptionIfActionCantBeResolved = 1
+	}
+
+	features {
+		skipDefaultArguments = 1
+	}
+
+	settings {
+		ssoURL = https://typo3.org/my-account/sso/t3dd15/
+	}
+}
+
+config.tx_extbase {
+	persistence {
+		classes {
+			TYPO3\CMS\Extbase\Domain\Model\FrontendUser.subclasses {
+				TYPO3\Sso\Domain\Model\FrontendUser = TYPO3\Sso\Domain\Model\FrontendUser
+			}
+
+			TYPO3\Sso\Domain\Model\FrontendUser {
+				mapping {
+					tableName = fe_users
+					recordType = Tx_Extbase_Domain_Model_FrontendUser
+				}
+
+				newRecordStoragePid = {$plugin.tx_sso.persistence.storagePid}
+			}
+		}
+	}
+}

@@ -1,8 +1,8 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = array(
-    'title' => 'T3DD16 site',
-    'description' => 'T3DD16 site extension',
+    'title' => 'typo3.org SSO',
+    'description' => 'Single sign on for typo3.org',
     'category' => 'fe',
     'author' => '',
     'author_email' => '',

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-12-29T16:00:00Z" product-name="sso">
+		<header/>
+		<body>
+			<trans-unit id="plugins.login.title">
+				<source xml:lang="en"><![CDATA[FrontendLogin: Login]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.login.description">
+				<source xml:lang="en"><![CDATA[Authenticate the user with typo3.org]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.authenticate.title">
+				<source xml:lang="en"><![CDATA[FrontendLogin: Authenticate]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.authenticate.description">
+				<source xml:lang="en"><![CDATA[Takes the sso callback and authenticate the user.]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.logout.title">
+				<source xml:lang="en"><![CDATA[FrontendLogin: Logout]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.logout.description">
+				<source xml:lang="en"><![CDATA[Logout the user.]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.me.title">
+				<source xml:lang="en"><![CDATA[FrontendLogin: Me]]></source>
+			</trans-unit>
+			<trans-unit id="plugins.me.description">
+				<source xml:lang="en"><![CDATA[Return the current user if authenticated]]></source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -7,4 +7,4 @@
 # Include Plugin
 #####################################
 <INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Gridelements/Constants.t3s">
-
+<INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Sso/Constants.t3s">

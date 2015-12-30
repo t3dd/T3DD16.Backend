@@ -31,8 +31,14 @@ call_user_func(function () {
         'alternativeDomains' => array(),
         'fileName' => array(
             'defaultToHTMLsuffixOnPrev' => 0,
-            'acceptHTMLsuffix' => 1,
-            'index' => array(),
+            'acceptHTMLsuffix' => 0,
+            'index' => array(
+                '.json' => array(
+                    'keyValues' => array(
+                        'type' => 1450887489,
+                    )
+                ),
+            ),
         ),
         'postVarSets' => array(),
         'fixedPostVars' => array(),

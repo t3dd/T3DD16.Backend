@@ -13,3 +13,4 @@ Web/typo3conf/ENABLE_INSTALL_TOOL
 Web/typo3conf/EnvironmentConfiguration.php
 Web/typo3conf/ext/*
 !Web/typo3conf/ext/t3dd16
+!Web/typo3conf/ext/sso

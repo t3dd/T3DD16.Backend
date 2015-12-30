@@ -1,0 +1,55 @@
+jsonResponse = PAGE
+jsonResponse {
+	typeNum = 1450887489
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\T3DD16\Controller\NavigationController->listAction
+
+		export {
+			rootpage {
+				id = {$pageId.rootpage}
+				noCheck = 0
+			}
+
+			footer {
+				id = {$pageId.footer}
+				noCheck = 1
+			}
+		}
+	}
+}
+
+[globalVar = TSFE:id = {$pageId.user.me}]
+	jsonResponse {
+		10 >
+
+		10 = USER
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sso
+			pluginName = me
+		}
+	}
+
+[globalVar = TSFE:id = {$pageId.user.login}]
+	jsonResponse {
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sso
+			pluginName = login
+		}
+	}
+
+[globalVar = TSFE:id = {$pageId.user.logout}]
+	jsonResponse {
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sso
+			pluginName = logout
+		}
+	}
+[GLOBAL]

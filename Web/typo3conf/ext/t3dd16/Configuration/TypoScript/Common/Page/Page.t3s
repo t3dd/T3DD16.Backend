@@ -33,3 +33,17 @@ page {
 // Enforce distinct frontend rendering if user has backend cookie
 [globalVar = TSFE : beUserLogin > 0]
 [GLOBAL]
+
+[globalVar = TSFE:id = {$pageId.user.authenticate}]
+	page {
+		10 >
+		10 = USER
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sso
+			pluginName = authenticate
+		}
+		config.additionalHeaders = Content-Type:text/html;charset=utf-8
+	}
+[GLOBAL]

@@ -1,0 +1,18 @@
+{
+  "name": "typo3/sso",
+  "type": "typo3-cms-extension",
+  "description": "",
+  "require": {
+    "typo3/cms-core": ">=7.6.0,<8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TYPO3\\Sso\\": "Web/typo3conf/ext/sso/Classes/"
+    }
+  },
+  "replace": {
+    "typo3/sso": "self.version"
+  },
+  "extra": {
+  }
+}
