@@ -21,7 +21,8 @@ class JsonContentObject
         foreach ($configuration as $key => $contentObjectName) {
             if (strpos($key, '.') === false) {
                 $conf = $configuration[$key . '.'];
-                $result[$key] = $contentObject->cObjGetSingle($contentObjectName, $conf, $contentObjectName);
+                $content = $contentObject->cObjGetSingle($contentObjectName, $conf, $contentObjectName);
+                $result[$key] = str_replace(array("\r", "\n", "\t"), '', $content);;
             }
         }
         return json_encode($result);
