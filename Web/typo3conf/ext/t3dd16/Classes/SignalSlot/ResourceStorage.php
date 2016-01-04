@@ -30,9 +30,9 @@ class ResourceStorage implements \TYPO3\CMS\Core\SingletonInterface
             return;
         }
 
-        if (($resourceStorage->getCapabilities() & \TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_PUBLIC) == \TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_PUBLIC) {
+        if ($resourceObject instanceOf \TYPO3\CMS\Core\Resource\File && ($resourceStorage->getCapabilities() & \TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_PUBLIC) == \TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_PUBLIC) {
             $publicUrl = $driver->getPublicUrl($resourceObject->getIdentifier());
-            $urlData['publicUrl'] = $GLOBALS['TSFE']->config['config']['cdnBaseUrl'] . $publicUrl;
+            $urlData['publicUrl'] = $GLOBALS['TSFE']->config['config']['cdnBaseUrl'] . $publicUrl . '?' . $resourceObject->getModificationTime();
         }
     }
 
