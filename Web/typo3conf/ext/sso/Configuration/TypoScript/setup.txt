@@ -30,7 +30,7 @@ plugin.tx_sso {
 	}
 
 	settings {
-		ssoURL = https://typo3.org/my-account/sso/t3dd15/
+		ssoURL = https://typo3.org/my-account/sso/t3dd16/
 	}
 }
 

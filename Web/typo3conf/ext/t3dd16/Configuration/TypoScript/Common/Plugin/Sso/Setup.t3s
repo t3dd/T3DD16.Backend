@@ -1,1 +1,2 @@
 <INCLUDE_TYPOSCRIPT: source="FILE:EXT:sso/Configuration/TypoScript/setup.txt">
+plugin.tx_sso.settings.ssoURL = {$server.sso}

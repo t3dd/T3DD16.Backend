@@ -16,6 +16,7 @@ server.base.scheme = http
 # Base URL
 #####################################
 server.base = {$server.base.scheme}://{$domainname}.typo3.org/
+server.sso = https://typo3.org/my-account/sso/t3dd16/
 
 #####################################
 # Local domains
@@ -23,4 +24,5 @@ server.base = {$server.base.scheme}://{$domainname}.typo3.org/
 [globalString = IENV:HTTP_HOST= *.dev]
 	debug = 1
 	server.base = {$server.base.scheme}://{$domainname}.dev/
+	server.sso = https://typo3.org/my-account/sso/t3dd16-dev/
 [GLOBAL]
