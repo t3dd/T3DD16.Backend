@@ -52,16 +52,6 @@ return [
         'UTF8filesystem' => 1,
         'caching' => [
             'cacheConfigurations' => [
-                'extbase_object' => [
-                    'backend' => 'TYPO3\\CMS\\Core\\Cache\\Backend\\ApcBackend',
-                    'frontend' => 'TYPO3\\CMS\\Core\\Cache\\Frontend\\VariableFrontend',
-                    'groups' => [
-                        'system',
-                    ],
-                    'options' => [
-                        'defaultLifetime' => 0,
-                    ],
-                ],
             ],
         ],
         'clearCacheSystem' => false,
