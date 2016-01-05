@@ -1,6 +1,11 @@
 <?php
 namespace TYPO3\T3DD16\SignalSlot;
 
+use TYPO3\CMS\Core\Resource\Driver\LocalDriver;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\ProcessedFile;
+use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
+
 class ResourceStorage implements \TYPO3\CMS\Core\SingletonInterface
 {
 
@@ -26,13 +31,18 @@ class ResourceStorage implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function getCdnPublicUrl($resourceStorage, $driver, $resourceObject, $relativeToCurrentScript, $urlData)
     {
-        if (!($driver instanceof \TYPO3\CMS\Core\Resource\Driver\LocalDriver) || $this->environmentService->isEnvironmentInBackendMode()) {
+        if (!($driver instanceof LocalDriver) || $this->environmentService->isEnvironmentInBackendMode()) {
             return;
         }
 
-        if ($resourceObject instanceOf \TYPO3\CMS\Core\Resource\File && ($resourceStorage->getCapabilities() & \TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_PUBLIC) == \TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_PUBLIC) {
+        if (($resourceObject instanceOf File || $resourceObject instanceOf ProcessedFile) && ($resourceStorage->getCapabilities() & ResourceStorageInterface::CAPABILITY_PUBLIC) == ResourceStorageInterface::CAPABILITY_PUBLIC) {
             $publicUrl = $driver->getPublicUrl($resourceObject->getIdentifier());
-            $urlData['publicUrl'] = $GLOBALS['TSFE']->config['config']['cdnBaseUrl'] . $publicUrl . '?' . $resourceObject->getModificationTime();
+            $urlData['publicUrl'] = $GLOBALS['TSFE']->config['config']['cdnBaseUrl'] . $publicUrl;
+            if ($resourceObject instanceOf File) {
+                $urlData['publicUrl'] .= '?' . $resourceObject->getModificationTime();
+            } else if ($resourceObject instanceOf ProcessedFile) {
+                $urlData['publicUrl'] .= '?' . $resourceObject->getProperty('tstamp');
+            }
         }
     }
 
