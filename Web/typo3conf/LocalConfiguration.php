@@ -48,10 +48,44 @@ return [
         'jpg_quality' => '80',
         'thumbnails_png' => 1,
     ],
+    'INSTALL' => [
+        'wizardDone' => [
+            'TYPO3\CMS\Install\Updates\AccessRightParametersUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\BackendUserStartModuleUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\Compatibility6ExtractionUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\ContentTypesToTextMediaUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\FileListIsStartModuleUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\FilesReplacePermissionUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\LanguageIsoCodeUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\MediaceExtractionUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\MigrateMediaToAssetsForTextMediaCe' => 1,
+            'TYPO3\CMS\Install\Updates\MigrateShortcutUrlsAgainUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\OpenidExtractionUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\PageShortcutParentUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\ProcessedFileChecksumUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\TableFlexFormToTtContentFieldsUpdate' => 1,
+            'TYPO3\CMS\Install\Updates\WorkspacesNotificationSettingsUpdate' => 1,
+            'TYPO3\CMS\Rtehtmlarea\Hook\Install\DeprecatedRteProperties' => 1,
+            'TYPO3\CMS\Rtehtmlarea\Hook\Install\RteAcronymButtonRenamedToAbbreviation' => 1,
+        ],
+    ],
+    'MAIL' => [
+        'transport_sendmail_command' => '/usr/sbin/sendmail -t -i',
+    ],
     'SYS' => [
         'UTF8filesystem' => 1,
         'caching' => [
             'cacheConfigurations' => [
+                'extbase_object' => [
+                    'backend' => 'TYPO3\\CMS\\Core\\Cache\\Backend\\ApcBackend',
+                    'frontend' => 'TYPO3\\CMS\\Core\\Cache\\Frontend\\VariableFrontend',
+                    'groups' => [
+                        'system',
+                    ],
+                    'options' => [
+                        'defaultLifetime' => 0,
+                    ],
+                ],
             ],
         ],
         'clearCacheSystem' => false,
@@ -64,7 +98,7 @@ return [
         'encryptionKey' => '41ec201f8042c569b0996f4d972b0ada051c2ae17ac541cd5d911a19eeab66ce0e8310c2fdca642426709ce54bf1a53d',
         'exceptionalErrors' => 4341,
         'isInitialDatabaseImportDone' => true,
-        'isInitialInstallationInProgress' => true,
+        'isInitialInstallationInProgress' => false,
         'sitename' => 'T3DD16',
         'sqlDebug' => 0,
         'systemLocale' => 'de_DE.UTF-8',
