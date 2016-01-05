@@ -172,4 +172,15 @@ TCEFORM {
 		categories.disabled = 1
 		language.disabled = 1
 	}
+
+	fe_users {
+		lockToDomain.disabled = 1
+		TSconfig.disabled = 1
+	}
+
+	fe_groups {
+		description.disabled = 1
+		lockToDomain.disabled = 1
+		TSconfig.disabled = 1
+	}
 }

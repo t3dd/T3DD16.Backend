@@ -53,8 +53,10 @@ class Typo3OrgSsoProvider
             $userdata = $this->parseUserdata($credentials['userdata']);
             if (!is_object($account)) {
                 $account = $this->createAccount($userdata);
+                $this->frontendUserRepository->add($account);
             } elseif (is_object($account)) {
                 $account = $this->updateAccount($account, $userdata);
+                $this->frontendUserRepository->update($account);
             }
             $this->persistenceManager->persistAll();
             $this->authenticationService->registerSession($account);
