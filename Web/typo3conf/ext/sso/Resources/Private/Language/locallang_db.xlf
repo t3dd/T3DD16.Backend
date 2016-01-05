@@ -27,6 +27,13 @@
 			<trans-unit id="plugins.me.description">
 				<source xml:lang="en"><![CDATA[Return the current user if authenticated]]></source>
 			</trans-unit>
+
+			<trans-unit id="fe_users.profile_image">
+				<source xml:lang="en"><![CDATA[Image]]></source>
+			</trans-unit>
+			<trans-unit id="fe_users.profile_image.add">
+				<source xml:lang="en"><![CDATA[Add image]]></source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
