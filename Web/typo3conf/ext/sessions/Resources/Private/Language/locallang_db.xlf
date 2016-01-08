@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-01-05T10:00:00Z" product-name="sessions">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_sessions_domain_model_room">
+				<source>Room</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_room.title">
+				<source>Title</source>
+			</trans-unit>
+
+			<trans-unit id="tx_sessions_domain_model_session">
+				<source>Session</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.description">
+				<source>Description</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.highlight">
+				<source>Highlight</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.room">
+				<source>Room</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.date">
+				<source>Date</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.lightning">
+				<source>Lightning Time</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.begin">
+				<source>Begin</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.end">
+				<source>End</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.speaker1">
+				<source>Speaker 1</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.speaker2">
+				<source>Speaker 2</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.speaker3">
+				<source>Speaker 3</source>
+			</trans-unit>
+
+			<trans-unit id="tx_sessions_domain_model_session.palette.palettesBase">
+				<source>Base</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.palette.palettesDate">
+				<source>Date</source>
+			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.palette.palettesSpeaker">
+				<source>Speaker</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

@@ -1,7 +1,7 @@
 TCEFORM {
 	tt_content {
 		# Remove unused content elements
-		CType.removeItems := addToList(bullets,table,uploads,menu,html,shortcut)
+		CType.removeItems := addToList(bullets,table,uploads,menu,shortcut)
 
 		date.disabled = 1
 		header_link.disabled = 1

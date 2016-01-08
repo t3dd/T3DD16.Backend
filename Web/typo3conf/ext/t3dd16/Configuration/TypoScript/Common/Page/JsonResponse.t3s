@@ -52,4 +52,14 @@ jsonResponse {
 			pluginName = logout
 		}
 	}
+
+[globalVar = TSFE:id = {$pageId.session.list}]
+	jsonResponse {
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sessions
+			pluginName = sessions
+		}
+	}
 [GLOBAL]

@@ -15,3 +15,4 @@
 #####################################
 <INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Gridelements/Setup.t3s">
 <INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Sso/Setup.t3s">
+<INCLUDE_TYPOSCRIPT: source="File:EXT:t3dd16/Configuration/TypoScript/Common/Plugin/Sessions/Setup.t3s">

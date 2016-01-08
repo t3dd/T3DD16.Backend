@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-01-06T10:00:00Z" product-name="sessions">
+		<header/>
+		<body>
+			<trans-unit id="validator.activeUser">
+				<source>You need a active user, please login in first.</source>
+			</trans-unit>
+			<trans-unit id="validator.sessionOwner">
+				<source>You can not update the session, because you are not the owner.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

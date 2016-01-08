@@ -9,4 +9,9 @@ pageId {
 		logout = 15
 		storage = 13
 	}
+
+	session {
+		list = 11
+		storage = 17
+	}
 }

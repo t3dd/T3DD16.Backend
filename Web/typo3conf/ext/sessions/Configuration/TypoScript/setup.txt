@@ -1,0 +1,40 @@
+plugin.tx_sessions {
+	view {
+		templateRootPaths {
+			100 = {$plugin.tx_sessions.view.templateRootPath}
+		}
+
+		partialRootPaths {
+			100 = {$plugin.tx_sessions.view.partialRootPath}
+		}
+
+		layoutRootPaths {
+			100 = {$plugin.tx_sessions.view.layoutRootPath}
+		}
+	}
+
+	persistence {
+		storagePid = {$plugin.tx_sessions.persistence.storagePid}
+		classes {
+			TYPO3\Sessions\Domain\Model\Session {
+				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
+			}
+		}
+	}
+
+	view {
+		defaultPid = auto
+	}
+
+	mvc {
+		throwPageNotFoundExceptionIfActionCantBeResolved = 1
+	}
+
+	features {
+		skipDefaultArguments = 1
+	}
+
+	settings {
+
+	}
+}

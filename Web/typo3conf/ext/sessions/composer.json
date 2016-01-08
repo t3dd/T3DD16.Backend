@@ -1,0 +1,18 @@
+{
+  "name": "typo3/sessions",
+  "type": "typo3-cms-extension",
+  "description": "",
+  "require": {
+    "typo3/cms-core": ">=7.6.0,<8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "TYPO3\\Sessions\\": "Web/typo3conf/ext/sessions/Classes/"
+    }
+  },
+  "replace": {
+    "typo3/sessions": "self.version"
+  },
+  "extra": {
+  }
+}

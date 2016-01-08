@@ -299,20 +299,29 @@ return array (
       array (
       ),
     ),
+    'sessions' => 
+    array (
+      'composerName' => 'typo3/sessions',
+      'state' => 'active',
+      'packagePath' => 'typo3conf/ext/sessions/',
+      'suggestions' => 
+      array (
+      ),
+    ),
+    'sso' => 
+    array (
+      'composerName' => 'typo3/sso',
+      'state' => 'active',
+      'packagePath' => 'typo3conf/ext/sso/',
+      'suggestions' => 
+      array (
+      ),
+    ),
     't3dd16' => 
     array (
       'composerName' => 'typo3/t3dd16',
       'state' => 'active',
       'packagePath' => 'typo3conf/ext/t3dd16/',
-      'suggestions' => 
-      array (
-      ),
-    ),
-    'sso' =>
-    array (
-      'composerName' => 'typo3/sso',
-      'state' => 'active',
-      'packagePath' => 'typo3conf/ext/sso/',
       'suggestions' => 
       array (
       ),

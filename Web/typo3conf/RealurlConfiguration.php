@@ -9,8 +9,8 @@
 call_user_func(function () {
     global $TYPO3_CONF_VARS;
 
-    $TYPO3_CONF_VARS['EXTCONF']['realurl']['_DEFAULT'] = array(
-        'init' => array(
+    $TYPO3_CONF_VARS['EXTCONF']['realurl']['_DEFAULT'] = [
+        'init' => [
             'enableCHashCache' => true,
             'appendMissingSlash' => 'ifNotFile,redirect',
             'adminJumpToBackend' => true,
@@ -19,29 +19,55 @@ call_user_func(function () {
             'emptyUrlReturnValue' => '/',
             'enableAllUnicodeLetters' => true,
             'enableDomainLookup' => true,
-        ),
-        'pagePath' => array(
+        ],
+        'pagePath' => [
             'type' => 'user',
             'userFunc' => 'Tx\\Realurl\\UriGeneratorAndResolver->main',
             'spaceCharacter' => '-',
             'languageGetVar' => 'L',
             'expireDays' => 30,
             'expireAllLanguages' => true,
-        ),
-        'alternativeDomains' => array(),
-        'fileName' => array(
+        ],
+        'alternativeDomains' => [],
+        'fileName' => [
             'defaultToHTMLsuffixOnPrev' => 0,
             'acceptHTMLsuffix' => 0,
-            'index' => array(
-                '.json' => array(
-                    'keyValues' => array(
+            'index' => [
+                '.json' => [
+                    'keyValues' => [
                         'type' => 1450887489,
-                    )
-                ),
-            ),
-        ),
-        'postVarSets' => array(),
-        'fixedPostVars' => array(),
-    );
+                    ]
+                ],
+            ],
+        ],
+        'postVarSets' => [],
+        'fixedPostVars' => [
+            'session' => [
+                [
+                    'GETvar' => 'tx_sessions_sessions[session]',
+                    'lookUpTable' => [
+                        'table' => 'tx_sessions_domain_model_session',
+                        'enable404forInvalidAlias' => 1,
+                        'id_field' => 'uid',
+                        'alias_field' => 'title',
+                        'addWhereClause' => ' AND NOT deleted',
+                        'useUniqueCache' => 1,
+                        'useUniqueCache_conf' => [
+                            'strtolower' => 1,
+                            'spaceCharacter' => '-',
+                        ],
+                        'languageGetVar' => 'L',
+                        'languageExceptionUids' => '',
+                        'languageField' => 'sys_language_uid',
+                        'transOrigPointerField' => 'l10n_parent',
+                        'autoUpdate' => 1,
+                        'expireDays' => 180,
+                    ]
+                ],
+            ],
+        ],
+    ];
+
+    $TYPO3_CONF_VARS['EXTCONF']['realurl']['_DEFAULT']['fixedPostVars'][11] = 'session';
 
 });

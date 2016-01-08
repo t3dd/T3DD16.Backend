@@ -23,12 +23,14 @@
   "autoload": {
     "psr-4": {
       "TYPO3\\T3DD16\\": "Web/typo3conf/ext/t3dd16/Classes/",
-      "TYPO3\\Sso\\": "Web/typo3conf/ext/sso/Classes/"
+      "TYPO3\\Sso\\": "Web/typo3conf/ext/sso/Classes/",
+      "TYPO3\\Sessions\\": "Web/typo3conf/ext/sessions/Classes/"
     }
   },
   "replace": {
     "typo3/t3dd16": "self.version",
-    "typo3/sso": "self.version"
+    "typo3/sso": "self.version",
+    "typo3/sessions": "self.version"
   },
   "scripts": {}
 }

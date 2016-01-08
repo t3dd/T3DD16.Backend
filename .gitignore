@@ -14,3 +14,4 @@ Web/typo3conf/EnvironmentConfiguration.php
 Web/typo3conf/ext/*
 !Web/typo3conf/ext/t3dd16
 !Web/typo3conf/ext/sso
+!Web/typo3conf/ext/sessions
