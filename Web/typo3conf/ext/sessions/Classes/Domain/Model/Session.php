@@ -41,19 +41,9 @@ class Session extends AbstractEntity implements \JsonSerializable
     protected $end = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FrontendUser>
      */
-    protected $speaker1;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
-     */
-    protected $speaker2;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
-     */
-    protected $speaker3;
+    protected $speakers;
 
     /**
      * @var \TYPO3\Sessions\Domain\Model\Room
@@ -64,6 +54,11 @@ class Session extends AbstractEntity implements \JsonSerializable
      * @var boolean
      */
     protected $highlight;
+
+    public function __construct()
+    {
+        $this->speakers = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+    }
 
     /**
      * @return string
@@ -162,54 +157,6 @@ class Session extends AbstractEntity implements \JsonSerializable
     }
 
     /**
-     * @return FrontendUser
-     */
-    public function getSpeaker1()
-    {
-        return $this->speaker1;
-    }
-
-    /**
-     * @param FrontendUser $speaker1
-     */
-    public function setSpeaker1($speaker1)
-    {
-        $this->speaker1 = $speaker1;
-    }
-
-    /**
-     * @return FrontendUser
-     */
-    public function getSpeaker2()
-    {
-        return $this->speaker2;
-    }
-
-    /**
-     * @param FrontendUser $speaker2
-     */
-    public function setSpeaker2($speaker2)
-    {
-        $this->speaker2 = $speaker2;
-    }
-
-    /**
-     * @return FrontendUser
-     */
-    public function getSpeaker3()
-    {
-        return $this->speaker3;
-    }
-
-    /**
-     * @param FrontendUser $speaker3
-     */
-    public function setSpeaker3($speaker3)
-    {
-        $this->speaker3 = $speaker3;
-    }
-
-    /**
      * @return Room
      */
     public function getRoom()
@@ -254,9 +201,7 @@ class Session extends AbstractEntity implements \JsonSerializable
             'lightning' => $this->getTimestamp($this->lightning),
             'start' => $this->getTimestamp($this->begin),
             'end' => $this->getTimestamp($this->end),
-            'speaker1' => $this->speaker1,
-            'speaker2' => $this->speaker2,
-            'speaker3' => $this->speaker3,
+            'speakers'  =>  $this->speakers->toArray(),
             'room' => $this->room ? $this->room->getTitle() : '',
             'highlight' => $this->highlight,
             'links' => [
@@ -296,4 +241,37 @@ class Session extends AbstractEntity implements \JsonSerializable
         $uriBuilder = $objectManager->get(UriBuilder::class);
         return $uriBuilder->setCreateAbsoluteUri(true)->uriFor('index', ['session' => $this], 'Session', 'Sessions', 'sessions');
     }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FrontendUser>
+     */
+    public function getSpeakers()
+    {
+        return $this->speakers;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FrontendUser> $speakers
+     */
+    public function setSpeakers($speakers)
+    {
+        $this->speakers = $speakers;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $speaker
+     */
+    public function addSpeaker($speaker)
+    {
+        $this->speakers->attach($speaker);
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $speaker
+     */
+    public function removeSpeaker($speaker)
+    {
+        $this->speakers->detach($speaker);
+    }
+
 }

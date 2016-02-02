@@ -38,15 +38,9 @@
 			<trans-unit id="tx_sessions_domain_model_session.end">
 				<source>End</source>
 			</trans-unit>
-			<trans-unit id="tx_sessions_domain_model_session.speaker1">
-				<source>Speaker 1</source>
-			</trans-unit>
-			<trans-unit id="tx_sessions_domain_model_session.speaker2">
-				<source>Speaker 2</source>
-			</trans-unit>
-			<trans-unit id="tx_sessions_domain_model_session.speaker3">
-				<source>Speaker 3</source>
-			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.speakers">
+                <source>Speaker</source>
+            </trans-unit>
 
 			<trans-unit id="tx_sessions_domain_model_session.palette.palettesBase">
 				<source>Base</source>

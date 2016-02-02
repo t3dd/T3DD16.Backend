@@ -66,7 +66,7 @@ class SessionController extends AbstractRestController
     public function createAction(Session $session)
     {
         $user = $this->frontendUserRepository->findCurrentUser();
-        $session->setSpeaker1($user);
+        $session->addSpeaker($user);
         $this->sessionRepository->add($session);
         $this->persistenceManager->persistAll();
 
@@ -112,12 +112,10 @@ class SessionController extends AbstractRestController
     {
         $cacheTags = [];
         $cacheTags[] = 'tx_sessions_domain_model_session_' . $session->getUid();
-        foreach (['speaker1', 'speaker2', 'speaker3'] as $propertyName) {
+        $speakers = ObjectAccess::getProperty($session, 'speakers');
+        foreach ($speakers as $speaker) {
             /** @var FrontendUser $speaker */
-            $speaker = ObjectAccess::getProperty($session, $propertyName);
-            if ($speaker !== null) {
-                $cacheTags[] = 'fe_users_' . $speaker->getUid();
-            }
+            $cacheTags[] = 'fe_users_' . $speaker->getUid();
         }
         if ($session->getRoom()) {
             $cacheTags[] = 'tx_sessions_domain_model_room_' . $session->getRoom()->getUid();

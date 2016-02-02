@@ -12,9 +12,7 @@ CREATE TABLE tx_sessions_domain_model_session (
 	lightning int(11) unsigned DEFAULT '0' NOT NULL,
 	begin int(11) unsigned DEFAULT '0' NOT NULL,
 	end int(11) unsigned DEFAULT '0' NOT NULL,
-	speaker1 int(11) unsigned DEFAULT '0' NOT NULL,
-	speaker2 int(11) unsigned DEFAULT '0' NOT NULL,
-	speaker3 int(11) unsigned DEFAULT '0' NOT NULL,
+	speakers int(11) unsigned DEFAULT '0' NOT NULL,
 	room int(11) unsigned DEFAULT '0' NOT NULL,
 	highlight tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
@@ -86,4 +84,17 @@ CREATE TABLE tx_sessions_domain_model_room (
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
 
+);
+
+
+#
+# Table structure for table 'tx_sessions_session_speaker_mm'
+#
+CREATE TABLE tx_sessions_session_speaker_mm (
+	uid_local int(11) DEFAULT '0' NOT NULL,
+	uid_foreign int(11) DEFAULT '0' NOT NULL,
+	sorting int(11) DEFAULT '0' NOT NULL,
+
+	KEY uid_local (uid_local),
+	KEY uid_foreign (uid_foreign)
 );

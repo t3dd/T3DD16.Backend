@@ -60,7 +60,7 @@ return [
             'showitem' => 'room, --linebreak--, date, --linebreak--, lightning, begin, end,'
         ],
         'palettesSpeaker' => [
-            'showitem' => 'speaker1, speaker2, speaker3,'
+            'showitem' => 'speakers'
         ],
     ],
     'columns' => [
@@ -189,47 +189,16 @@ return [
                 'eval' => 'time',
             ],
         ],
-        'speaker1' => [
+        'speakers' => [
             'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.speaker1',
+            'label' => $LLL . 'tx_sessions_domain_model_session.speakers',
             'config' => [
-                'type' => 'select',
-                'items' => [
-                    ['', 0]
-                ],
-                'foreign_table' => 'fe_users',
-                'foreign_table_where' => 'ORDER BY fe_users.name',
-                'size' => 1,
-                'maxitems' => 1,
+                'type'          => 'select',
+                'minitems'      =>  0,
+                'maxitems'      =>  10,
+                'foreign_table' =>  'fe_users',
+                'MM'            =>  'tx_sessions_session_speaker_mm',
             ],
-        ],
-        'speaker2' => [
-            'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.speaker2',
-            'config' => [
-                'type' => 'select',
-                'items' => [
-                    ['', 0]
-                ],
-                'foreign_table' => 'fe_users',
-                'foreign_table_where' => 'ORDER BY fe_users.name',
-                'size' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'speaker3' => [
-            'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.speaker3',
-            'config' => [
-                'type' => 'select',
-                'items' => [
-                    ['', 0]
-                ],
-                'foreign_table' => 'fe_users',
-                'foreign_table_where' => 'ORDER BY fe_users.name',
-                'size' => 1,
-                'maxitems' => 1,
-            ],
-        ],
+        ]
     ],
 ];
