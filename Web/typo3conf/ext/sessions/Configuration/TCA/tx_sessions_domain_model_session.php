@@ -210,15 +210,6 @@ return [
                 'size' => 10,
                 'autoSizeMax' => 50,
                 'maxitems' => 9999,
-                'renderMode' => 'tree',
-                'treeConfig'    =>  [
-                    'appearance' => [
-                        'expandAll'     =>  1,
-                        'maxLevels'     =>  99,
-                        'showHeader'    =>  1
-                    ],
-                    'parentField'   =>  'parent'
-                ]
             ]
         ],
         'votes'    =>  [
