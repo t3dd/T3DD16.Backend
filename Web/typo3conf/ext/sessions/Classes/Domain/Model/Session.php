@@ -46,6 +46,18 @@ class Session extends AbstractEntity implements \JsonSerializable
     protected $speakers;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Topic>
+     * @lazy
+     */
+    protected $topics;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Vote>
+     * @lazy
+     */
+    protected $votes;
+
+    /**
      * @var \TYPO3\Sessions\Domain\Model\Room
      */
     protected $room;
@@ -58,6 +70,8 @@ class Session extends AbstractEntity implements \JsonSerializable
     public function __construct()
     {
         $this->speakers = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->topics = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->votes = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
     }
 
     /**
@@ -272,6 +286,70 @@ class Session extends AbstractEntity implements \JsonSerializable
     public function removeSpeaker($speaker)
     {
         $this->speakers->detach($speaker);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Topic>
+     */
+    public function getTopics()
+    {
+        return $this->topics;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Topic> $topics
+     */
+    public function setTopics($topics)
+    {
+        $this->topics = $topics;
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Topic $topic
+     */
+    public function addTopic($topic)
+    {
+        $this->topics->attach($topic);
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Topic topic
+     */
+    public function removeTopic($topic)
+    {
+        $this->topics->detach($topic);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Vote>
+     */
+    public function getVotes()
+    {
+        return $this->votes;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Vote> $votes
+     */
+    public function setVotes($votes)
+    {
+        $this->votes = $votes;
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Vote $vote
+     */
+    public function addVote($vote)
+    {
+        $this->votes->attach($vote);
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Vote vote
+     */
+    public function removeVote($vote)
+    {
+        $this->votes->detach($vote);
     }
 
 }

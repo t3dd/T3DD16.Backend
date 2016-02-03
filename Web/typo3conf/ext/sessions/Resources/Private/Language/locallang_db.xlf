@@ -4,12 +4,35 @@
 		<header/>
 		<body>
 
+            <trans-unit id="tx_sessions_domain_model_vote">
+                <source>Vote</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_vote.user">
+                <source>User</source>
+            </trans-unit>
+
+            <trans-unit id="tx_sessions_domain_model_topic">
+                <source>Topic</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic.parent">
+                <source>Parent Topic</source>
+            </trans-unit>
+
 			<trans-unit id="tx_sessions_domain_model_room">
 				<source>Room</source>
 			</trans-unit>
 			<trans-unit id="tx_sessions_domain_model_room.title">
 				<source>Title</source>
 			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_room.size">
+                <source>Size</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_room.location">
+                <source>Location</source>
+            </trans-unit>
 
 			<trans-unit id="tx_sessions_domain_model_session">
 				<source>Session</source>
@@ -41,6 +64,12 @@
 			<trans-unit id="tx_sessions_domain_model_session.speakers">
                 <source>Speaker</source>
             </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_session.topics">
+                <source>Topics</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_session.votes">
+                <source>Votes</source>
+            </trans-unit>
 
 			<trans-unit id="tx_sessions_domain_model_session.palette.palettesBase">
 				<source>Base</source>
@@ -51,6 +80,9 @@
 			<trans-unit id="tx_sessions_domain_model_session.palette.palettesSpeaker">
 				<source>Speaker</source>
 			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.palette.palettesTopics">
+                <source>Topics</source>
+            </trans-unit>
 
 		</body>
 	</file>
