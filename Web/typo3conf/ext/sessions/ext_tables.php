@@ -10,7 +10,7 @@ if (TYPO3_MODE === 'BE' && !(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_INSTALL)) {
         'session',
         '',
         array(
-            'SessionModule' => 'index',
+            'SessionModule' => 'index,listSessions,listRooms,updateSession,demo',
         ),
         array(
             'access' => 'user',
