@@ -23,7 +23,7 @@ return [
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
-        'default_sortby' => 'ORDER BY date ASC, begin ASC, title ASC',
+        'default_sortby' => 'ORDER BY begin ASC, title ASC',
         'delete' => 'deleted',
         'enablecolumns' => [
             'disabled' => 'hidden',
@@ -59,7 +59,7 @@ return [
             'showitem' => 'type, highlight, --linebreak--, title, --linebreak--, description,'
         ],
         'palettesDate' => [
-            'showitem' => 'room, --linebreak--, date, --linebreak--, lightning, begin, end,'
+            'showitem' => 'room, --linebreak--, begin, end,'
         ],
         'palettesSpeaker' => [
             'showitem' => 'speakers'
@@ -155,34 +155,16 @@ return [
                 'maxitems' => 1,
             ],
         ],
-        'date' => [
-            'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.date',
-            'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'max' => 20,
-                'eval' => 'date'
-            ],
-        ],
-        'lightning' => [
-            'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.lightning',
-            'config' => [
-                'type' => 'input',
-                'size' => 10,
-                'max' => 20,
-                'eval' => 'time',
-            ],
-        ],
         'begin' => [
             'exclude' => 1,
             'label' => $LLL . 'tx_sessions_domain_model_session.begin',
             'config' => [
                 'type' => 'input',
-                'size' => 10,
+                'dbType' => 'datetime',
+                'default' => '0000-00-00 00:00:00',
+                'size' => 20,
                 'max' => 20,
-                'eval' => 'time',
+                'eval' => 'datetime',
             ],
         ],
         'end' => [
@@ -190,9 +172,11 @@ return [
             'label' => $LLL . 'tx_sessions_domain_model_session.end',
             'config' => [
                 'type' => 'input',
-                'size' => 10,
+                'dbType' => 'datetime',
+                'default' => '0000-00-00 00:00:00',
+                'size' => 20,
                 'max' => 20,
-                'eval' => 'time',
+                'eval' => 'datetime',
             ],
         ],
         'speakers' => [

@@ -23,16 +23,6 @@ class Session extends AbstractEntity implements \JsonSerializable
     /**
      * @var \DateTime
      */
-    protected $date = null;
-
-    /**
-     * @var \DateTime
-     */
-    protected $lightning = null;
-
-    /**
-     * @var \DateTime
-     */
     protected $begin = null;
 
     /**
