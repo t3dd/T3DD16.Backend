@@ -90,11 +90,11 @@ class SessionModuleController extends ActionController
                         'action' => 'index',
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
                 ],
-//                'test' => [
-//                        'controller' => 'SessionModule',
-//                        'action' => 'test',
-//                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
-//                ],
+                'test' => [
+                        'controller' => 'SessionModule',
+                        'action' => 'test',
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
+                ],
         ];
 
         $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
@@ -227,6 +227,11 @@ class SessionModuleController extends ActionController
         $this->redirect('listSessionAndRoomsForCalender');*/
 
         var_dump($session);die;
+    }
+
+    public function testAction()
+    {
+
     }
 
     public function demoAction()
