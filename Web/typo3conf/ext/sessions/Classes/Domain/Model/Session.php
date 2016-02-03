@@ -2,10 +2,10 @@
 namespace TYPO3\Sessions\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Session extends AbstractEntity implements \JsonSerializable
 {
@@ -59,9 +59,9 @@ class Session extends AbstractEntity implements \JsonSerializable
 
     public function __construct()
     {
-        $this->speakers = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->topics = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->votes = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->speakers = new ObjectStorage();
+        $this->topics = new ObjectStorage();
+        $this->votes = new ObjectStorage();
     }
 
     /**
@@ -94,38 +94,6 @@ class Session extends AbstractEntity implements \JsonSerializable
     public function setDescription($description)
     {
         $this->description = $description;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param \DateTime $date
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getLightning()
-    {
-        return $this->lightning;
-    }
-
-    /**
-     * @param \DateTime $lightning
-     */
-    public function setLightning($lightning)
-    {
-        $this->lightning = $lightning;
     }
 
     /**
@@ -201,8 +169,6 @@ class Session extends AbstractEntity implements \JsonSerializable
             '__identity' => $this->uid,
             'title' => $this->title,
             'description' => $this->description,
-            'date' => $this->getTimestamp($this->date),
-            'lightning' => $this->getTimestamp($this->lightning),
             'start' => $this->getTimestamp($this->begin),
             'end' => $this->getTimestamp($this->end),
             'speakers'  =>  $this->speakers->toArray(),
