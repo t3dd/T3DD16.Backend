@@ -5,6 +5,8 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Lang\LanguageService;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
  * Class SessionModuleController
@@ -64,7 +66,36 @@ class SessionModuleController extends ActionController
      */
     protected function generateModuleMenu()
     {
+        $menuItems = [
+                'index' => [
+                        'controller' => 'SessionModule',
+                        'action' => 'index',
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
+                ],
+//                'test' => [
+//                        'controller' => 'SessionModule',
+//                        'action' => 'test',
+//                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
+//                ],
+        ];
 
+        $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
+        $menu->setIdentifier('BackendUserModuleMenu');
+
+        foreach ($menuItems as  $menuItemConfig) {
+            if ($this->request->getControllerName() === $menuItemConfig['controller']) {
+                $isActive = $this->request->getControllerActionName() === $menuItemConfig['action'] ? true : false;
+            } else {
+                $isActive = false;
+            }
+            $menuItem = $menu->makeMenuItem()
+                ->setTitle($menuItemConfig['label'])
+                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action']))
+                ->setActive($isActive);
+            $menu->addMenuItem($menuItem);
+        }
+
+        $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
     }
 
     /**
@@ -93,6 +124,29 @@ class SessionModuleController extends ActionController
     public function indexAction()
     {
 
+    }
+
+    /**
+     * Creates te URI for a backend action
+     *
+     * @param string $controller
+     * @param string $action
+     * @param array $parameters
+     * @return string
+     */
+    protected function getHref($controller, $action, $parameters = [])
+    {
+        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder->setRequest($this->request);
+        return $uriBuilder->reset()->uriFor($action, $parameters, $controller);
+    }
+
+    /**
+     * @return LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
     }
 
 }
