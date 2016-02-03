@@ -79,6 +79,11 @@ class SessionModuleController extends ActionController
                         'action' => 'index',
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
                 ],
+                'acceptance' => [
+                        'controller' => 'SessionModule',
+                        'action' => 'acceptance',
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.acceptance')
+                ]
 //                'test' => [
 //                        'controller' => 'SessionModule',
 //                        'action' => 'test',
@@ -131,6 +136,19 @@ class SessionModuleController extends ActionController
     public function indexAction()
     {
 
+    }
+
+    public function acceptanceAction()
+    {
+        $objM = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        /** @var \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository $accSessRepo */
+//        $accSessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository');
+        /** @var \TYPO3\Sessions\Domain\Repository\SessionRepository $sessRepo */
+        $sessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\SessionRepository');
+        $this->view->assign('sessions', [
+            'proposed' => $sessRepo->findAll(),
+//            'accepted'  =>  $accSessRepo->findAll()
+        ]);
     }
 
     /**

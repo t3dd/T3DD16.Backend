@@ -1,0 +1,21 @@
+<h1>Session Acceptance Management</h1>
+
+
+<table class="table">
+<thead>
+    <tr>
+        <th>Title</th>
+        <th>Votes</th>
+        <th></th>
+    </tr>
+</thead>
+<tbody>
+    <f:for each="{sessions.proposed}" as="session">
+        <tr>
+            <td>{session.title}</td>
+            <td>vote count</td>
+            <td>actions</td>
+        </tr>
+    </f:for>
+</tbody>
+</table>
