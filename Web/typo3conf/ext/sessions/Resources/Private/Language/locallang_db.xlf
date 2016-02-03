@@ -10,15 +10,25 @@
             <trans-unit id="tx_sessions_domain_model_vote.user">
                 <source>User</source>
             </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_vote.session">
+                <source>Session</source>
+            </trans-unit>
+
+            <trans-unit id="tx_sessions_domain_model_topic_group">
+                <source>Topic Group</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic_group.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic_group.topics">
+                <source>Topics</source>
+            </trans-unit>
 
             <trans-unit id="tx_sessions_domain_model_topic">
                 <source>Topic</source>
             </trans-unit>
             <trans-unit id="tx_sessions_domain_model_topic.title">
                 <source>Title</source>
-            </trans-unit>
-            <trans-unit id="tx_sessions_domain_model_topic.parent">
-                <source>Parent Topic</source>
             </trans-unit>
 
 			<trans-unit id="tx_sessions_domain_model_room">
