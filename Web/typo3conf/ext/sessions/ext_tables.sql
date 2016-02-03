@@ -142,7 +142,7 @@ CREATE TABLE tx_sessions_domain_model_vote (
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid),
-	UNIQUE unique_user_session (user, session)
+	UNIQUE unique_user_session (user,session)
 
 );
 
