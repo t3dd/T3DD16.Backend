@@ -1,6 +1,7 @@
 <?php
 namespace TYPO3\Sessions\Controller;
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
@@ -32,16 +33,30 @@ class SessionModuleController extends ActionController
      */
     protected function initializeView(ViewInterface $view)
     {
+        $extPath = $this->getRelativeExtensionPath().'Resources/Public/CSS/';
         // Skip, if view is initialized in non-backend context
         if (!($view instanceof BackendTemplateView)) {
             return;
         }
 
         parent::initializeView($view);
-        // $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/DateTimePicker');
+        $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
+        $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
+//        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/jquery.min');
+//        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/moment');
+        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
+        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
+        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SessionModule');
 
         $this->generateModuleMenu();
         $this->generateModuleButtons();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getRelativeExtensionPath() {
+        return ExtensionManagementUtility::extRelPath('sessions');
     }
 
     /**
