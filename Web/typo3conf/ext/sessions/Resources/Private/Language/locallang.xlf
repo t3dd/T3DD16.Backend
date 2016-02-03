@@ -9,6 +9,12 @@
 			<trans-unit id="validator.sessionOwner">
 				<source>You can not update the session, because you are not the owner.</source>
 			</trans-unit>
+			<trans-unit id="module.menu.item.calendar">
+				<source>Calendar</source>
+			</trans-unit>
+			<trans-unit id="module.menu.item.test">
+				<source>Test</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

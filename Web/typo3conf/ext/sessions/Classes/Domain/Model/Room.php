@@ -12,6 +12,11 @@ class Room extends AbstractEntity implements \JsonSerializable
     protected $title;
 
     /**
+     * @var integer
+     */
+    protected $size;
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -33,6 +38,22 @@ class Room extends AbstractEntity implements \JsonSerializable
     function jsonSerialize()
     {
         return ['title' => $this->title];
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param int $size
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
     }
 
 

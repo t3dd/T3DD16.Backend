@@ -1,11 +1,3 @@
 <h1>Session Module</h1>
-<f:link.action action="listSessions">Get Sessions</f:link.action>
-<f:link.action action="listRooms">Get Rooms</f:link.action>
-<f:comment>
-	<f:form action="updateSession">
-		<f:form.hidden name="session[__identity]" value="1" />
-		<f:form.hidden name="session[date]" value="1472680800" />
-		<f:form.submit value="Update Session" />
-	</f:form>
-</f:comment>
-<f:link.action action="updateSession" arguments="{session: {__identity:1,title:'Opening',date:'1472680800',begin:'36000',end:'39700',room:'5'}}">Push Session</f:link.action>
+
+<div id="calendar"></div>

@@ -9,7 +9,7 @@
   "description": "TYPO3 T3DD16 Base Distribution",
   "license": "GPL-2.0+",
   "require": {
-    "typo3/cms": "7.6.*",
+    "typo3/cms": "dev-TYPO3_7-6 as 7.6.*-dev",
     "etobi/coreapi": "dev-master",
     "helhum/realurl": "2.0.*",
     "gridelementsteam/gridelements": "7.0.*"

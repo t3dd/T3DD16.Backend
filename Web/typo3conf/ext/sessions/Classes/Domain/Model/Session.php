@@ -2,10 +2,10 @@
 namespace TYPO3\Sessions\Domain\Model;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Session extends AbstractEntity implements \JsonSerializable
 {
@@ -23,16 +23,6 @@ class Session extends AbstractEntity implements \JsonSerializable
     /**
      * @var \DateTime
      */
-    protected $date = null;
-
-    /**
-     * @var \DateTime
-     */
-    protected $lightning = null;
-
-    /**
-     * @var \DateTime
-     */
     protected $begin = null;
 
     /**
@@ -46,6 +36,18 @@ class Session extends AbstractEntity implements \JsonSerializable
     protected $speakers;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Topic>
+     * @lazy
+     */
+    protected $topics;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Vote>
+     * @lazy
+     */
+    protected $votes;
+
+    /**
      * @var \TYPO3\Sessions\Domain\Model\Room
      */
     protected $room;
@@ -57,7 +59,9 @@ class Session extends AbstractEntity implements \JsonSerializable
 
     public function __construct()
     {
-        $this->speakers = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->speakers = new ObjectStorage();
+        $this->topics = new ObjectStorage();
+        $this->votes = new ObjectStorage();
     }
 
     /**
@@ -90,38 +94,6 @@ class Session extends AbstractEntity implements \JsonSerializable
     public function setDescription($description)
     {
         $this->description = $description;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param \DateTime $date
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getLightning()
-    {
-        return $this->lightning;
-    }
-
-    /**
-     * @param \DateTime $lightning
-     */
-    public function setLightning($lightning)
-    {
-        $this->lightning = $lightning;
     }
 
     /**
@@ -197,8 +169,6 @@ class Session extends AbstractEntity implements \JsonSerializable
             '__identity' => $this->uid,
             'title' => $this->title,
             'description' => $this->description,
-            'date' => $this->getTimestamp($this->date),
-            'lightning' => $this->getTimestamp($this->lightning),
             'start' => $this->getTimestamp($this->begin),
             'end' => $this->getTimestamp($this->end),
             'speakers'  =>  $this->speakers->toArray(),
@@ -272,6 +242,70 @@ class Session extends AbstractEntity implements \JsonSerializable
     public function removeSpeaker($speaker)
     {
         $this->speakers->detach($speaker);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Topic>
+     */
+    public function getTopics()
+    {
+        return $this->topics;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Topic> $topics
+     */
+    public function setTopics($topics)
+    {
+        $this->topics = $topics;
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Topic $topic
+     */
+    public function addTopic($topic)
+    {
+        $this->topics->attach($topic);
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Topic topic
+     */
+    public function removeTopic($topic)
+    {
+        $this->topics->detach($topic);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Vote>
+     */
+    public function getVotes()
+    {
+        return $this->votes;
+    }
+
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\Sessions\Domain\Model\Vote> $votes
+     */
+    public function setVotes($votes)
+    {
+        $this->votes = $votes;
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Vote $vote
+     */
+    public function addVote($vote)
+    {
+        $this->votes->attach($vote);
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\Vote vote
+     */
+    public function removeVote($vote)
+    {
+        $this->votes->detach($vote);
     }
 
 }

@@ -8,7 +8,7 @@ $LLL = 'LLL:EXT:sessions/Resources/Private/Language/locallang_db.xlf:';
 
 return [
     'ctrl' => [
-        'title' => $LLL . 'tx_sessions_domain_model_room',
+        'title' => $LLL . 'tx_sessions_domain_model_topic_group',
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -32,11 +32,11 @@ return [
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/Room.png'
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, size, location',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, topics',
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, size, location'
+            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, topics'
         ],
     ],
     'columns' => [
@@ -49,7 +49,7 @@ return [
                 'foreign_table_where' => 'ORDER BY sys_language.title',
                 'items' => [
                     ['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0],
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0]
                 ],
                 'default' => 0
             ],
@@ -63,8 +63,8 @@ return [
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_sessions_domain_model_room',
-                'foreign_table_where' => 'AND tx_sessions_domain_model_room.pid=###CURRENT_PID### AND tx_sessions_domain_model_room.sys_language_uid IN (-1,0)',
+                'foreign_table' => 'tx_sessions_domain_model_topic',
+                'foreign_table_where' => 'AND tx_sessions_domain_model_topic.pid=###CURRENT_PID### AND tx_sessions_domain_model_topic.sys_language_uid IN (-1,0)',
             ],
         ],
         'l10n_diffsource' => [
@@ -89,7 +89,7 @@ return [
         ],
         'title' => [
             'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_room.title',
+            'label' => $LLL . 'tx_sessions_domain_model_topic_group.title',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => [
                 'type' => 'input',
@@ -97,25 +97,17 @@ return [
                 'eval' => 'trim'
             ],
         ],
-        'size'  =>  [
-            'exclude'   =>  1,
-            'label'     =>  $LLL . 'tx_sessions_domain_model_room.size',
-            'l10n_mode' => 'mergeIfNotBlank',
-            'config'    =>  [
-                'type'  =>  'input',
-                'size'  =>  30,
-                'eval'  =>  'int'
-            ]
-        ],
-        'location' => [
+        'topics' => [
             'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_room.location',
+            'label' => $LLL . 'tx_sessions_domain_model_topic_group.topics',
             'l10n_mode' => 'mergeIfNotBlank',
             'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'eval' => 'trim'
+                'type' => 'select',
+                'renderType' => 'selectCheckBox',
+                'foreign_table' => 'tx_sessions_domain_model_topic',
+                'foreign_table_where' => 'ORDER BY tx_sessions_domain_model_topic.title ASC',
+                'MM' => 'tx_sessions_topic_group_topic_mm',
             ],
-        ],
+        ]
     ],
 ];

@@ -20,7 +20,7 @@ class SessionOwnerValidator extends AbstractValidator
     protected function isValid($value)
     {
         $user = $this->frontendUserRepository->findCurrentUser();
-        if ($user !== null && $user !== $value->getSpeaker1()) {
+        if ($user !== null && $user !== $value->getSpeakers()->getPosition(0)) {
             $error = new \TYPO3\CMS\Extbase\Error\Error($this->translateErrorMessage('validator.sessionOwner',
                 'sessions'), 1452072731);
             $this->result->addError($error);

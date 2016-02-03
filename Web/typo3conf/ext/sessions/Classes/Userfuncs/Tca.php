@@ -23,4 +23,16 @@ class Tca
         $parameters['title'] = $title;
     }
 
+    /**
+     * @param array $parameters
+     * @param $parentObject
+     */
+    public function getVoteTitle(&$parameters, $parentObject)
+    {
+        $sessionRecord = BackendUtility::getRecord('tx_sessions_domain_model_session', $parameters['row']['session']);
+        $userRecord = BackendUtility::getRecord('fe_users', $parameters['row']['user']);
+
+        $parameters['title'] = sprintf('"%s" by "%s"', $sessionRecord['title'], $userRecord['username']);
+    }
+
 }

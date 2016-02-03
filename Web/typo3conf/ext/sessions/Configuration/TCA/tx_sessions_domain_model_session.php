@@ -9,6 +9,7 @@ $LLL = 'LLL:EXT:sessions/Resources/Private/Language/locallang_db.xlf:';
 return [
     'ctrl' => [
         'title' => $LLL . 'tx_sessions_domain_model_session',
+        'type'  =>  'type',
         'label' => 'title',
         'label_userFunc' => 'TYPO3\\Sessions\\Userfuncs\\Tca->getSessionTitle',
         'tstamp' => 'tstamp',
@@ -22,7 +23,7 @@ return [
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
-        'default_sortby' => 'ORDER BY date ASC, begin ASC, title ASC',
+        'default_sortby' => 'ORDER BY begin ASC, title ASC',
         'delete' => 'deleted',
         'enablecolumns' => [
             'disabled' => 'hidden',
@@ -41,6 +42,7 @@ return [
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesBase;palettesBase,
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesDate;palettesDate,
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesSpeaker;palettesSpeaker,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesTopics;palettesTopics,
                 --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.access,
                 sys_language_uid;;;;1-1-1,
                 l10n_parent,
@@ -54,14 +56,17 @@ return [
             'showitem' => ''
         ],
         'palettesBase' => [
-            'showitem' => 'highlight, --linebreak--, title, --linebreak--, description,'
+            'showitem' => 'type, highlight, --linebreak--, title, --linebreak--, description,'
         ],
         'palettesDate' => [
-            'showitem' => 'room, --linebreak--, date, --linebreak--, lightning, begin, end,'
+            'showitem' => 'room, --linebreak--, begin, end,'
         ],
         'palettesSpeaker' => [
             'showitem' => 'speakers'
         ],
+        'palettesTopics'  => [
+            'showitem'  =>  'topics'
+        ]
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -75,6 +80,7 @@ return [
                     ['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
                     ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0]
                 ],
+                'default'   =>  0
             ],
         ],
         'l10n_parent' => [
@@ -149,34 +155,16 @@ return [
                 'maxitems' => 1,
             ],
         ],
-        'date' => [
-            'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.date',
-            'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'max' => 20,
-                'eval' => 'date'
-            ],
-        ],
-        'lightning' => [
-            'exclude' => 1,
-            'label' => $LLL . 'tx_sessions_domain_model_session.lightning',
-            'config' => [
-                'type' => 'input',
-                'size' => 10,
-                'max' => 20,
-                'eval' => 'time',
-            ],
-        ],
         'begin' => [
             'exclude' => 1,
             'label' => $LLL . 'tx_sessions_domain_model_session.begin',
             'config' => [
                 'type' => 'input',
-                'size' => 10,
+                'dbType' => 'datetime',
+                'default' => '0000-00-00 00:00:00',
+                'size' => 20,
                 'max' => 20,
-                'eval' => 'time',
+                'eval' => 'datetime',
             ],
         ],
         'end' => [
@@ -184,21 +172,68 @@ return [
             'label' => $LLL . 'tx_sessions_domain_model_session.end',
             'config' => [
                 'type' => 'input',
-                'size' => 10,
+                'dbType' => 'datetime',
+                'default' => '0000-00-00 00:00:00',
+                'size' => 20,
                 'max' => 20,
-                'eval' => 'time',
+                'eval' => 'datetime',
             ],
         ],
         'speakers' => [
             'exclude' => 1,
             'label' => $LLL . 'tx_sessions_domain_model_session.speakers',
             'config' => [
-                'type'          => 'select',
-                'minitems'      =>  0,
-                'maxitems'      =>  10,
-                'foreign_table' =>  'fe_users',
-                'MM'            =>  'tx_sessions_session_speaker_mm',
+                'type' => 'select',
+                'multiple' => false,
+                'foreign_table' => 'fe_users',
+                'foreign_table_where' => 'ORDER BY fe_users.username ASC',
+                'MM' => 'tx_sessions_session_record_mm',
+                'MM_match_fields' => array(
+                    'tablenames' => 'fe_users'
+                ),
+                'size' => 10,
+                'autoSizeMax' => 50,
+                'maxitems' => 9999,
             ],
-        ]
+        ],
+        'topics'    =>  [
+            'exclude'   =>  1,
+            'label'     =>  $LLL . 'tx_sessions_domain_model_session.topics',
+            'config'    =>  [
+                'type' => 'select',
+                'foreign_table' => 'tx_sessions_domain_model_topic',
+                'foreign_table_where' => 'ORDER BY tx_sessions_domain_model_topic.title ASC',
+                'MM' => 'tx_sessions_session_record_mm',
+                'MM_match_fields' => array(
+                    'tablenames' => 'tx_sessions_domain_model_topic'
+                ),
+                'size' => 10,
+                'autoSizeMax' => 50,
+                'maxitems' => 9999,
+            ]
+        ],
+        'votes'    =>  [
+            'exclude'   =>  1,
+            'label'     =>  $LLL . 'tx_sessions_domain_model_session.votes',
+            'config'    =>  [
+                'type' => 'inline',
+                'foreign_table' => 'tx_sessions_domain_model_vote',
+                'foreign_field' => 'session',
+                'foreign_table_where' => 'ORDER BY tx_sessions_domain_model_vote.crdate DESC',
+            ]
+        ],
+        'type' => [
+            'label' => 'Domain Object',
+            'config' => [
+                'type' => 'select',
+                'items' => [
+                    ['undefined', '0'],
+                    ['Session', 'TYPO3\Sessions\Domain\Model\Session'],
+                    ['AcceptedSession', 'TYPO3\Sessions\Domain\Model\AcceptedSession'],
+                    ['ScheduledSession', 'TYPO3\Sessions\Domain\Model\ScheduledSession'],
+                ],
+                'default' => 'TYPO3\Sessions\Domain\Model\Session'
+            ]
+        ],
     ],
 ];
