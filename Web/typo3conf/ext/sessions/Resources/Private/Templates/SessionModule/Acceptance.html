@@ -10,12 +10,32 @@
     </tr>
 </thead>
 <tbody>
-    <f:for each="{sessions.proposed}" as="session">
+<f:for each="{sessions.proposed}" as="session">
+    <tr>
+        <td>{session.title}</td>
+        <td>vote count</td>
+        <td>actions</td>
+    </tr>
+</f:for>
+</tbody>
+</table>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Votes</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <f:for each="{sessions.accepted}" as="session">
         <tr>
             <td>{session.title}</td>
             <td>vote count</td>
             <td>actions</td>
         </tr>
     </f:for>
-</tbody>
+    </tbody>
 </table>

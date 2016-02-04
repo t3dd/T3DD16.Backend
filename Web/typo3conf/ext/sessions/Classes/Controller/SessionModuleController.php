@@ -142,12 +142,12 @@ class SessionModuleController extends ActionController
     {
         $objM = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
         /** @var \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository $accSessRepo */
-//        $accSessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository');
+        $accSessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository');
         /** @var \TYPO3\Sessions\Domain\Repository\SessionRepository $sessRepo */
         $sessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\SessionRepository');
         $this->view->assign('sessions', [
             'proposed' => $sessRepo->findAll(),
-//            'accepted'  =>  $accSessRepo->findAll()
+            'accepted'  =>  $accSessRepo->findAll()
         ]);
     }
 
