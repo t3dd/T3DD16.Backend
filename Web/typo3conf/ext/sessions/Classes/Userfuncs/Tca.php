@@ -5,6 +5,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 class Tca
 {
+    const DATE_EmptyValue = '0000-00-00 00:00:00';
 
     /**
      * @param array $parameters
@@ -15,8 +16,11 @@ class Tca
         $title = $sessionRecord['title'];
 
         // TODO: Define backend title for session
-        if ($sessionRecord['date']) {
-            $title = (new \DateTime())->setTimestamp($sessionRecord['date'])->format('d-m-y') . ' - ' . $title;
+        if (!empty($sessionRecord['begin']) && $sessionRecord['begin'] !== static::DATE_EmptyValue) {
+            $beginDate = \DateTime::createFromFormat('Y-m-d H:i:s', $sessionRecord['begin']);
+            $title = $beginDate->format('d.m. (H:i)') . ' - ' . $title;
+        } else {
+            $title = 'unassigned - ' . $title;
         }
 
         $parameters['title'] = $title;
