@@ -72,47 +72,4 @@ plugin.tx_sessions {
 	}
 }
 
-
-plugin.tx_extbase {
-	persistence {
-		storagePid = {$plugin.tx_sessions.persistence.storagePid}
-		classes {
-			TYPO3\Sessions\Domain\Model\Session {
-				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
-				mapping {
-					tableName = tx_sessions_domain_model_session
-					recordType = TYPO3\Sessions\Domain\Model\Session
-				}
-				subclasses {
-					TYPO3\Sessions\Domain\Model\AcceptedSession = TYPO3\Sessions\Domain\Model\AcceptedSession
-				}
-			}
-			TYPO3\Sessions\Domain\Model\AcceptedSession {
-				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
-				mapping {
-					tableName = tx_sessions_domain_model_session
-					recordType = TYPO3\Sessions\Domain\Model\AcceptedSession
-				}
-				subclasses {
-					TYPO3\Sessions\Domain\Model\ScheduledSession = TYPO3\Sessions\Domain\Model\ScheduledSession
-				}
-			}
-			TYPO3\Sessions\Domain\Model\ScheduledSession {
-				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
-				mapping {
-					tableName = tx_sessions_domain_model_session
-					recordType = TYPO3\Sessions\Domain\Model\ScheduledSession
-				}
-			}
-			TYPO3\Sessions\Domain\Model\Topic {
-				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
-			}
-			TYPO3\Sessions\Domain\Model\Vote {
-				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
-			}
-			TYPO3\Sessions\Domain\Model\Room {
-				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
-			}
-		}
-	}
-}
+module.tx_sessions < plugin.tx_sessions
