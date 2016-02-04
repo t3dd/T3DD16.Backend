@@ -42,20 +42,24 @@ class SessionModuleController extends ActionController
         }
 
         parent::initializeView($view);
-        $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
-        $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
-//        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/jquery.min');
-//        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/moment');
-        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
-        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
-        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SessionModule');
-        $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
-            'shim'  => [
-                'TYPO3/CMS/Sessions/scheduler' => [
-                    'deps'  =>  ['TYPO3/CMS/Sessions/fullcalendar']
+        if($this->actionMethodName === 'indexAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SessionModule');
+            $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
+                'shim'  => [
+                    'TYPO3/CMS/Sessions/scheduler' => [
+                        'deps'  =>  ['TYPO3/CMS/Sessions/fullcalendar']
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        }
+
+        if($this->actionMethodName === 'acceptanceAction') {
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SamModule');
+        }
 
         $this->generateModuleMenu();
         $this->generateModuleButtons();
