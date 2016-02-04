@@ -58,6 +58,7 @@ class SessionModuleController extends ActionController
         }
 
         if($this->actionMethodName === 'acceptanceAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'sma.css', 'stylesheet', 'all', '', false, false, '', true, '|');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SamModule');
         }
 
