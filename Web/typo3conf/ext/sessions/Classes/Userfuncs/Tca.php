@@ -8,9 +8,8 @@ class Tca
 
     /**
      * @param array $parameters
-     * @param $parentObject
      */
-    public function getSessionTitle(&$parameters, $parentObject)
+    public function getSessionTitle(array &$parameters)
     {
         $sessionRecord = BackendUtility::getRecord($parameters['table'], $parameters['row']['uid']);
         $title = $sessionRecord['title'];
@@ -25,9 +24,8 @@ class Tca
 
     /**
      * @param array $parameters
-     * @param $parentObject
      */
-    public function getVoteTitle(&$parameters, $parentObject)
+    public function getVoteTitle(array &$parameters)
     {
         $sessionRecord = BackendUtility::getRecord('tx_sessions_domain_model_session', $parameters['row']['session']);
         $userRecord = BackendUtility::getRecord('fe_users', $parameters['row']['user']);
