@@ -16,14 +16,32 @@ plugin.tx_sessions {
 	persistence {
 		storagePid = {$plugin.tx_sessions.persistence.storagePid}
 		classes {
-			TYPO3\Sessions\Domain\Model\Session {
+			TYPO3\Sessions\Domain\Model\AbstractSession {
 				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
 				mapping {
 					tableName = tx_sessions_domain_model_session
-					recordType = TYPO3\Sessions\Domain\Model\Session
 				}
 				subclasses {
+					TYPO3\Sessions\Domain\Model\AnySession = TYPO3\Sessions\Domain\Model\AnySession
+				}
+			}
+			TYPO3\Sessions\Domain\Model\AnySession {
+				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
+				mapping {
+					tableName = tx_sessions_domain_model_session
+					recordType = TYPO3\Sessions\Domain\Model\AnySession
+				}
+				subclasses {
+					TYPO3\Sessions\Domain\Model\ProposedSession = TYPO3\Sessions\Domain\Model\ProposedSession
 					TYPO3\Sessions\Domain\Model\AcceptedSession = TYPO3\Sessions\Domain\Model\AcceptedSession
+					TYPO3\Sessions\Domain\Model\DeclinedSession = TYPO3\Sessions\Domain\Model\DeclinedSession
+				}
+			}
+			TYPO3\Sessions\Domain\Model\ProposedSession {
+				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
+				mapping {
+					tableName = tx_sessions_domain_model_session
+					recordType = TYPO3\Sessions\Domain\Model\ProposedSession
 				}
 			}
 			TYPO3\Sessions\Domain\Model\AcceptedSession {
@@ -41,6 +59,13 @@ plugin.tx_sessions {
 				mapping {
 					tableName = tx_sessions_domain_model_session
 					recordType = TYPO3\Sessions\Domain\Model\ScheduledSession
+				}
+			}
+			TYPO3\Sessions\Domain\Model\DeclinedSession {
+				newRecordStoragePid = {$plugin.tx_sessions.persistence.newRecordStoragePid}
+				mapping {
+					tableName = tx_sessions_domain_model_session
+					recordType = TYPO3\Sessions\Domain\Model\DeclinedSession
 				}
 			}
 			TYPO3\Sessions\Domain\Model\Topic {

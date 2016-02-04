@@ -2,7 +2,7 @@
 namespace TYPO3\Sessions\Domain\Model;
 
 
-class AcceptedSession extends AnySession
+class DeclinedSession extends AnySession
 {
     /**
      * @return array

@@ -1,8 +1,13 @@
 <?php
 namespace TYPO3\Sessions\Domain\Model;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-class AcceptedSession extends AnySession
+class ProposedSession extends AnySession
 {
     /**
      * @return array

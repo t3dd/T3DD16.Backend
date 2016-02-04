@@ -227,10 +227,11 @@ return [
             'config' => [
                 'type' => 'select',
                 'items' => [
-                    ['undefined', '0'],
-                    ['Session', 'TYPO3\Sessions\Domain\Model\Session'],
+                    ['AnySession', 'TYPO3\Sessions\Domain\Model\AnySession'],
+                    ['ProposedSession', 'TYPO3\Sessions\Domain\Model\ProposedSession'],
                     ['AcceptedSession', 'TYPO3\Sessions\Domain\Model\AcceptedSession'],
                     ['ScheduledSession', 'TYPO3\Sessions\Domain\Model\ScheduledSession'],
+                    ['DeclinedSession', 'TYPO3\Sessions\Domain\Model\DeclinedSession'],
                 ],
                 'default' => 'TYPO3\Sessions\Domain\Model\Session'
             ]

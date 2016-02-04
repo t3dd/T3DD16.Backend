@@ -4,7 +4,7 @@ namespace TYPO3\Sessions\Controller;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
-use TYPO3\Sessions\Domain\Model\Session;
+use TYPO3\Sessions\Domain\Model\AbstractSession;
 
 class SessionController extends AbstractRestController
 {
@@ -15,7 +15,7 @@ class SessionController extends AbstractRestController
     protected $resourceArgumentName = 'session';
 
     /**
-     * @var \TYPO3\Sessions\Domain\Repository\SessionRepository
+     * @var \TYPO3\Sessions\Domain\Repository\AnySessionRepository
      * @inject
      */
     protected $sessionRepository;
@@ -37,10 +37,10 @@ class SessionController extends AbstractRestController
     }
 
     /**
-     * @param Session $session
+     * @param AbstractSession $session
      * @return string
      */
-    public function showAction(Session $session)
+    public function showAction(AbstractSession $session)
     {
         $this->addCacheTags($session);
 
@@ -59,11 +59,11 @@ class SessionController extends AbstractRestController
     }
 
     /**
-     * @param Session $session
+     * @param AbstractSession $session
      * @validate $session \TYPO3\Sessions\Domain\Validator\ActiveUserValidator
      * @return string
      */
-    public function createAction(Session $session)
+    public function createAction(AbstractSession $session)
     {
         $user = $this->frontendUserRepository->findCurrentUser();
         $session->addSpeaker($user);
@@ -85,12 +85,12 @@ class SessionController extends AbstractRestController
     }
 
     /**
-     * @param Session $session
+     * @param AbstractSession $session
      * @validate $session \TYPO3\Sessions\Domain\Validator\ActiveUserValidator
      * @validate $session \TYPO3\Sessions\Domain\Validator\SessionOwnerValidator
      * @return string
      */
-    public function updateAction(Session $session)
+    public function updateAction(AbstractSession $session)
     {
         $this->sessionRepository->update($session);
 
@@ -106,9 +106,9 @@ class SessionController extends AbstractRestController
     }
 
     /**
-     * @param Session $session
+     * @param AbstractSession $session
      */
-    protected function addCacheTags(Session $session)
+    protected function addCacheTags(AbstractSession $session)
     {
         $cacheTags = [];
         $cacheTags[] = 'tx_sessions_domain_model_session_' . $session->getUid();

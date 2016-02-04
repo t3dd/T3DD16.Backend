@@ -1,9 +1,11 @@
 <?php
 namespace TYPO3\Sessions;
 
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\Sessions\Domain\Model\AbstractSession;
 
-class PlanningUtility implements \TYPO3\CMS\Core\SingletonInterface
+class PlanningUtility implements SingletonInterface
 {
 
     /**
@@ -12,7 +14,7 @@ class PlanningUtility implements \TYPO3\CMS\Core\SingletonInterface
     protected $objM;
 
     /**
-     * @var \TYPO3\Sessions\Domain\Repository\SessionRepository
+     * @var \TYPO3\Sessions\Domain\Repository\AnySessionRepository
      */
     protected $sessionRepository;
 
@@ -31,8 +33,8 @@ class PlanningUtility implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function __construct()
     {
-        $this->objM = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        $this->sessionRepository = $this->objM->get('TYPO3\Sessions\Domain\Repository\SessionRepository');
+        $this->objM = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        $this->sessionRepository = $this->objM->get(AnySessionRepository::class);
         $this->db = $GLOBALS['TYPO3_DB'];
         $dateTimeFormats = $this->db->getDateTimeFormats('tx_sessions_domain_model_session');
         $this->dbDateTimeFormat = $dateTimeFormats['datetime']['format'];
@@ -45,10 +47,10 @@ class PlanningUtility implements \TYPO3\CMS\Core\SingletonInterface
      * - ends during the given session
      *
      * @TODO check only planned sessions
-     * @param \TYPO3\Sessions\Domain\Model\Session $session
+     * @param AbstractSession $session
      * @return array|false colliding sessions or false if no session collides
      */
-    public function getCollidingSessions(\TYPO3\Sessions\Domain\Model\Session $session)
+    public function getCollidingSessions(AbstractSession $session)
     {
         $speakers = $session->getSpeakers();
         // array holding named placeholder values
