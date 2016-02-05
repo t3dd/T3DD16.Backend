@@ -27,6 +27,14 @@ class SessionModuleController extends ActionController
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
 
+
+
+    /**
+     * Blacklist for actions which don't want/need the menu
+     * @var array
+     */
+    protected $actionsWithoutMenu = [];
+
     /**
      * Initializes the module view.
      *
@@ -58,12 +66,13 @@ class SessionModuleController extends ActionController
         }
 
         if($this->actionMethodName === 'acceptanceAction') {
-            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'sma.css', 'stylesheet', 'all', '', false, false, '', true, '|');
-            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SamModule');
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'sma.css');
         }
 
-        $this->generateModuleMenu();
-        $this->generateModuleButtons();
+        if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
+            $this->generateModuleMenu();
+            $this->generateModuleButtons();
+        }
     }
 
     /**
