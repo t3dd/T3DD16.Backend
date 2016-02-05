@@ -201,7 +201,8 @@ class SessionModuleController extends ActionController
     }
 
     /**
-     *
+     * Fetches a simple array of sessions (with vote count not being transformed into an objectstorage)
+     * for a simple list view.
      */
     protected function getFlatSessionObjects($type)
     {
