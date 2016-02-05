@@ -96,6 +96,9 @@ class SessionModuleController extends ActionController
                 'acceptance' => [
                         'controller' => 'SessionModule',
                         'action' => 'acceptance',
+                        'parameters' => [
+                            'type' => 'proposed'
+                        ],
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.acceptance')
                 ]
 //                'test' => [
@@ -114,9 +117,12 @@ class SessionModuleController extends ActionController
             } else {
                 $isActive = false;
             }
+            if(!isset($menuItemConfig['parameters'])) {
+                $menuItemConfig['parameters'] = [];
+            }
             $menuItem = $menu->makeMenuItem()
                 ->setTitle($menuItemConfig['label'])
-                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action']))
+                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action'], $menuItemConfig['parameters']))
                 ->setActive($isActive);
             $menu->addMenuItem($menuItem);
         }
