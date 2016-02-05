@@ -194,6 +194,9 @@ class SessionModuleController extends ActionController
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
         $updated = $db->exec_UPDATEquery('tx_sessions_domain_model_session', "uid = {$id}", ['type' => $this->slugClassMap[$type]]);
+        if($this->response instanceof \TYPO3\CMS\Extbase\Mvc\Web\Response) {
+            $this->response->setHeader('Content-Type', 'application/json', true);
+        }
         return json_encode(['success' => $updated]);
     }
 
