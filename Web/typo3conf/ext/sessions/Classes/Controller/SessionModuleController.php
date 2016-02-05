@@ -8,6 +8,7 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\Sessions\Domain\Model\Session;
 
 /**
  * Class SessionModuleController
@@ -31,6 +32,12 @@ class SessionModuleController extends ActionController
      * @inject
      */
     protected $sessionRepository;
+
+	/**
+	 * @var \TYPO3\Sessions\Service\CreateTimetableService
+	 * @inject
+	 */
+	protected $createTimetableService;
 
     /**
      * @var \TYPO3\Sessions\Domain\Repository\RoomRepository
@@ -90,10 +97,10 @@ class SessionModuleController extends ActionController
                         'action' => 'index',
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
                 ],
-                'test' => [
+                'generateFirstSchedule' => [
                         'controller' => 'SessionModule',
-                        'action' => 'test',
-                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
+                        'action' => 'generateFirstSchedule',
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.generateFirstSchedule')
                 ],
         ];
 
@@ -229,15 +236,37 @@ class SessionModuleController extends ActionController
         var_dump($session);die;
     }
 
-    public function testAction()
+    public function generateFirstScheduleAction()
     {
 
     }
 
-    public function demoAction()
+    /**
+     * @param array $config
+     * @param boolean $considerTopics
+     * @param integer $iterations
+     */
+    public function createTimeTableAction($config, $considerTopics, $iterations)
     {
-        $session = $this->sessionRepository->findByUid(1);
-        $this->view->assign('session', $session);
+	    // Get all sessions
+	    $sessions = $this->sessionRepository->findAll()->toArray();
+	    // Get all rooms
+	    $rooms = $this->roomRepository->findAllLimited(6)->toArray();
+	    // Generate timetable with service
+	    $success = $this->createTimetableService->generateTimetable($config, $sessions, $rooms, $iterations, $considerTopics);
+	    $incompleteSessions = array();
+	    if(!$success)
+	    {
+		    $incompleteSessions = $this->createTimetableService->getUnassignedSessions();
+	    }
+
+	    // Save changes on sessions
+	    foreach($this->createTimetableService->getAssignedSessions() as $assignedSession)
+	    {
+		    $this->sessionRepository->update($assignedSession);
+	    }
+
+	    $this->redirect('index', '', '', array('incompleteSessions' => $incompleteSessions, 'creationDone' => true));
     }
 
     /**
@@ -253,6 +282,200 @@ class SessionModuleController extends ActionController
         $uriBuilder = $this->objectManager->get(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
         return $uriBuilder->reset()->uriFor($action, $parameters, $controller);
+    }
+
+    /**
+     * Generates first session timetable
+     *
+     * @param array $roomAndTimeData
+     * @param boolean $considerTopics
+     * @param array $timeSlots
+     * @param array $dates
+     * @return array
+     */
+    protected function generateTimetable($roomAndTimeData, $considerTopics, $timeSlots, $dates)
+    {
+        // Generate matrix
+        $matrix = array();
+        foreach($roomAndTimeData as $dayKey => $day)
+        {
+            for($i = 0; $i < $day['timeSlots']; $i++)
+            {
+                for($j = 0; $j < $day['rooms']; $j++)
+                {
+                    $matrix[$dayKey][$i][] = "";
+                }
+            }
+        }
+        // Get all sessions
+        $sessions = $this->sessionRepository->findAll();
+	    $incompleteSessions = array();
+
+	    // Try to find a spot for each session
+        foreach($sessions as $session)
+        {
+            $success = $this->findSpot($matrix, $session, $considerTopics, $matrix);
+	        if(!$success)
+	        {
+		        $incompleteSessions[] = $session;
+	        }
+            //TODO: Wenn !$success, $session in Array speichern und später nochmal versuchen (Auslassen) --> Sinnvoll bei Topic True
+	        // Problem: Verteilung kann auf den Schluss zu, zu Engpässen führen...
+	        // z.B. Speaker 2 hat 2 Vorträge mit ganz schlechte Votes und es sind nur noch Sonntag früh frei...
+        }
+	    // TODO: Wenn Elemente in incompleteSessions vorhanden sind, dann die ersten 8 Sessions shuffeln und neuen Durchlauf starten
+	    // Maximal "2" Durchläufe (danach evtl Anzahl von Shuffle Sessions um 2 erhöhen...) <-- Worst-Case
+	    // Maximale Anzahl von Durchläufen als Variable mitgeben
+
+	    // TODO: Generate Date and Time for Sessions (Global time array {1: {begin: zeit1, end: zeit2}, 2:...} Global date array {1: tag1, 2: tag2,...} <-- eigentlich reicht erster Tag
+	    // Service Klasse anlegen und Klassenvariblen für Config-Sachen anlegen
+
+        \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($matrix);die;
+	    return $incompleteSessions;
+    }
+
+    /**
+     * Check for free spot for given session
+     *
+     * @param array $matrix
+     * @param \TYPO3\Sessions\Domain\Model\Session $session
+     * @param boolean $considerTopics
+     * @param integer $dayIterator
+     * @param integer $roomIterator
+     * @param integer $timeIterator
+     * @return boolean
+     */
+    protected function findSpot(&$matrix, &$session, $considerTopics, $dayIterator = 0, $roomIterator = 0, $timeIterator = -1)
+    {
+	    // Erster Aufruf von außerhalb
+	    if($timeIterator == -1)
+	    {
+		    $timeIterator = count($matrix[$dayIterator]) - 1;
+	    }
+
+        if($matrix[$dayIterator][$timeIterator][$roomIterator] == '')
+        {
+            // Freier Slot, check andere Räume nach Speaker und Topic
+            foreach($matrix[$dayIterator][$timeIterator] as $otherRoom)
+            {
+	            // Anderer Raum noch frei
+	            if($otherRoom == '')
+	            {
+		            continue;
+	            }
+	            else
+	            {
+		            $sessionSpeakers = $session->getSpeakers()->toArray();
+		            $countSessionSpeakers = count($sessionSpeakers);
+		            /**
+		             * @var Session $otherRoom
+		             */
+		            $otherSessionSpeakers = $otherRoom->getSpeakers()->toArray();
+		            $countOtherSessionSpeakers = count($otherSessionSpeakers);
+		            $uniqueArrayCount = count(array_merge($sessionSpeakers, $otherSessionSpeakers));
+		            // Speaker nicht frei
+		            if ($uniqueArrayCount != ($countSessionSpeakers + $countOtherSessionSpeakers))
+		            {
+			            break;
+		            }
+		            else
+		            {
+			            // Consider topics
+			            if($considerTopics)
+			            {
+				            $countDev = 0;
+				            $countDevOps = 0;
+				            $countDesign = 0;
+				            $countCommunity = 0;
+				            // Topics von allen Räumen abfragen
+				            foreach($matrix[$dayIterator][$timeIterator] as $otherRoom2)
+				            {
+					            if($otherRoom2 == '')
+					            {
+						            continue;
+					            }
+					            else
+					            {
+						            /**
+						             * @var Session $otherRoom2
+						             */
+						            switch($otherRoom2->getTopics()->getTopicGroup()->getTitle())
+						            {
+							            case 'Dev':
+								            $countDev++;
+							            break;
+							            case 'DevOps':
+								            $countDevOps++;
+							            break;
+							            case 'Design':
+								            $countDesign++;
+							            break;
+							            case 'Community':
+								            $countCommunity++;
+							            break;
+						            }
+					            }
+				            }
+
+				            $sessionApproved = false;
+				            switch($session->getTopics()->getTopicGroup()->getTitle())
+				            {
+					            case 'Dev':
+									if($countDev < 4)
+										$sessionApproved = true;
+					            break;
+					            case 'DevOps':
+						            if($countDevOps < 3)
+							            $sessionApproved = true;
+					            break;
+					            case 'Design':
+						            if($countDesign < 3)
+							            $sessionApproved = true;
+					            break;
+					            case 'Community':
+						            if($countDesign < 2)
+							            $sessionApproved = true;
+					            break;
+				            }
+
+				            if(!$sessionApproved)
+				            {
+					            break;
+				            }
+
+			            }
+
+			            // Slot gefunden
+			            // TODO: Zuweisen von Datum und Zeit
+			            $matrix[$dayIterator][$timeIterator][$roomIterator] = $session;
+			            return true;
+		            }
+	            }
+            }
+        }
+
+        // Kein Freier Slot gefunden, check nächsten Tag
+	    // Kein Tag mehr da, geh auch nächste Zeit
+	    // Keine Zeit mehr frei, geh auf nächsten Raum
+        $dayIterator++;
+        if($dayIterator == count($matrix[$dayIterator]))
+        {
+            $dayIterator = 0;
+            $timeIterator--;
+            if($timeIterator == -1)
+            {
+                $timeIterator = count($matrix[$dayIterator]) - 1;
+	            $roomIterator++;
+	            // Kein Slot gefunden -> Abbruch
+	            if($roomIterator == count($matrix[$dayIterator][$timeIterator]))
+	            {
+		            return false;
+	            }
+            }
+        }
+
+        $this->findSpot($matrix, $session, $considerTopics, $dayIterator, $roomIterator, $timeIterator);
+
     }
 
     /**
