@@ -145,7 +145,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
         if (typeof event.stillEvent !== 'undefined') {
             console.log('stillevent defined');
             var tempStillEvent = calendar.fullCalendar('clientEvents', event.stillEvent.id)[0];
-            if (event.end.toString() == tempStillEvent.end.toString() && event.start.toString() == tempStillEvent.start.toString()) {
+            if (event.end.toString() == tempStillEvent.end.toString() && event.start.toString() == tempStillEvent.start.toString() && event.resourceId == event.stillEvent.resourceId) {
                 if(view.type != 'agendaFourDay') {
                     console.log('start/end equals')
                     var tempStillStart = $.extend({}, tempStillEvent.start);
@@ -159,8 +159,10 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 saveEvents(event, tempStillEvent, delta);
 
             } else {
-                if (event.stillEvent.resourceId != event.movingEvent.resourceId) {
+                if (event.stillEvent.resourceId != event.movingEvent.resourceId && event.resourceId == event.stillEvent.resourceId) {
                     revertFunc();
+                } else {
+                    saveEvents(event, null, delta);
                 }
                 if (event.end <= tempStillEvent.start || event.start >= tempStillEvent.end) {
                     saveEvents(event, null, delta);
@@ -178,6 +180,12 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
         }
     }
 
+    /**
+     *
+     * @param firstEvent
+     * @param secondEvent
+     * @param delta
+     */
     function saveEvents(firstEvent, secondEvent, delta) {
 
         var updateSession = calendar.data('updateSession');
