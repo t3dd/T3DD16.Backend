@@ -40,6 +40,54 @@ return [
         '1' => [
             'showitem' => '
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesBase;palettesBase,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesSpeaker;palettesSpeaker,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesTopics;palettesTopics,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.access,
+                sys_language_uid;;;;1-1-1,
+                l10n_parent,
+                l10n_diffsource,
+                hidden,
+            '
+        ],
+        'TYPO3\Sessions\Domain\Model\AnySession' => [
+            'showitem' => '
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesBase;palettesBase,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesSpeaker;palettesSpeaker,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesTopics;palettesTopics,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.access,
+                sys_language_uid;;;;1-1-1,
+                l10n_parent,
+                l10n_diffsource,
+                hidden,
+            '
+        ],
+        'TYPO3\Sessions\Domain\Model\ProposedSession' => [
+            'showitem' => '
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesBase;palettesBase,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesSpeaker;palettesSpeaker,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesTopics;palettesTopics,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.access,
+                sys_language_uid;;;;1-1-1,
+                l10n_parent,
+                l10n_diffsource,
+                hidden,
+            '
+        ],
+        'TYPO3\Sessions\Domain\Model\AcceptedSession' => [
+            'showitem' => '
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesBase;palettesBase,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesSpeaker;palettesSpeaker,
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesTopics;palettesTopics,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:fe_users.tabs.access,
+                sys_language_uid;;;;1-1-1,
+                l10n_parent,
+                l10n_diffsource,
+                hidden,
+            '
+        ],
+        'TYPO3\Sessions\Domain\Model\ScheduledSession' => [
+            'showitem' => '
+                --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesBase;palettesBase,
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesDate;palettesDate,
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesSpeaker;palettesSpeaker,
                 --palette--;' . $LLL . 'tx_sessions_domain_model_session.palette.palettesTopics;palettesTopics,
@@ -227,10 +275,11 @@ return [
             'config' => [
                 'type' => 'select',
                 'items' => [
-                    ['undefined', '0'],
-                    ['Session', 'TYPO3\Sessions\Domain\Model\Session'],
+                    ['AnySession', 'TYPO3\Sessions\Domain\Model\AnySession'],
+                    ['ProposedSession', 'TYPO3\Sessions\Domain\Model\ProposedSession'],
                     ['AcceptedSession', 'TYPO3\Sessions\Domain\Model\AcceptedSession'],
                     ['ScheduledSession', 'TYPO3\Sessions\Domain\Model\ScheduledSession'],
+                    ['DeclinedSession', 'TYPO3\Sessions\Domain\Model\DeclinedSession'],
                 ],
                 'default' => 'TYPO3\Sessions\Domain\Model\Session'
             ]

@@ -7,7 +7,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-class Session extends AbstractEntity implements \JsonSerializable
+abstract class AbstractSession extends AbstractEntity implements \JsonSerializable
 {
 
     /**
@@ -163,23 +163,7 @@ class Session extends AbstractEntity implements \JsonSerializable
     /**
      * @return array
      */
-    function jsonSerialize()
-    {
-        return [
-            '__identity' => $this->uid,
-            'title' => $this->title,
-            'description' => $this->description,
-            'start' => $this->getTimestamp($this->begin),
-            'end' => $this->getTimestamp($this->end),
-            'speakers'  =>  $this->speakers->toArray(),
-            'room' => $this->room ? $this->room->getTitle() : '',
-            'highlight' => $this->highlight,
-            'links' => [
-                'self' => $this->getLink(),
-                'route' => $this->getRoute(),
-            ]
-        ];
-    }
+    abstract public function jsonSerialize();
 
     /**
      * @param \DateTime $date
@@ -187,7 +171,16 @@ class Session extends AbstractEntity implements \JsonSerializable
      */
     protected function getTimestamp(\DateTime $date = null)
     {
-        return $date ? $date->getTimestamp() : 0;
+        return (!empty($date) ? $date->getTimestamp() : 0);
+    }
+
+    /**
+     * @param \DateTime|null $date
+     * @return string|null
+     */
+    protected function getIsoDateTime(\DateTime $date = null)
+    {
+        return (!empty($date) ? $date->format('c'): null);
     }
 
     /**

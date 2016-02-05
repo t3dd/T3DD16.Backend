@@ -2,7 +2,7 @@
 namespace TYPO3\Sessions\Domain\Validator;
 
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use TYPO3\Sessions\Domain\Model\Session;
+use TYPO3\Sessions\Domain\Model\AbstractSession;
 
 class SessionOwnerValidator extends AbstractValidator
 {
@@ -14,7 +14,7 @@ class SessionOwnerValidator extends AbstractValidator
     protected $frontendUserRepository;
 
     /**
-     * @param Session $value
+     * @param AbstractSession $value
      * @return boolean
      */
     protected function isValid($value)

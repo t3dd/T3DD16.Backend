@@ -28,10 +28,16 @@ class SessionModuleController extends ActionController
     protected $view;
 
     /**
-     * @var \TYPO3\Sessions\Domain\Repository\SessionRepository
+     * @var \TYPO3\Sessions\Domain\Repository\ScheduledSessionRepository
      * @inject
      */
     protected $sessionRepository;
+
+    /**
+     * @var \TYPO3\Sessions\Service\CreateTimetableService
+     * @inject
+     */
+    protected $createTimetableService;
 
     /**
      * @var \TYPO3\Sessions\Domain\Repository\RoomRepository
@@ -45,6 +51,12 @@ class SessionModuleController extends ActionController
      * @var BackendTemplateView
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
+
+    /**
+     * Blacklist for actions which don't want/need the menu
+     * @var array
+     */
+    protected $actionsWithoutMenu = [];
 
     /**
      * Initializes the module view.
@@ -61,23 +73,29 @@ class SessionModuleController extends ActionController
         }
 
         parent::initializeView($view);
-        $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
-        $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
-//        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/jquery.min');
-//        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/moment');
-        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
-        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
-        $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SessionModule');
-        $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
-            'shim'  => [
-                'TYPO3/CMS/Sessions/scheduler' => [
-                    'deps'  =>  ['TYPO3/CMS/Sessions/fullcalendar']
+        if($this->actionMethodName === 'indexAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/SessionModule');
+            $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
+                'shim'  => [
+                    'TYPO3/CMS/Sessions/scheduler' => [
+                        'deps'  =>  ['TYPO3/CMS/Sessions/fullcalendar']
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        }
 
-        $this->generateModuleMenu();
-        $this->generateModuleButtons();
+        if($this->actionMethodName === 'manageAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'manage.css');
+        }
+
+        if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
+            $this->generateModuleMenu();
+            $this->generateModuleButtons();
+        }
     }
 
     /**
@@ -98,15 +116,18 @@ class SessionModuleController extends ActionController
                         'action' => 'index',
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
                 ],
-                'acceptance' => [
+                'manage' => [
                         'controller' => 'SessionModule',
-                        'action' => 'acceptance',
-                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.acceptance')
+                        'action' => 'manage',
+                        'parameters' => [
+                                'type' => 'proposed'
+                        ],
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.manage')
                 ],
-                'test' => [
+                'generateFirstSchedule' => [
                         'controller' => 'SessionModule',
-                        'action' => 'demo',
-                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
+                        'action' => 'generateFirstSchedule',
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.generateFirstSchedule')
                 ],
         ];
 
@@ -119,9 +140,12 @@ class SessionModuleController extends ActionController
             } else {
                 $isActive = false;
             }
+            if(!isset($menuItemConfig['parameters'])) {
+                $menuItemConfig['parameters'] = [];
+            }
             $menuItem = $menu->makeMenuItem()
                 ->setTitle($menuItemConfig['label'])
-                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action']))
+                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action'], $menuItemConfig['parameters']))
                 ->setActive($isActive);
             $menu->addMenuItem($menuItem);
         }
@@ -158,17 +182,45 @@ class SessionModuleController extends ActionController
         $this->view->assign('linkRooms', $this->listRoomsAction());
     }
 
-    public function acceptanceAction()
+    /**
+     * @param string $type = 'proposed'
+     * @throws \InvalidArgumentException
+     */
+    public function manageAction($type = 'proposed')
     {
-        $objM = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        /** @var \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository $accSessRepo */
-//        $accSessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository');
-        /** @var \TYPO3\Sessions\Domain\Repository\SessionRepository $sessRepo */
-        $sessRepo = $objM->get('TYPO3\Sessions\Domain\Repository\SessionRepository');
-        $this->view->assign('sessions', [
-            'proposed' => $sessRepo->findAll(),
-//            'accepted'  =>  $accSessRepo->findAll()
-        ]);
+        if(!in_array($type, array_keys(ApiModuleController::$slugClassMap))) {
+            throw new \InvalidArgumentException('type parameter must be one of the following: '.implode(array_keys(ApiModuleController::$slugClassMap)));
+        }
+        $this->view->assign('manageConfig', json_encode([
+            'updateUrl' => $this->getHref('ApiModule', 'toggle', [
+                'id' => '###id###',
+                'type' => '###type###'
+            ])
+        ]));
+        $this->view->assign('type', $type);
+        $this->view->assign('sessions', $this->getFlatSessionObjects($type));
+    }
+
+    /**
+     * Fetches a simple array of sessions (with vote count not being transformed into an objectstorage)
+     * for a simple list view.
+     */
+    protected function getFlatSessionObjects($type)
+    {
+        $sessions = [];
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $stmt = $db->prepare_SELECTquery('uid AS __identity, title, description, votes',
+            'tx_sessions_domain_model_session',
+            ' type = :type AND deleted = 0 '.\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_sessions_domain_model_session'),
+            '', ' votes DESC ', '', [':type' => ApiModuleController::$slugClassMap[$type]]);
+        if($stmt->execute()) {
+            while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
+                $sessions[] = $row;
+            }
+            $stmt->free();
+        }
+        return $sessions;
     }
 
     /**
@@ -204,6 +256,7 @@ class SessionModuleController extends ActionController
 
     }
 
+
     /**
      * Get all rooms for FullCalendar
      *
@@ -233,21 +286,6 @@ class SessionModuleController extends ActionController
         }
     }
 
-    protected function adjustSessionPropertyMappingConfiguration($propertyName) {
-        /** @var \TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
-        $propertyMappingConfiguration = $this->arguments[$propertyName]->getPropertyMappingConfiguration();
-
-        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class,
-            PersistentObjectConverter::CONFIGURATION_MODIFICATION_ALLOWED, true);
-        $propertyMappingConfiguration->forProperty('begin')->setTypeConverterOption(DateTimeConverter::class,
-            DateTimeConverter::CONFIGURATION_DATE_FORMAT, DATE_ISO8601);
-        $propertyMappingConfiguration->forProperty('end')->setTypeConverterOption(DateTimeConverter::class,
-            DateTimeConverter::CONFIGURATION_DATE_FORMAT, DATE_ISO8601);
-        $propertyMappingConfiguration->allowProperties('date', 'begin', 'end', 'room', 'title');
-        $propertyMappingConfiguration->skipUnknownProperties();
-
-    }
-
     /*public function errorAction(){
         var_dump($this->request->getOriginalRequestMappingResults()->forProperty('session')->getFlattenedErrors());
     }*/
@@ -255,8 +293,8 @@ class SessionModuleController extends ActionController
     /**
      * Update session
      *
-     * @param \TYPO3\Sessions\Domain\Model\Session $session
-     * @param \TYPO3\Sessions\Domain\Model\Session $secondSession
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $secondSession
      * @return string
      */
     public function updateSessionAction($session, $secondSession = null)
@@ -282,6 +320,58 @@ class SessionModuleController extends ActionController
 //        return $session->getTitle();
         return 'success';
     }
+
+    public function generateFirstScheduleAction()
+    {
+
+    }
+
+    /**
+     * @param array $config
+     * @param boolean $considerTopics
+     * @param integer $iterations
+     */
+    public function createTimeTableAction($config, $considerTopics, $iterations)
+    {
+	    // Get all sessions
+	    $sessions = $this->sessionRepository->findAll()->toArray();
+	    // Get all rooms
+	    $rooms = $this->roomRepository->findAllLimited(6)->toArray();
+	    // Generate timetable with service
+	    $success = $this->createTimetableService->generateTimetable($config, $sessions, $rooms, $iterations, $considerTopics);
+	    $incompleteSessions = array();
+	    if(!$success)
+	    {
+		    $incompleteSessions = $this->createTimetableService->getUnassignedSessions();
+	    }
+
+	    // Save changes on sessions
+	    foreach($this->createTimetableService->getAssignedSessions() as $assignedSession)
+	    {
+		    $this->sessionRepository->update($assignedSession);
+	    }
+
+	    $this->redirect('index', '', '', array('incompleteSessions' => $incompleteSessions, 'creationDone' => true));
+    }
+
+    protected function adjustSessionPropertyMappingConfiguration($propertyName) {
+        /** @var \TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
+        $propertyMappingConfiguration = $this->arguments[$propertyName]->getPropertyMappingConfiguration();
+
+        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class,
+            PersistentObjectConverter::CONFIGURATION_MODIFICATION_ALLOWED, true);
+        $propertyMappingConfiguration->forProperty('begin')->setTypeConverterOption(DateTimeConverter::class,
+            DateTimeConverter::CONFIGURATION_DATE_FORMAT, DATE_ISO8601);
+        $propertyMappingConfiguration->forProperty('end')->setTypeConverterOption(DateTimeConverter::class,
+            DateTimeConverter::CONFIGURATION_DATE_FORMAT, DATE_ISO8601);
+        $propertyMappingConfiguration->allowProperties('date', 'begin', 'end', 'room', 'title');
+        $propertyMappingConfiguration->skipUnknownProperties();
+
+    }
+
+    /*public function errorAction(){
+        var_dump($this->request->getOriginalRequestMappingResults()->forProperty('session')->getFlattenedErrors());
+    }*/
 
     public function testAction()
     {

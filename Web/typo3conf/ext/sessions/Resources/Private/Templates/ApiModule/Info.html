@@ -1,0 +1,28 @@
+<h1>{session.title}</h1>
+<f:if condition="{session.speakers}">
+<div class="panel panel-default">
+    <div class="panel-heading">Speaker</div>
+    <div class="panel-body">
+        <f:for each="{session.speakers}" as="speaker" iteration="speakerIterator">
+            {speaker.username}{f:if(condition: speakerIterator.isLast, then:'', else:', ')}
+        </f:for>
+    </div>
+</div>
+</f:if>
+<f:if condition="{session.topics}">
+<div class="panel panel-default">
+    <div class="panel-heading">Topics</div>
+    <div class="panel-body">
+        <f:for each="{session.topics}" as="topic" iteration="topicIterator">
+            {topic.title}{f:if(condition: topicIterator.isLast, then:'', else:', ')}
+        </f:for>
+    </div>
+</div>
+</f:if>
+<div class="panel panel-default">
+    <div class="panel-heading">Description</div>
+    <div class="panel-body">
+        <!-- wrap in pre block for now (markdown content) -->
+<pre>{session.description}</pre>
+    </div>
+</div>

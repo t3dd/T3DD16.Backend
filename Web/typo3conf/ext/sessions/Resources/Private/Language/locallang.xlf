@@ -12,11 +12,11 @@
 			<trans-unit id="module.menu.item.calendar">
 				<source>Calendar</source>
 			</trans-unit>
-			<trans-unit id="module.menu.item.test">
-				<source>Test</source>
+			<trans-unit id="module.menu.item.generateFirstSchedule">
+				<source>Generate first schedule</source>
 			</trans-unit>
-			<trans-unit id="module.menu.item.acceptance">
-                <source>Acceptance</source>
+			<trans-unit id="module.menu.item.manage">
+                <source>Manage Sessions (reject/accept)</source>
             </trans-unit>
 		</body>
 	</file>
