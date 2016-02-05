@@ -1,9 +1,12 @@
 require(['samModuleConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(samModuleConfig, jQuery, Modal, Notification) {
     jQuery(document).ready(function($) {
+
+        var $tableBody = $('table#tx-sessions-table tbody');
+
         /*
             Show a modal without buttons when the info button is cliked inside the list
          */
-        $('table#tx-sessions-table tbody').on('click', 'a.session-info-trigger', function() {
+        $tableBody.on('click', 'a.session-info-trigger', function() {
             var url = $(this).data('url');
             if(url) {
                 Modal.loadUrl('Session Info', -1, [], url);
@@ -26,7 +29,7 @@ require(['samModuleConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Back
             Set the type of the triggered session
          */
         var updateUrl = samModuleConfig.updateUrl;
-        $('table#tx-sessions-table tbody').on('click', 'a.session-change-trigger', function() {
+        $tableBody.on('click', 'a.session-change-trigger', function() {
             var id = $(this).data('identity');
             var type = $(this).data('state');
             var url = updateUrl.replace(/%23%23%23id%23%23%23/, id);
