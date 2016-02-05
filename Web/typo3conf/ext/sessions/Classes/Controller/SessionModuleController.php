@@ -4,9 +4,11 @@ namespace TYPO3\Sessions\Controller;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 
 /**
  * Class SessionModuleController
@@ -16,9 +18,26 @@ class SessionModuleController extends ActionController
 {
 
     /**
+     * @var string
+     */
+    protected $resourceArgumentName = 'session';
+
+    /**
      * @var BackendTemplateView
      */
     protected $view;
+
+    /**
+     * @var \TYPO3\Sessions\Domain\Repository\SessionRepository
+     * @inject
+     */
+    protected $sessionRepository;
+
+    /**
+     * @var \TYPO3\Sessions\Domain\Repository\RoomRepository
+     * @inject
+     */
+    protected $roomRepository;
 
     /**
      * BackendTemplateView Container
@@ -83,12 +102,12 @@ class SessionModuleController extends ActionController
                         'controller' => 'SessionModule',
                         'action' => 'acceptance',
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.acceptance')
-                ]
-//                'test' => [
-//                        'controller' => 'SessionModule',
-//                        'action' => 'test',
-//                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
-//                ],
+                ],
+                'test' => [
+                        'controller' => 'SessionModule',
+                        'action' => 'demo',
+                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.test')
+                ],
         ];
 
         $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
@@ -135,7 +154,8 @@ class SessionModuleController extends ActionController
 
     public function indexAction()
     {
-
+        $this->view->assign('linkSessions', $this->listSessionsAction());
+        $this->view->assign('linkRooms', $this->listRoomsAction());
     }
 
     public function acceptanceAction()
@@ -149,6 +169,129 @@ class SessionModuleController extends ActionController
             'proposed' => $sessRepo->findAll(),
 //            'accepted'  =>  $accSessRepo->findAll()
         ]);
+    }
+
+    /**
+     * Get all sessions for FullCalendar
+     *
+     * @return String
+     */
+    public function listSessionsAction()
+    {
+        $allSessionFlatArray = $this->sessionRepository->findAllFlat();
+
+        $result = array();
+
+        // Session properties
+        $sessionWhitelist = array('uid', 'title', 'date', 'begin', 'end', 'room', 'description');
+        // Generate session data
+        foreach($allSessionFlatArray as $session)
+        {
+            $tempSessionArray = array();
+            foreach($sessionWhitelist as $property)
+            {
+                $tempSessionArray[$property] = $session[$property];
+            }
+//            $result[] = $tempSessionArray;
+            $result[] = array('id' => $session['uid'],
+                    'resourceId' => $session['room'],
+                    'start' => $session['begin'],
+                    'end' => $session ['end'],
+                    'title' => $session ['title'],
+                    'description' => $session ['description']);
+        }
+        return json_encode($result);
+
+    }
+
+    /**
+     * Get all rooms for FullCalendar
+     *
+     * @return String
+     */
+    public function listRoomsAction()
+    {
+        $allRoomFlatArray = $this->roomRepository->findAllFlat();
+
+        $result = array();
+
+        // Generate room data
+        foreach($allRoomFlatArray as $room)
+        {
+            $result[] = array('id' => $room['uid'], 'title' => $room['title']);
+        }
+        return json_encode($result);
+
+    }
+
+    public function initializeUpdateSessionAction()
+    {
+        $this->adjustSessionPropertyMappingConfiguration($this->resourceArgumentName);
+
+        if ($this->request->hasArgument('secondSession')) {
+            $this->adjustSessionPropertyMappingConfiguration('secondSession');
+        }
+    }
+
+    protected function adjustSessionPropertyMappingConfiguration($propertyName) {
+        /** @var \TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration $propertyMappingConfiguration */
+        $propertyMappingConfiguration = $this->arguments[$propertyName]->getPropertyMappingConfiguration();
+
+        $propertyMappingConfiguration->setTypeConverterOption(PersistentObjectConverter::class,
+            PersistentObjectConverter::CONFIGURATION_MODIFICATION_ALLOWED, true);
+        $propertyMappingConfiguration->forProperty('begin')->setTypeConverterOption(DateTimeConverter::class,
+            DateTimeConverter::CONFIGURATION_DATE_FORMAT, DATE_ISO8601);
+        $propertyMappingConfiguration->forProperty('end')->setTypeConverterOption(DateTimeConverter::class,
+            DateTimeConverter::CONFIGURATION_DATE_FORMAT, DATE_ISO8601);
+        $propertyMappingConfiguration->allowProperties('date', 'begin', 'end', 'room', 'title');
+        $propertyMappingConfiguration->skipUnknownProperties();
+
+    }
+
+    /*public function errorAction(){
+        var_dump($this->request->getOriginalRequestMappingResults()->forProperty('session')->getFlattenedErrors());
+    }*/
+
+    /**
+     * Update session
+     *
+     * @param \TYPO3\Sessions\Domain\Model\Session $session
+     * @param \TYPO3\Sessions\Domain\Model\Session $secondSession
+     * @return string
+     */
+    public function updateSessionAction($session, $secondSession = null)
+    {
+       /* // Find session object
+        $sessionObject = $this->sessionRepository->findByUid($session['uid']);
+        // Set session properties
+
+        if(!is_null($sessionObject)) {
+            foreach ($session as $propertyName => $value) {
+                if($propertyName != 'uid')
+                    $sessionObject->{'set'.ucwords($propertyName)}($value);
+            }
+            $this->sessionRepository->update($sessionObject);
+        }
+        $this->redirect('listSessionAndRoomsForCalender');*/
+
+        //var_dump($session);die;
+        $this->sessionRepository->update($session);
+        if($secondSession != null) {
+            $this->sessionRepository->update($secondSession);
+        }
+//        return $session->getTitle();
+        return 'success';
+    }
+
+    public function testAction()
+    {
+
+    }
+
+    public function demoAction()
+    {
+        $session = $this->sessionRepository->findByUid(1);
+        $this->view->assign('session', $session);
     }
 
     /**
