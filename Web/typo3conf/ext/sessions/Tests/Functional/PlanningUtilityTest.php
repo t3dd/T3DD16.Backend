@@ -15,6 +15,7 @@ namespace T3DD\Sessions\Tests\Functional;
  */
 
 use TYPO3\CMS\Core\Tests\FunctionalTestCase;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\Sessions\Domain\Model\AnySession;
 use TYPO3\Sessions\PlanningUtility;
@@ -47,6 +48,11 @@ class PlanningUtilityTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/Fixtures/Xml/fe_users.xml');
         $this->importDataSet(__DIR__ . '/Fixtures/Xml/tx_sessions_domain_model_session.xml');
         $this->importDataSet(__DIR__ . '/Fixtures/Xml/tx_sessions_session_record_mm.xml');
+
+        ExtensionManagementUtility::addTypoScriptSetup('
+            <INCLUDE_TYPOSCRIPT: source="FILE:EXT:sessions/Configuration/TypoScript/setup.txt">
+            config.tx_extbase.persistence < plugin.tx_sessions.persistence
+        ');
 
         $this->subject = $this->getAccessibleMock(PlanningUtility::class, array('_dummy'), array());
     }
