@@ -77,6 +77,17 @@ class SessionModuleController extends ActionController
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'sma.css');
         }
 
+        if($this->actionMethodName === 'infoAction') {
+            if(!is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'])) {
+                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'] = [];
+            }
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][] = function(&$params, &$ref) {
+                foreach($params as &$p) {
+                    $p = [];
+                }
+            };
+        }
+
         if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
             $this->generateModuleMenu();
             $this->generateModuleButtons();
@@ -167,11 +178,17 @@ class SessionModuleController extends ActionController
     }
 
     /**
+     *
      * @param \TYPO3\Sessions\Domain\Model\AnySession $session
+     * @return string
      */
     public function infoAction($session)
     {
-        $this->view->assign('session', $session);
+        /** @var \TYPO3\CMS\Fluid\View\StandaloneView $view */
+        $view = $this->objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+        $view->setTemplatePathAndFilename(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:sessions/Resources/Private/Templates/SessionModule/Info.html'));
+        $view->assign('session', $session);
+        return $view->render();
     }
 
     /**
