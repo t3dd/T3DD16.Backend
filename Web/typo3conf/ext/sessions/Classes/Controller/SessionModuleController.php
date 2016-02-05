@@ -53,16 +53,6 @@ class SessionModuleController extends ActionController
     protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
-     * Mapping between slugs and concrete classes
-     * @var array
-     */
-    protected $slugClassMap = [
-        'proposed' => \TYPO3\Sessions\Domain\Model\ProposedSession::class,
-        'declined' => \TYPO3\Sessions\Domain\Model\DeclinedSession::class,
-        'accepted' => \TYPO3\Sessions\Domain\Model\AcceptedSession::class,
-    ];
-
-    /**
      * Blacklist for actions which don't want/need the menu
      * @var array
      */
@@ -98,8 +88,8 @@ class SessionModuleController extends ActionController
             ]);
         }
 
-        if($this->actionMethodName === 'acceptanceAction') {
-            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'sma.css');
+        if($this->actionMethodName === 'manageAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'manage.css');
         }
 
         if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
@@ -192,50 +182,16 @@ class SessionModuleController extends ActionController
     }
 
     /**
-     *
-     * @param \TYPO3\Sessions\Domain\Model\AnySession $session
-     * @return string
-     */
-    public function infoAction($session)
-    {
-        /** @var \TYPO3\CMS\Fluid\View\StandaloneView $view */
-        $view = $this->objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-        $view->setTemplatePathAndFilename(\TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName('EXT:sessions/Resources/Private/Templates/SessionModule/Info.html'));
-        $view->assign('session', $session);
-        return $view->render();
-    }
-
-    /**
-     * @param int $id
-     * @param string $type
-     * @return string
-     */
-    public function updatesessiontypeAction($id, $type)
-    {
-        if(!in_array($type, array_keys($this->slugClassMap))) {
-            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys($this->slugClassMap)));
-        }
-        $id = (int) $id;
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
-        $db = $GLOBALS['TYPO3_DB'];
-        $updated = $db->exec_UPDATEquery('tx_sessions_domain_model_session', "uid = {$id}", ['type' => $this->slugClassMap[$type]]);
-        if($this->response instanceof \TYPO3\CMS\Extbase\Mvc\Web\Response) {
-            $this->response->setHeader('Content-Type', 'application/json', true);
-        }
-        return json_encode(['success' => $updated]);
-    }
-
-    /**
      * @param string $type = 'proposed'
      * @throws \InvalidArgumentException
      */
-    public function acceptanceAction($type = 'proposed')
+    public function manageAction($type = 'proposed')
     {
-        if(!in_array($type, array_keys($this->slugClassMap))) {
-            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys($this->slugClassMap)));
+        if(!in_array($type, array_keys(ApiModuleController::$slugClassMap))) {
+            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys(ApiModuleController::$slugClassMap)));
         }
-        $this->view->assign('samModuleConfig', json_encode([
-            'updateUrl' => $this->getHref('SessionModule', 'updatesessiontype', [
+        $this->view->assign('manageConfig', json_encode([
+            'updateUrl' => $this->getHref('ApiModule', 'toggle', [
                 'id' => '###id###',
                 'type' => '###type###'
             ])
@@ -255,7 +211,7 @@ class SessionModuleController extends ActionController
         $stmt = $db->prepare_SELECTquery('uid AS __identity, title, description, votes',
             'tx_sessions_domain_model_session',
             ' type = :type AND deleted = 0 '.\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_sessions_domain_model_session'),
-            '', ' votes DESC ', '', [':type' => $this->slugClassMap[$type]]);
+            '', ' votes DESC ', '', [':type' => ApiModuleController::$slugClassMap[$type]]);
         if($stmt->execute()) {
             while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
                 $sessions[] = $row;

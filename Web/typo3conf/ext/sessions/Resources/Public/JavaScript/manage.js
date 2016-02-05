@@ -1,4 +1,4 @@
-require(['samModuleConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(samModuleConfig, jQuery, Modal, Notification) {
+require(['manageConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(manageConfig, jQuery, Modal, Notification) {
     jQuery(document).ready(function($) {
 
         var $tableBody = $('table#tx-sessions-table tbody');
@@ -28,7 +28,7 @@ require(['samModuleConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Back
         /*
             Set the type of the triggered session
          */
-        var updateUrl = samModuleConfig.updateUrl;
+        var updateUrl = manageConfig.updateUrl;
         $tableBody.on('click', 'a.session-change-trigger', function() {
             var id = $(this).data('identity');
             var type = $(this).data('state');
