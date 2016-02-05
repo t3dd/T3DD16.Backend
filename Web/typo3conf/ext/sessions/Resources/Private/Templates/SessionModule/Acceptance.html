@@ -1,0 +1,42 @@
+<h1>Session Acceptance Management</h1>
+<div id="tx-sessions-sam-btn-bar">
+    <div class="btn-group" role="group">
+        <a class="btn btn-success" {f:if(then: 'disabled', condition: "{type} == 'accepted'")} href="{f:uri.action(action: 'acceptance', arguments: {type: 'accepted'})}">Accepted</a>
+        <a class="btn btn-default" {f:if(then: 'disabled', condition: "{type} == 'proposed'")} href="{f:uri.action(action: 'acceptance', arguments: {type: 'proposed'})}">Proposed</a>
+        <a class="btn btn-danger" {f:if(then: 'disabled', condition: "{type} == 'declined'")} href="{f:uri.action(action: 'acceptance', arguments: {type: 'declined'})}">Declined</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+<table id="tx-sessions-table" class="table">
+    <thead>
+    <tr>
+        <th width="5%">Votes <i class="fa fa-sort-numeric-desc"></i></th>
+        <th width="75%">Title</th>
+        <th width="20%">Action</th>
+    </tr>
+    </thead>
+    <f:if condition="{sessions}">
+    <tbody>
+        <f:for each="{sessions}" as="session">
+            <tr class="session-row">
+                <td>{session.votes}</td>
+                <td>{session.title}</td>
+                <td>
+                    <a class="btn btn-default session-info-trigger" data-url="{f:uri.action(action: 'info', arguments: {session: session.__identity})}" data-title="Session Information" data-severity="-1"><i class="fa fa-info fa-fw fa-lg"></i></a>
+                    <f:if condition="{type} == 'proposed'"><f:else><a class="btn btn-default session-change-trigger" data-identity="{session.__identity}" data-state="proposed"><i class="fa fa-undo fa-fw fa-lg"></i></a></f:else></f:if>
+                    <f:if condition="{type} == 'accepted'"><f:else><a class="btn btn-default session-change-trigger" data-identity="{session.__identity}" data-state="accepted"><i class="fa fa-thumbs-up fa-fw fa-lg"></i></a></f:else></f:if>
+                    <f:if condition="{type} == 'declined'"><f:else><a class="btn btn-default session-change-trigger" data-identity="{session.__identity}" data-state="declined"><i class="fa fa-thumbs-down fa-fw fa-lg"></i></a></f:else></f:if>
+                </td>
+            </tr>
+        </f:for>
+    </tbody>
+    </f:if>
+</table>
+</div>
+<script type="text/javascript">
+define('samModuleConfig', function() {
+    return <f:format.raw>{samModuleConfig}</f:format.raw>;
+});
+require(['TYPO3/CMS/Sessions/SamModule']);
+</script>

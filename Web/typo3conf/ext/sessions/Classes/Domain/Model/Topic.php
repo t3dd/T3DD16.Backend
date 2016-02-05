@@ -6,13 +6,10 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Topic extends AbstractEntity implements \JsonSerializable
 {
-
-
     /**
      * @var string
      */
     protected $title;
-
 
     /**
      * @var \TYPO3\Sessions\Domain\Model\Topic

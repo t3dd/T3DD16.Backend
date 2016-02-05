@@ -13,7 +13,7 @@ class Vote extends AbstractEntity
     protected $user;
 
     /**
-     * @var \TYPO3\Sessions\Domain\Model\Session
+     * @var \TYPO3\Sessions\Domain\Model\AbstractSession
      */
     protected $session;
 
@@ -34,7 +34,7 @@ class Vote extends AbstractEntity
     }
 
     /**
-     * @return Session
+     * @return AbstractSession
      */
     public function getSession()
     {
@@ -42,12 +42,10 @@ class Vote extends AbstractEntity
     }
 
     /**
-     * @param Session $session
+     * @param AbstractSession $session
      */
     public function setSession($session)
     {
         $this->session = $session;
     }
-
-
 }
