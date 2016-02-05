@@ -188,7 +188,7 @@ class SessionModuleController extends ActionController
     public function manageAction($type = 'proposed')
     {
         if(!in_array($type, array_keys(ApiModuleController::$slugClassMap))) {
-            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys(ApiModuleController::$slugClassMap)));
+            throw new \InvalidArgumentException('type parameter must be one of the following: '.implode(array_keys(ApiModuleController::$slugClassMap)));
         }
         $this->view->assign('manageConfig', json_encode([
             'updateUrl' => $this->getHref('ApiModule', 'toggle', [

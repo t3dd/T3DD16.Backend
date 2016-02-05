@@ -71,7 +71,7 @@ class ApiModuleController extends ActionController
     public function toggleAction($id, $type)
     {
         if(!in_array($type, array_keys(self::$slugClassMap))) {
-            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys(self::$slugClassMap)));
+            throw new \InvalidArgumentException('type parameter must be one of the following: '.implode(array_keys(self::$slugClassMap)));
         }
         $id = (int) $id;
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
