@@ -16,7 +16,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             timezoneParam: 'UTC',
             allDaySlot: false,
             slotEventOverlap: false,
-            now: '2016-01-07',
+            now: '2016-09-01',
             editable: true,
             aspectRatio: 2.7,
             //scrollTime: '06:00',
