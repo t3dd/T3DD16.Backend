@@ -27,13 +27,21 @@ class SessionModuleController extends ActionController
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
 
-
+    /**
+     * Mapping between slugs and concrete classes
+     * @var array
+     */
+    protected $slugClassMap = [
+        'proposed' => \TYPO3\Sessions\Domain\Model\ProposedSession::class,
+        'declined' => \TYPO3\Sessions\Domain\Model\DeclinedSession::class,
+        'accepted' => \TYPO3\Sessions\Domain\Model\AcceptedSession::class,
+    ];
 
     /**
      * Blacklist for actions which don't want/need the menu
      * @var array
      */
-    protected $actionsWithoutMenu = [];
+    protected $actionsWithoutMenu = ['infoAction'];
 
     /**
      * Initializes the module view.
@@ -158,17 +166,69 @@ class SessionModuleController extends ActionController
 
     }
 
-    public function acceptanceAction()
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\AnySession $session
+     */
+    public function infoAction($session)
     {
-        $objM = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        /** @var \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository $accSessRepo */
-        $accSessRepo = $objM->get(\TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository::class);
-        /** @var \TYPO3\Sessions\Domain\Repository\ProposedSessionRepository $sessRepo */
-        $sessRepo = $objM->get(\TYPO3\Sessions\Domain\Repository\ProposedSessionRepository::class);
-        $this->view->assign('sessions', [
-            'proposed' => $sessRepo->findAll(),
-            'accepted'  =>  $accSessRepo->findAll(),
-        ]);
+        $this->view->assign('session', $session);
+    }
+
+    /**
+     * @param int $id
+     * @param string $type
+     * @return string
+     */
+    public function updatesessiontypeAction($id, $type)
+    {
+        if(!in_array($type, array_keys($this->slugClassMap))) {
+            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys($this->slugClassMap)));
+        }
+        $id = (int) $id;
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $updated = $db->exec_UPDATEquery('tx_sessions_domain_model_session', "uid = {$id}", ['type' => $this->slugClassMap[$type]]);
+        return json_encode(['success' => $updated]);
+    }
+
+    /**
+     * @param string $type = 'proposed'
+     * @throws \InvalidArgumentException
+     */
+    public function acceptanceAction($type = 'proposed')
+    {
+        if(!in_array($type, array_keys($this->slugClassMap))) {
+            throw new \InvalidArgumentException('type parameter must be one of the folloging: '.implode(array_keys($this->slugClassMap)));
+        }
+        $this->view->assign('samModuleConfig', json_encode([
+            'updateUrl' => $this->getHref('SessionModule', 'updatesessiontype', [
+                'id' => '###id###',
+                'type' => '###type###'
+            ])
+        ]));
+        $this->view->assign('type', $type);
+        $this->view->assign('sessions', $this->getFlatSessionObjects($type));
+    }
+
+    /**
+     *
+     */
+    protected function getFlatSessionObjects($type)
+    {
+        $sessions = [];
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $stmt = $db->prepare_SELECTquery('uid AS __identity, title, description, votes',
+            'tx_sessions_domain_model_session',
+            ' type = :type AND deleted = 0 '.\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_sessions_domain_model_session'),
+            '', ' votes DESC ', '', [':type' => $this->slugClassMap[$type]]);
+        if($stmt->execute()) {
+            while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
+                $sessions[] = $row;
+            }
+            $stmt->free();
+        }
+        return $sessions;
     }
 
     /**
