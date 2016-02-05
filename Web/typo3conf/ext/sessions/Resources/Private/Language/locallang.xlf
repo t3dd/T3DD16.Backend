@@ -16,7 +16,7 @@
 				<source>Generate first schedule</source>
 			</trans-unit>
 			<trans-unit id="module.menu.item.manage">
-                <source>Acceptance</source>
+                <source>Manage Sessions (reject/accept)</source>
             </trans-unit>
 		</body>
 	</file>
