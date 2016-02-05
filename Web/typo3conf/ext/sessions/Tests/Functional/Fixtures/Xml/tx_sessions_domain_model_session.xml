@@ -9,7 +9,7 @@
 		<end>2016-09-01 15:00:00</end> 
 		<room>5</room>
 		<highlight>1</highlight>
-		<type>TYPO3\Sessions\Domain\Model\AcceptedSession</type>
+		<type>TYPO3\Sessions\Domain\Model\ScheduledSession</type>
 		<speakers>1</speakers> 
 		<topics>0</topics> 
 		<votes>0</votes> 
@@ -23,7 +23,7 @@
 		<end>2016-09-03 15:00:00</end> 
 		<room>0</room>
 		<highlight>0</highlight> 
-		<type>TYPO3\Sessions\Domain\Model\AcceptedSession</type>
+		<type>TYPO3\Sessions\Domain\Model\ScheduledSession</type>
 		<speakers>1</speakers> 
 		<topics>0</topics> 
 		<votes>0</votes> 

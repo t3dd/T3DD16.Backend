@@ -74,6 +74,7 @@ class PlanningUtility implements SingletonInterface
         $params[':start'] = $session->getBegin()->format($this->dbDateTimeFormat);
         $params[':end'] = $session->getEnd()->format($this->dbDateTimeFormat);
         $params[':exludedsession'] = $session->getUid();
+        $params[':scheduledtype'] = \TYPO3\Sessions\Domain\Model\ScheduledSession::class;
 
         $stmt = $this->db->prepare_SELECTquery(' DISTINCT session.uid AS uid ',
             ' tx_sessions_domain_model_session AS session
@@ -98,6 +99,7 @@ class PlanningUtility implements SingletonInterface
                     (session.begin < :start AND session.end > :end)
                 )
                 AND session.uid <> :exludedsession
+                AND session.type = :scheduledtype
             ', '', ' session.uid DESC ', '', $params);
 
         if($stmt->execute() && $stmt->rowCount() > 0) {
