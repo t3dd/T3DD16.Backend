@@ -8,7 +8,6 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\Sessions\Domain\Model\Session;
 
 /**
  * Class SessionModuleController
@@ -28,7 +27,7 @@ class SessionModuleController extends ActionController
     protected $view;
 
     /**
-     * @var \TYPO3\Sessions\Domain\Repository\SessionRepository
+     * @var \TYPO3\Sessions\Domain\Repository\ScheduledSessionRepository
      * @inject
      */
     protected $sessionRepository;
