@@ -68,6 +68,7 @@ class PlanningUtilityTest extends FunctionalTestCase
     }
 
     /**
+     * @param int $uid
      * @param string $begin
      * @param string $end
      * @param array $speakerIds
@@ -76,12 +77,13 @@ class PlanningUtilityTest extends FunctionalTestCase
      * @test
      * @dataProvider collidingSessionsAreDeterminedDataProvider
      */
-    public function collidingSessionsAreDetermined($begin, $end, array $speakerIds, $expected)
+    public function collidingSessionsAreDetermined($uid, $begin, $end, array $speakerIds, $expected)
     {
         $beginDateTime = \DateTime::createFromFormat(DATE_ISO8601, $begin);
         $endDateTime = \DateTime::createFromFormat(DATE_ISO8601, $end);
 
         $session = new AnySession();
+        $session->_setProperty('uid', $uid);
         $session->setBegin($beginDateTime);
         $session->setEnd($endDateTime);
 
@@ -102,47 +104,47 @@ class PlanningUtilityTest extends FunctionalTestCase
     {
         return [
             'different speaker, before' => [
-                '2016-09-01T12:00:00Z', '2016-09-01T13:00:00Z', [1,3], false,
+                999, '2016-09-01T12:00:00Z', '2016-09-01T13:00:00Z', [1,3], false,
             ],
             'different speaker, after' => [
-                '2016-09-01T16:00:00Z', '2016-09-01T17:00:00Z', [1,3], false,
+                999, '2016-09-01T16:00:00Z', '2016-09-01T17:00:00Z', [1,3], false,
             ],
             'different speaker, start time intersects' => [
-                '2016-09-01T14:30:00Z', '2016-09-01T15:30:00Z', [1,3], false,
+                999, '2016-09-01T14:30:00Z', '2016-09-01T15:30:00Z', [1,3], false,
             ],
             'different speaker, end time intersects' => [
-                '2016-09-01T13:30:00Z', '2016-09-01T14:30:00Z', [1,3], false,
+                999, '2016-09-01T13:30:00Z', '2016-09-01T14:30:00Z', [1,3], false,
             ],
             'different speaker, session time intersects' => [
-                '2016-09-01T14:15:00Z', '2016-09-01T14:45:00Z', [1,3], false,
+                999, '2016-09-01T14:15:00Z', '2016-09-01T14:45:00Z', [1,3], false,
             ],
             'different speaker, session time surrounds' => [
-                '2016-09-01T13:00:00Z', '2016-09-01T17:00:00Z', [1,3], false,
+                999, '2016-09-01T13:00:00Z', '2016-09-01T17:00:00Z', [1,3], false,
             ],
             'different speaker, session time equals' => [
-                '2016-09-01T14:00:00Z', '2016-09-01T15:00:00Z', [1,3], false,
+                999, '2016-09-01T14:00:00Z', '2016-09-01T15:00:00Z', [1,3], false,
             ],
 
             'same speaker, before' => [
-                '2016-09-01T12:00:00Z', '2016-09-01T13:00:00Z', [2,3], false,
+                999, '2016-09-01T12:00:00Z', '2016-09-01T13:00:00Z', [2,3], false,
             ],
             'same speaker, after' => [
-                '2016-09-01T16:00:00Z', '2016-09-01T17:00:00Z', [2,3], false,
+                999, '2016-09-01T16:00:00Z', '2016-09-01T17:00:00Z', [2,3], false,
             ],
             'same speaker, start time intersects' => [
-                '2016-09-01T14:30:00Z', '2016-09-01T15:30:00Z', [2,3], 1,
+                999, '2016-09-01T14:30:00Z', '2016-09-01T15:30:00Z', [2,3], 1,
             ],
             'same speaker, end time intersects' => [
-                '2016-09-01T13:30:00Z', '2016-09-01T14:30:00Z', [2,3], 1,
+                999, '2016-09-01T13:30:00Z', '2016-09-01T14:30:00Z', [2,3], 1,
             ],
             'same speaker, session time intersects' => [
-                '2016-09-01T14:15:00Z', '2016-09-01T14:45:00Z', [2,3], 1,
+                999, '2016-09-01T14:15:00Z', '2016-09-01T14:45:00Z', [2,3], 1,
             ],
             'same speaker, session time surrounds' => [
-                '2016-09-01T13:00:00Z', '2016-09-01T17:00:00Z', [2,3], 1,
+                999, '2016-09-01T13:00:00Z', '2016-09-01T17:00:00Z', [2,3], 1,
             ],
             'same speaker, session time equals' => [
-                '2016-09-01T14:00:00Z', '2016-09-01T15:00:00Z', [2,3], 1,
+                999, '2016-09-01T14:00:00Z', '2016-09-01T15:00:00Z', [2,3], 1,
             ],
         ];
     }
