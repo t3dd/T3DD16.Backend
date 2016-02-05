@@ -15,7 +15,7 @@
 			<trans-unit id="module.menu.item.generateFirstSchedule">
 				<source>Generate first schedule</source>
 			</trans-unit>
-			<trans-unit id="module.menu.item.acceptance">
+			<trans-unit id="module.menu.item.manage">
                 <source>Acceptance</source>
             </trans-unit>
 		</body>

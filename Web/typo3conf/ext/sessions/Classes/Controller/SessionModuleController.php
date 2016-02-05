@@ -116,13 +116,13 @@ class SessionModuleController extends ActionController
                         'action' => 'index',
                         'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
                 ],
-		        'acceptance' => [
+		        'manage' => [
 			        'controller' => 'SessionModule',
-			        'action' => 'acceptance',
+			        'action' => 'manage',
 			        'parameters' => [
 				        'type' => 'proposed'
 			        ],
-			        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.acceptance')
+			        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.manage')
 		        ],
                 'generateFirstSchedule' => [
                         'controller' => 'SessionModule',
@@ -285,7 +285,7 @@ class SessionModuleController extends ActionController
     /**
      * Update session
      *
-     * @param \TYPO3\Sessions\Domain\Model\Session $session
+     * @param \TYPO3\Sessions\Domain\Model\AnySession $session
      * @return String
      */
     public function updateSessionAction($session)

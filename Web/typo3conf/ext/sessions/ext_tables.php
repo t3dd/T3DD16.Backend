@@ -10,7 +10,7 @@ if (TYPO3_MODE === 'BE' && !(TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_INSTALL)) {
         'session',
         '',
         array(
-            'SessionModule' => 'index,acceptance,info,updatesessiontype,listSessions,listRooms,updateSession,generateFirstSchedule'
+            'SessionModule' => 'index,manage,listSessions,listRooms,updateSession,generateFirstSchedule',
             'ApiModule' =>  'toggle,info'
         ),
         array(
