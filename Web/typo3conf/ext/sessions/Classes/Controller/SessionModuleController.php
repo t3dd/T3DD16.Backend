@@ -41,7 +41,7 @@ class SessionModuleController extends ActionController
      * Blacklist for actions which don't want/need the menu
      * @var array
      */
-    protected $actionsWithoutMenu = ['infoAction'];
+    protected $actionsWithoutMenu = [];
 
     /**
      * Initializes the module view.
@@ -75,17 +75,6 @@ class SessionModuleController extends ActionController
 
         if($this->actionMethodName === 'acceptanceAction') {
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'sma.css');
-        }
-
-        if($this->actionMethodName === 'infoAction') {
-            if(!is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'])) {
-                $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'] = [];
-            }
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][] = function(&$params, &$ref) {
-                foreach($params as &$p) {
-                    $p = [];
-                }
-            };
         }
 
         if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
