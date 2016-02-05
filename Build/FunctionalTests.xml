@@ -22,6 +22,9 @@
 	stopOnSkipped="false"
 	verbose="false"
 >
+	<php>
+		<env name="TYPO3_PATH_WEB" value="../Web/" />
+	</php>
 	<testsuites>
 		<testsuite name="EXT:sessions Functional Tests">
 			<directory>../Web/typo3conf/ext/sessions/Tests/Functional/</directory>
