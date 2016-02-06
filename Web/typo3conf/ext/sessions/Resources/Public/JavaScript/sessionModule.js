@@ -16,7 +16,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             timezoneParam: 'UTC',
             allDaySlot: false,
             slotEventOverlap: false,
-            now: '2016-09-01',
+            now: SessionConfig.days[0],
             editable: true,
             aspectRatio: 2.7,
             //scrollTime: '06:00',
@@ -30,29 +30,29 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             header: {
                 left: 'today prev,next',
                 center: 'title',
-                right: 'agendaDay,timelineDay,agendaFourDay,timelineFourDay'
+                right: 'agendaDay,timelineDay,agendaAllDays,timelineAllDays'
             },
-            defaultView: 'agendaFourDay',
+            defaultView: 'agendaFullDay',
             views: {
                 agendaDay: {
-                    buttonText: 'One Day Vertical',
+                    buttonText: 'Day Calendar',
                     type: 'agendaDay',
                     snapDuration: '00:30'
                 },
                 timelineDay: {
-                    buttonText: 'One Day Horizontal',
+                    buttonText: 'Day Schedule',
                     type: 'agendaDay',
                     snapDuration: '00:30'
                 },
-                agendaFourDay: {
-                    buttonText: 'Four Day Vertical',
+                agendaAllDays: {
+                    buttonText: 'Full Calendar',
                     type: 'agenda',
-                    duration: {days: 4}
+                    duration: {days: SessionConfig.days.length}
                 },
-                timelineFourDay: {
-                    buttonText: 'Four Day Horizontal',
+                timelineAllDays: {
+                    buttonText: 'Full Schedule',
                     type: 'timeline',
-                    duration: {days: 4}
+                    duration: {days: SessionConfig.days.length}
                 }
             },
             eventRender: function (event, element) {
@@ -146,8 +146,8 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             console.log('stillevent defined');
             var tempStillEvent = calendar.fullCalendar('clientEvents', event.stillEvent.id)[0];
             if (event.end.toString() == tempStillEvent.end.toString() && event.start.toString() == tempStillEvent.start.toString() && event.resourceId == event.stillEvent.resourceId) {
-                if(view.type != 'agendaFourDay') {
-                    console.log('start/end equals')
+                if(view.type != 'agendaAllDays') {
+                    console.log('start/end equals');
                     var tempStillStart = $.extend({}, tempStillEvent.start);
                     var tempStillEnd = $.extend({}, tempStillEvent.end);
                     var tempStillResourceId = $.extend({}, tempStillEvent.resourceId);

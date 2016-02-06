@@ -182,7 +182,11 @@ class SessionModuleController extends ActionController
 
     public function indexAction()
     {
+        $days = $this->utility->getDaysArray($this->settings['dd']['start'], $this->settings['dd']['end']);
 
+        $this->view->assign('jsconf', json_encode([
+            'days' => $days
+        ]));
     }
 
     public function initializeIndexAction()
@@ -195,11 +199,11 @@ class SessionModuleController extends ActionController
         if( empty($this->settings['dd']['start']) || ($start = date_create($this->settings['dd']['start'])) === false ) {
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
         }
-        $this->settings['dd']['start'] = $start;
+        $this->settings['dd']['start'] = $start->setTime(0,0,0);
         if( empty($this->settings['dd']['end']) || ($end = date_create($this->settings['dd']['end'])) === false ) {
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
         }
-        $this->settings['dd']['end'] = $end;
+        $this->settings['dd']['end'] = $end->setTime(23,59,59);
         if ( $this->settings['dd']['start'] > $this->settings['dd']['end'] ) {
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Developer Days should have started before ending (\'settings.dd.start\' is before \'settings.dd.end\')');
         }
