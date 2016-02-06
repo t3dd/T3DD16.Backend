@@ -59,6 +59,11 @@ class SessionModuleController extends ActionController
     protected $actionsWithoutMenu = [];
 
     /**
+     * @var \TYPO3\Sessions\Planning\Utility
+     */
+    protected $utility;
+
+    /**
      * Initializes the module view.
      *
      * @param ViewInterface $view The view
@@ -301,6 +306,14 @@ class SessionModuleController extends ActionController
     protected function getLanguageService()
     {
         return $GLOBALS['LANG'];
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Planning\Utility $utility
+     */
+    public function injectUtility(\TYPO3\Sessions\Planning\Utility $utility)
+    {
+        $this->utility = $utility;
     }
 
 }
