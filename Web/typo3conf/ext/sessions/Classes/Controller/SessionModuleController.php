@@ -180,6 +180,23 @@ class SessionModuleController extends ActionController
 
     }
 
+    public function initializeIndexAction()
+    {
+        $this->checkAndTransformTypoScriptConfiguration();
+    }
+
+    protected function checkAndTransformTypoScriptConfiguration()
+    {
+        if( empty($this->settings['dd']['start']) || ($start = date_create($this->settings['dd']['start'])) === false ) {
+            throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
+        }
+        $this->settings['dd']['start'] = $start;
+        if( empty($this->settings['dd']['end']) || ($end = date_create($this->settings['dd']['end'])) === false ) {
+            throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
+        }
+        $this->settings['dd']['end'] = $end;
+    }
+
     /**
      * @param string $type = 'proposed'
      * @throws \InvalidArgumentException
