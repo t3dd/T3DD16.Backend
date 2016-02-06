@@ -185,7 +185,12 @@ class SessionModuleController extends ActionController
         $days = $this->utility->getDaysArray($this->settings['dd']['start'], $this->settings['dd']['end']);
 
         $this->view->assign('jsconf', json_encode([
-            'days' => $days
+            'days' => $days,
+            'links' =>  [
+                'getsessions' => $this->getHref('ApiModule', 'listSessions'),
+                'getrooms' => $this->getHref('ApiModule', 'listRooms'),
+                'updatesession' => $this->getHref('ApiModule', 'updateSession')
+            ]
         ]));
     }
 

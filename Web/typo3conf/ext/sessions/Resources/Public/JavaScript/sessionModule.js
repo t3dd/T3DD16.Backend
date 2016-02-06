@@ -69,8 +69,8 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             },
             resourceAreaWidth: '15%',
             resourceLabelText: 'Rooms',
-            resources: calendar.data('listRooms'),
-            events: calendar.data('listSessions'),
+            resources: SessionConfig.links.getrooms,
+            events: SessionConfig.links.getsessions,
             eventDurationEditable: false
         });
     });
@@ -188,7 +188,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
      */
     function saveEvents(firstEvent, secondEvent, delta) {
 
-        var updateSession = calendar.data('updateSession');
+        var updateSession = SessionConfig.links.updatesession;
         var savedFirstEventData = {
             __identity: firstEvent.id,
             begin: firstEvent.start.utc().format(),
@@ -247,7 +247,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
      * Get all resources (like rooms, etc.) from database.
      */
     function getResources() {
-        var linkRooms = calendar.data('listRooms');
+        var linkRooms = SessionConfig.links.getrooms;
         $.ajax({
             url: linkRooms,
             contentType: 'application/json; chaset=UTF-8'
@@ -260,7 +260,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
      * Get all events from database.
      */
     function getEvents() {
-        var linkSession = calendar.data('listSessions');
+        var linkSession = SessionConfig.links.getsessions;
         $.ajax({
             url: linkSession,
             contentType: 'application/json; chaset=UTF-8'
