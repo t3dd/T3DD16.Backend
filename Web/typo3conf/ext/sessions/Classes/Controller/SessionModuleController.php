@@ -94,6 +94,7 @@ class SessionModuleController extends ActionController
 
         if($this->actionMethodName === 'manageAction') {
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'manage.css');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/uri-templates');
         }
 
         if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
@@ -225,8 +226,8 @@ class SessionModuleController extends ActionController
         }
         $this->view->assign('manageConfig', json_encode([
             'updateUrl' => $this->getHref('ApiModule', 'toggle', [
-                'id' => '###id###',
-                'type' => '###type###'
+                'id' => '{id}',
+                'type' => '{type}'
             ])
         ]));
         $this->view->assign('type', $type);

@@ -1,4 +1,4 @@
-require(['manageConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(manageConfig, jQuery, Modal, Notification) {
+require(['manageConfig', 'jquery','TYPO3/CMS/Sessions/uri-templates', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(manageConfig, jQuery, UriTemplate, Modal, Notification) {
     jQuery(document).ready(function($) {
 
         var $tableBody = $('table#tx-sessions-table tbody');
@@ -28,12 +28,11 @@ require(['manageConfig', 'jquery', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend
         /*
             Set the type of the triggered session
          */
-        var updateUrl = manageConfig.updateUrl;
+        var uriTpl = new UriTemplate(manageConfig.updateUrl.replace(/=%7B(\w+)%7D/g, '={$1}'));
         $tableBody.on('click', 'a.session-change-trigger', function() {
             var id = $(this).data('identity');
             var type = $(this).data('state');
-            var url = updateUrl.replace(/%23%23%23id%23%23%23/, id);
-            url = url.replace(/%23%23%23type%23%23%23/, type);
+            var url = uriTpl.fill({id:id, type:type});
             $.ajax(url, {context: $(this).parent(''), dataType: 'json'}).done(function(data){
                 if(data.success === true) {
                     showSessionUpdateNotification(true);
