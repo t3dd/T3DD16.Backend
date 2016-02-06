@@ -1,3 +1,10 @@
 <h1>Session Module</h1>
 
 <div id="calendar" data-update-session="{f:uri.action(action:'updateSession', controller:'ApiModule')}" data-list-sessions="{f:uri.action(action:'listSessions', controller:'ApiModule')}" data-list-rooms="{f:uri.action(action:'listRooms', controller:'ApiModule')}"></div>
+
+<script type="text/javascript">
+define('SessionConfig', function(){
+    return {};
+});
+require(['TYPO3/CMS/Sessions/SessionModule']);
+</script>

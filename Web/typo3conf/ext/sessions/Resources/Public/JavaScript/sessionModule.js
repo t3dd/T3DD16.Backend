@@ -8,7 +8,7 @@
  */
 
 
-define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/scheduler'], function ($, fullcalendar, scheduler) {
+define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/scheduler', 'SessionConfig'], function ($, fullcalendar, scheduler, SessionConfig) {
     var calendar = $('#calendar');
     return $(this.document).ready(function () { // document ready
         calendar.fullCalendar({
