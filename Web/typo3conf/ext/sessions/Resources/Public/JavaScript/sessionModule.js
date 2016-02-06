@@ -32,7 +32,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 center: 'title',
                 right: 'agendaDay,timelineDay,agendaAllDays,timelineAllDays'
             },
-            defaultView: 'agendaFullDay',
+            defaultView: 'agendaAllDays',
             views: {
                 agendaDay: {
                     buttonText: 'Day Calendar',
