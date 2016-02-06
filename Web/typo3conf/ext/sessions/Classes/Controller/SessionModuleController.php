@@ -200,6 +200,9 @@ class SessionModuleController extends ActionController
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
         }
         $this->settings['dd']['end'] = $end;
+        if ( $this->settings['dd']['start'] > $this->settings['dd']['end'] ) {
+            throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Developer Days should have started before ending (\'settings.dd.start\' is before \'settings.dd.end\')');
+        }
     }
 
     /**
