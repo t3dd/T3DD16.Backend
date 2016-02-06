@@ -93,7 +93,10 @@ plugin.tx_sessions {
 	}
 
 	settings {
-
+		dd {
+			start = {$plugin.tx_sessions.settings.dd.start}
+			end = {$plugin.tx_sessions.settings.dd.end}
+		}
 	}
 }
 
