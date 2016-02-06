@@ -42,12 +42,36 @@ class Utility implements SingletonInterface
     }
 
     /**
+     * @param \DateTime $start
+     * @param \DateTime $end
+     * @param string|null $format a valid date format or null which will return raw \DateTime objects rather than formatted strings
+     * @return array
+     * @throws \LogicException
+     */
+    public function getDaysArray(\DateTime $start, \DateTime $end, $format = 'Y-m-d')
+    {
+        if($start > $end) {
+            throw new \LogicException('the given start is after the given end');
+        }
+        $days = [];
+        $interval = new \DateInterval('P1D');
+        $range = new \DatePeriod($start, $interval, $end);
+        foreach($range as $day) {
+            /** @var \DateTime $day */
+            $days[] = ($format === null) ? $day : $day->format($format);
+        }
+        return $days;
+    }
+
+    /**
      * Method checks whether the given session collides with an existing one.
      * Checks if an associated speaker is associated to another session which:
      * - starts during the given session
      * - ends during the given session
+     * - start at the same time as the given session
+     * - ends at the same time as the given session
+     * - surrounds the given session completely
      *
-     * @TODO check only planned sessions
      * @param AbstractSession $session
      * @return array|false colliding sessions or false if no session collides
      */
