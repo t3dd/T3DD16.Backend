@@ -104,7 +104,7 @@ class CreateTimetableService {
 	 * @param boolean $considerTopics
 	 * @return boolean
 	 */
-	public function generateTimetable($config, $sessions, $rooms, $iterations, $considerTopics = false)
+	public function generateTimetable($config, $sessions, $rooms, $iterations = 1, $considerTopics = false)
 	{
 		// Initialise service
 		$this->initialiseService($config, $sessions, $rooms, $considerTopics);
