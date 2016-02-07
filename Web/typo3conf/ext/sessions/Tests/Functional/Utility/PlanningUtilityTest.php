@@ -1,5 +1,5 @@
 <?php
-namespace T3DD\Sessions\Tests\Functional;
+namespace T3DD\Sessions\Tests\Functional\Utility;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -21,10 +21,10 @@ use TYPO3\Sessions\Domain\Model\AnySession;
 use TYPO3\Sessions\Planning\Utility;
 
 /**
- * Class UtilityTest
- * @package T3DD\Sessions\Tests\Unit
+ * Class PlanningUtilityTest
+ * @package T3DD\Sessions\Tests\Functional\Utility
  */
-class UtilityTest extends FunctionalTestCase
+class PlanningUtilityTest extends FunctionalTestCase
 {
     /**
      * @var array
