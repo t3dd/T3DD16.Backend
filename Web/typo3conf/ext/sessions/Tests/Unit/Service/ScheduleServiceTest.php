@@ -271,6 +271,7 @@ class ScheduleServiceTest extends UnitTestCase
 
             $session = new AcceptedSession();
             $session->_setProperty('uid', $i + 3000);
+            $session->_setProperty('votes', rand(0, 500));
             $session->setTitle('Session #' . $i);
             $session->addSpeaker($randomSpeaker);
             $sessions[] = $session;
