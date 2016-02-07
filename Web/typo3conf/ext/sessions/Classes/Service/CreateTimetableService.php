@@ -1,8 +1,41 @@
 <?php
 namespace TYPO3\Sessions\Service;
 
-use TYPO3\Sessions\Domain\Model\Session;
+use TYPO3\Sessions\Domain\Model\AcceptedSession;
 class CreateTimetableService {
+
+
+	/**
+	 * Maximal number of "Dev" sessions for a session time
+	 * For consider topics needed
+	 *
+	 * @var integer
+	 */
+	protected $maxDevSessionsByTimeslot = 4;
+
+	/**
+	 * Maximal number of "DevOps" sessions for a session time
+	 * For consider topics needed
+	 *
+	 * @var integer
+	 */
+	protected $maxDevopsSessionsByTimeslot = 3;
+
+	/**
+	 * Maximal number of "Design" sessions for a session time
+	 * For consider topics needed
+	 *
+	 * @var integer
+	 */
+	protected $maxDesignSessionsByTimeslot = 3;
+
+	/**
+	 * Maximal number of "Community" sessions for a session time
+	 * For consider topics needed
+	 *
+	 * @var integer
+	 */
+	protected $maxCommunitySessionsByTimeslot = 2;
 
 	/**
 	 * Config array
@@ -40,6 +73,13 @@ class CreateTimetableService {
 	protected $considerTopics;
 
 	/**
+	 * Highest amount of time slots
+	 *
+	 * @var integer
+	 */
+	protected $maxTimeSlots = 0;
+
+	/**
 	 * All unassigned sessions
 	 *
 	 * @var array
@@ -69,18 +109,19 @@ class CreateTimetableService {
 		// Initialise service
 		$this->initialiseService($config, $sessions, $rooms, $considerTopics);
 
-		$firstInteration = true;
+		$firstIteration = true;
 
-		while($iterations != 0)
+		while($iterations > 0)
 		{
 			// Shuffle sessions array if it is not the first iteration
-			if(!$firstInteration)
+			if(!$firstIteration)
 			{
 				$this->shuffleSessions();
 			}
 
 			// Start creation timetable
 			$success = $this->startCreateTimetable();
+//			\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($this->matrix);die;
 
 			if($success)
 			{
@@ -88,8 +129,9 @@ class CreateTimetableService {
 			}
 
 			$iterations--;
-			$firstInteration = false;
+			$firstIteration = false;
 		}
+//		\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($this->matrix);die;
 
 		return false;
 	}
@@ -150,6 +192,13 @@ class CreateTimetableService {
 		$matrix = array();
 		foreach($this->config['roomAndTimeData'] as $dayKey => $day)
 		{
+			// Set maxTimeSlots
+			if($day['timeSlots'] > $this->maxTimeSlots)
+			{
+				$this->maxTimeSlots = $day['timeSlots'];
+			}
+
+			// Generate Matrix
 			for($i = 0; $i < $day['timeSlots']; $i++)
 			{
 				for($j = 0; $j < $day['rooms']; $j++)
@@ -164,169 +213,87 @@ class CreateTimetableService {
 	/**
 	 * Check for free spot for given session
 	 *
-	 * @param Session $session
+	 * @param AcceptedSession $session
 	 * @param integer $dayIterator
 	 * @param integer $roomIterator
 	 * @param integer $timeIterator
 	 * @return boolean
 	 */
-	protected function findSpot(Session $session, $dayIterator = 0, $roomIterator = 0, $timeIterator = -1)
+	protected function findSpot(AcceptedSession $session, $dayIterator = 0, $roomIterator = 0, $timeIterator = 0)
 	{
-		// First start on function
-		if($timeIterator == -1)
-		{
-			$timeIterator = count($this->matrix[$dayIterator]) - 1;
-		}
+		// Set timeIndex
+		// Start with highest time slots
+		$timeIndex = (count($this->matrix[$dayIterator]) - 1) - $timeIterator;
 
-		// If slot is free
-		if($this->matrix[$dayIterator][$timeIterator][$roomIterator] == '')
+		// If slot exists and it is free
+		if(array_key_exists($timeIndex, $this->matrix[$dayIterator]) && $this->matrix[$dayIterator][$timeIndex][$roomIterator] == '')
 		{
-			// Check other rooms for speaker overlay and topics
-			foreach($this->matrix[$dayIterator][$timeIterator] as $otherRoom)
+			// Check other rooms for Speaker overlay
+			$spotOk = $this->checkOtherRoomsForSpeakerOverlay($session, $dayIterator, $timeIndex);
+
+			// Consider topics?
+			if($this->considerTopics)
 			{
-				// Other room is still free
-				if($otherRoom == '')
-				{
-					continue;
-				}
-				else // Session in room
-				{
-					// Check speaker overlay
-					$sessionSpeakers = $session->getSpeakers()->toArray();
-					$countSessionSpeakers = count($sessionSpeakers);
-					/**
-					 * @var Session $otherRoom
-					 */
-					$otherSessionSpeakers = $otherRoom->getSpeakers()->toArray();
-					$countOtherSessionSpeakers = count($otherSessionSpeakers);
-					$uniqueArrayCount = count(array_unique(array_merge($sessionSpeakers, $otherSessionSpeakers)));
+				// Checks if session topic would exceed max topics per time slot
+				// TODO: Warte auf Session Model Anpassung ($session->getTopicGroup())
+//				$spotOk = $this->checkMaxTopicsForTimeSlot($session, $dayIterator, $timeIndex);
+			}
 
-					// Speaker not available
-					if ($uniqueArrayCount != ($countSessionSpeakers + $countOtherSessionSpeakers))
-					{
-						break;
-					}
-					else // Speaker is available
-					{
-						// Consider topics?
-						if($this->considerTopics)
-						{
-							// TODO: Extract to function
-							$countDev = 0;
-							$countDevOps = 0;
-							$countDesign = 0;
-							$countCommunity = 0;
-							// Topics von allen Räumen abfragen
-							foreach($this->matrix[$dayIterator][$timeIterator] as $otherRoom2)
-							{
-								if($otherRoom2 == '')
-								{
-									continue;
-								}
-
-								/**
-								 * @var Session $otherRoom2
-								 */
-								switch($otherRoom2->getTopics()->getTopicGroup()->getTitle())
-								{
-									case 'Dev':
-										$countDev++;
-										break;
-									case 'DevOps':
-										$countDevOps++;
-										break;
-									case 'Design':
-										$countDesign++;
-										break;
-									case 'Community':
-										$countCommunity++;
-										break;
-								}
-							}
-
-							$sessionApproved = false;
-							switch($session->getTopics()->getTopicGroup()->getTitle())
-							{
-								case 'Dev':
-									if($countDev < 4)
-										$sessionApproved = true;
-									break;
-								case 'DevOps':
-									if($countDevOps < 3)
-										$sessionApproved = true;
-									break;
-								case 'Design':
-									if($countDesign < 3)
-										$sessionApproved = true;
-									break;
-								case 'Community':
-									if($countDesign < 2)
-										$sessionApproved = true;
-									break;
-							}
-
-							if(!$sessionApproved)
-							{
-								break;
-							}
-
-						}
-
-						// Slot found
-						// Set room, start and end for the session
-						$this->setRoomAndDatesForSession($session, $dayIterator, $timeIterator, $roomIterator);
-						$matrix[$dayIterator][$timeIterator][$roomIterator] = $session;
-						return true;
-					}
-				}
+			// Slot found
+			if($spotOk)
+			{
+				// Set room, start and end for the session
+				$this->setRoomAndDatesForSession($session, $dayIterator, $timeIndex, $roomIterator);
+				$this->matrix[$dayIterator][$timeIndex][$roomIterator] = $session;
+				return true;
 			}
 		}
 
 		// No free slot found
 		// Check next day or next time or next room
 		$dayIterator++;
-		if($dayIterator == count($this->matrix[$dayIterator]))
+		if($dayIterator >= count($this->matrix))
 		{
 			$dayIterator = 0;
-			$timeIterator--;
-			if($timeIterator == -1)
+			$timeIterator++;
+		}
+		if($timeIterator >= $this->maxTimeSlots)
+		{
+			$timeIterator = 0;
+			$timeIndex = (count($this->matrix[$dayIterator]) - 1) - $timeIterator;
+			$roomIterator++;
+			// No slot found -> Cancel
+			if($roomIterator >= count($this->matrix[$dayIterator][$timeIndex]))
 			{
-				$timeIterator = count($this->matrix[$dayIterator]) - 1;
-				$roomIterator++;
-				// No slot found -> Cancel
-				if($roomIterator == count($this->matrix[$dayIterator][$timeIterator]))
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
 		// Check next slot
-		$this->findSpot($session, $dayIterator, $roomIterator, $timeIterator);
-
+		return $this->findSpot($session, $dayIterator, $roomIterator, $timeIterator);
 	}
 
 	/**
 	 * Set room, start and end for the given session
 	 *
-	 * @param Session $session
+	 * @param AcceptedSession $session
 	 * @param integer $dayIterator
-	 * @param integer $timeIterator
+	 * @param integer $timeIndex
 	 * @param integer $roomIterator
 	 * @return void
 	 */
-	protected function setRoomAndDatesForSession(Session $session, $dayIterator, $timeIterator, $roomIterator)
+	protected function setRoomAndDatesForSession(AcceptedSession $session, $dayIterator, $timeIndex, $roomIterator)
 	{
 		// First day only afternoon time slots
 		if($dayIterator == 0)
 		{
-			$timeIterator++;
+			$timeIndex++;
 		}
 
 		// Get data from config
 		$day = $this->config['dates'][$dayIterator];
-		$begin = $this->config['timeSlots'][$timeIterator]['begin'];
-		$end = $this->config['timeSlots'][$timeIterator]['end'];
+		$begin = $this->config['timeSlots'][$timeIndex]['begin'];
+		$end = $this->config['timeSlots'][$timeIndex]['end'];
 
 		// Set room
 		$session->setRoom($this->rooms[$roomIterator]);
@@ -338,6 +305,116 @@ class CreateTimetableService {
 		// Set end
 		$endDateTime = \DateTime::createFromFormat('d.m.Y H:i', $day.' '.$end);
 		$session->setEnd($endDateTime);
+	}
+
+	/**
+	 * Checks speaker overlay in time slot
+	 *
+	 * @param AcceptedSession $session
+	 * @param integer $dayIterator
+	 * @param integer $timeIndex
+	 * @return boolean
+	 */
+	protected function checkOtherRoomsForSpeakerOverlay(AcceptedSession $session, $dayIterator, $timeIndex)
+	{
+		$spotOk = true;
+
+		// Check other rooms for speaker overlay
+		foreach($this->matrix[$dayIterator][$timeIndex] as $otherRoom) {
+			// Other room is still free
+			if ($otherRoom == '')
+			{
+				continue;
+			}
+			else // Session in room
+			{
+				// Check speaker overlay
+				$sessionSpeakers = $session->getSpeakers()->toArray();
+				$countSessionSpeakers = count($sessionSpeakers);
+				/**
+				 * @var AcceptedSession $otherRoom
+				 */
+				$otherSessionSpeakers = $otherRoom->getSpeakers()->toArray();
+				$countOtherSessionSpeakers = count($otherSessionSpeakers);
+				$uniqueArrayCount = count(array_unique(array_merge($sessionSpeakers, $otherSessionSpeakers)));
+
+				// Speaker not available
+				if ($uniqueArrayCount != ($countSessionSpeakers + $countOtherSessionSpeakers)) {
+					$spotOk = false;
+					break;
+				}
+			}
+		}
+
+		return $spotOk;
+	}
+
+	/**
+	 * Checks if session topic would exceed max topics per time slot
+	 *
+	 * @param AcceptedSession $session
+	 * @param integer $dayIterator
+	 * @param integer $timeIndex
+	 * @return boolean
+	 */
+	protected function checkMaxTopicsForTimeSlot(AcceptedSession $session, $dayIterator, $timeIndex)
+	{
+		$spotOk = true;
+
+		$countDev = 0;
+		$countDevOps = 0;
+		$countDesign = 0;
+		$countCommunity = 0;
+
+		// Check topic for each room
+		foreach($this->matrix[$dayIterator][$timeIndex] as $otherRoom)
+		{
+			if($otherRoom == '')
+			{
+				continue;
+			}
+
+			/**
+			 * @var AcceptedSession $otherRoom
+			 */
+			switch($otherRoom->getTopicGroup()->getTitle())
+			{
+				case 'Dev':
+					$countDev++;
+					break;
+				case 'DevOps':
+					$countDevOps++;
+					break;
+				case 'Design':
+					$countDesign++;
+					break;
+				case 'Community':
+					$countCommunity++;
+					break;
+			}
+		}
+
+		switch($session->getTopicGroup()->getTitle())
+		{
+			case 'Dev':
+				if($countDev >= $this->maxDevSessionsByTimeslot)
+					$spotOk = false;
+				break;
+			case 'DevOps':
+				if($countDevOps >= $this->maxDevopsSessionsByTimeslot)
+					$spotOk = false;
+				break;
+			case 'Design':
+				if($countDesign >= $this->maxDesignSessionsByTimeslot)
+					$spotOk = false;
+				break;
+			case 'Community':
+				if($countDesign >= $this->maxCommunitySessionsByTimeslot)
+					$spotOk = false;
+				break;
+		}
+
+		return $spotOk;
 	}
 
 	/**

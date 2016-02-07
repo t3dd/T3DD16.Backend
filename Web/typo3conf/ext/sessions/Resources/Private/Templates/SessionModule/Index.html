@@ -1,3 +1,25 @@
 <h1>Session Module</h1>
 
+<f:if condition="{creationDone}">
+	<f:then>
+		<f:if condition="{incompleteSessions}">
+			<f:then>
+				<div class="alert alert-warning">
+					<strong>{incompleteSessions -> f:count()} session(s) could not be scheduled</strong>
+					<ul>
+						<f:for each="{incompleteSessions}" as="incompleteSession">
+							<li>{incompleteSession.title}</li>
+						</f:for>
+					</ul>
+				</div>
+			</f:then>
+			<f:else>
+				<div class="alert alert-success">
+					Successfully created first timetable
+				</div>
+			</f:else>
+		</f:if>
+	</f:then>
+</f:if>
+
 <div id="calendar"></div>
