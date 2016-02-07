@@ -1,12 +1,12 @@
 <?php
-namespace TYPO3\Sessions\Planning;
+namespace TYPO3\Sessions\Utility;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\Sessions\Domain\Model\AbstractSession;
 use TYPO3\Sessions\Domain\Repository\AnySessionRepository;
 
-class Utility implements SingletonInterface
+class PlanningUtility implements SingletonInterface
 {
 
     /**

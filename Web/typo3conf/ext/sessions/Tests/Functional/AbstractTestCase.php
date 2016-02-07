@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Tests\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\Sessions\Domain\Model\AnySession;
-use TYPO3\Sessions\Planning\Utility;
+use TYPO3\Sessions\Utility\PlanningUtility;
 
 /**
  * Class AbstractTestCase

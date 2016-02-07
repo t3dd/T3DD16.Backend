@@ -59,7 +59,7 @@ class SessionModuleController extends ActionController
     protected $actionsWithoutMenu = [];
 
     /**
-     * @var \TYPO3\Sessions\Planning\Utility
+     * @var \TYPO3\Sessions\Utility\PlanningUtility
      */
     protected $utility;
 
@@ -322,9 +322,9 @@ class SessionModuleController extends ActionController
     }
 
     /**
-     * @param \TYPO3\Sessions\Planning\Utility $utility
+     * @param \TYPO3\Sessions\Utility\PlanningUtility $utility
      */
-    public function injectUtility(\TYPO3\Sessions\Planning\Utility $utility)
+    public function injectUtility(\TYPO3\Sessions\Utility\PlanningUtility $utility)
     {
         $this->utility = $utility;
     }

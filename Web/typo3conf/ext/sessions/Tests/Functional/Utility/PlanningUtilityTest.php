@@ -17,7 +17,7 @@ namespace T3DD\Sessions\Tests\Functional\Utility;
 use T3DD\Sessions\Tests\Functional\AbstractTestCase;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\Sessions\Domain\Model\AnySession;
-use TYPO3\Sessions\Planning\Utility;
+use TYPO3\Sessions\Utility\PlanningUtility;
 
 /**
  * Class PlanningUtilityTest
@@ -26,7 +26,7 @@ use TYPO3\Sessions\Planning\Utility;
 class PlanningUtilityTest extends AbstractTestCase
 {
     /**
-     * @var Utility
+     * @var PlanningUtility
      */
     protected $subject;
 
@@ -37,7 +37,7 @@ class PlanningUtilityTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->subject = $this->getAccessibleMock(Utility::class, array('_dummy'), array());
+        $this->subject = $this->getAccessibleMock(PlanningUtility::class, array('_dummy'), array());
     }
 
     /**
