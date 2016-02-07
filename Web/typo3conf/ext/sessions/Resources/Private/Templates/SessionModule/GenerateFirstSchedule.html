@@ -9,38 +9,26 @@
 		<label for="considerTopics">Consider topics</label><br />
 		<f:form.checkbox name="considerTopics" value="1" id="considerTopics" />
 	</div>
-	<f:comment>
-		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
-			Start scheduling
-		</button>
-	</f:comment>
-	<f:form.submit value="Start scheduling" class="btn btn-default" />
-</f:form>
+	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+		Start scheduling
+	</button>
 
-<!-- Confirm Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header alert alert-warning">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">Warning</h4>
-			</div>
-			<div class="modal-body">
-				All sessions will be scheduled. Already scheduled sessions will be overriden. Would u like do continue?
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" id="confirm" class="btn btn-danger">Start scheduling</button>
+	<!-- Confirm Modal -->
+	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header alert alert-warning">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Warning</h4>
+				</div>
+				<div class="modal-body">
+					All sessions will be scheduled. Already scheduled sessions will be overriden. Would u like do continue?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<f:form.submit value="Start scheduling" class="btn btn-danger" />
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-
-<script>
-	jQuery(document).ready(function($) {
-
-		$('#confirm').on('click', function(){
-			$('#createTimeTableForm').submit;
-		});
-	}
-</script>
+</f:form>
