@@ -1,0 +1,42 @@
+language: php
+
+matrix:
+  fast_finish: true
+  allow_failures:
+  include:
+    - php: 5.5
+    - php: 5.6
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - parallel
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - composer self-update
+  - composer --version
+  - git config --global user.name "Oliver Hader"
+  - git config --global user.email "oliver.hader@typo3.org"
+
+before_script:
+  - composer install -o;
+
+script:
+  - >
+    echo;
+    echo "Running unit test suite";
+    ./bin/phpunit --colors -c Build/UnitTests.xml;
+  - >
+    echo;
+    export typo3DatabaseName="typo3";
+    export typo3DatabaseHost="localhost";
+    export typo3DatabaseUsername="root";
+    export typo3DatabasePassword="";
+    echo "Running functional test suite";
+    ./bin/phpunit --colors -c Build/FunctionalTests.xml;
