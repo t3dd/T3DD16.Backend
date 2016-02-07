@@ -14,8 +14,7 @@ namespace T3DD\Sessions\Tests\Functional\Utility;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Tests\FunctionalTestCase;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use T3DD\Sessions\Tests\Functional\AbstractTestCase;
 use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\Sessions\Domain\Model\AnySession;
 use TYPO3\Sessions\Planning\Utility;
@@ -24,15 +23,8 @@ use TYPO3\Sessions\Planning\Utility;
  * Class PlanningUtilityTest
  * @package T3DD\Sessions\Tests\Functional\Utility
  */
-class PlanningUtilityTest extends FunctionalTestCase
+class PlanningUtilityTest extends AbstractTestCase
 {
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = array(
-        'typo3conf/ext/sessions',
-    );
-
     /**
      * @var Utility
      */
@@ -44,15 +36,6 @@ class PlanningUtilityTest extends FunctionalTestCase
     protected function setUp()
     {
         parent::setUp();
-
-        $this->importDataSet(__DIR__ . '/../Fixtures/Xml/fe_users.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/Xml/tx_sessions_domain_model_session.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/Xml/tx_sessions_session_record_mm.xml');
-
-        ExtensionManagementUtility::addTypoScriptSetup('
-            <INCLUDE_TYPOSCRIPT: source="FILE:EXT:sessions/Configuration/TypoScript/setup.txt">
-            config.tx_extbase.persistence < plugin.tx_sessions.persistence
-        ');
 
         $this->subject = $this->getAccessibleMock(Utility::class, array('_dummy'), array());
     }
