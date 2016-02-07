@@ -37,7 +37,8 @@
   },
   "autoload-dev": {
  		"psr-4": {
-      "TYPO3\\CMS\\Core\\Tests\\": "Web/typo3/sysext/core/Tests/"
+      "TYPO3\\CMS\\Core\\Tests\\": "Web/typo3/sysext/core/Tests/",
+      "T3DD\\Sessions\\Tests\\": "Web/typo3conf/ext/sessions/Tests/"
     }
   },
   "replace": {

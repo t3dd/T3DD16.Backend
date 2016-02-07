@@ -10,6 +10,11 @@
       "TYPO3\\Sessions\\": "Web/typo3conf/ext/sessions/Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "T3DD\\Sessions\\Tests\\": "Web/typo3conf/ext/sessions/Tests/"
+    }
+  },
   "replace": {
     "typo3/sessions": "self.version"
   },
