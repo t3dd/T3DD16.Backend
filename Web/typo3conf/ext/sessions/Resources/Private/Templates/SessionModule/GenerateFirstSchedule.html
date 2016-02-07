@@ -1,59 +1,46 @@
-<f:comment>
-	<f:link.action action="listSessions">Get Sessions</f:link.action>
-	<f:link.action action="listRooms">Get Rooms</f:link.action>
-	<f:form action="updateSession">
-		<f:form.hidden name="session[__identity]" value="1" />
-		<f:form.hidden name="session[date]" value="1472680800" />
-		<f:form.submit value="Update Session" />
-	</f:form>
-	<f:link.action action="updateSession" arguments="{session: {__identity:1,title:'Opening',begin:'2016-02-05T14:00:00+00:00',end:'2016-02-05T15:30:00+00:00',room:'1'}}">Push Session</f:link.action>
-</f:comment>
-<f:form action="testData">
-	Tag 1:
-	<f:form.textfield name="config[roomAndTimeData][0][rooms]" placeholder="Anzahl Räume" value="6"/>
-	<f:form.textfield name="config[roomAndTimeData][0][config[timeSlots]]" placeholder="Anzahl Zeit-Slots" value="2" />
-	<br />
-	Tag 2:
-	<f:form.textfield name="config[roomAndTimeData][1][rooms]" placeholder="Anzahl Räume" value="6" />
-	<f:form.textfield name="config[roomAndTimeData][1][config[timeSlots]]" placeholder="Anzahl Zeit-Slots" value="3" />
-	<br />
-	Tag 3:
-	<f:form.textfield name="config[roomAndTimeData][2][rooms]" placeholder="Anzahl Räume" value="6" />
-	<f:form.textfield name="config[roomAndTimeData][2][config[timeSlots]]" placeholder="Anzahl Zeit-Slots" value="3" />
-	<br />
-	Tag 4:
-	<f:form.textfield name="config[roomAndTimeData][3][rooms]" placeholder="Anzahl Räume" value="6" />
-	<f:form.textfield name="config[roomAndTimeData][3][config[timeSlots]]" placeholder="Anzahl Zeit-Slots" value="1" />
-	<br />
-	Beachte Topics:
-	<f:form.checkbox name="considerTopics" value="1" />
-	<br />
-	TimeSlot 1:
-	<f:form.textfield name="config[timeSlots][0][begin]" placeholder="Startzeit" value="09:00" />
-	<f:form.textfield name="config[timeSlots][0][end]" placeholder="Endzeit" value="10:30" />
-	<br />
-	TimeSlot 2:
-	<f:form.textfield name="config[timeSlots][1][begin]" placeholder="Startzeit" value="14:00" />
-	<f:form.textfield name="config[timeSlots][1][end]" placeholder="Endzeit" value="15:30" />
-	<br />
-	TimeSlot 3:
-	<f:form.textfield name="config[timeSlots][2][begin]" placeholder="Startzeit" value="16:30" />
-	<f:form.textfield name="config[timeSlots][2][end]" placeholder="Endzeit" value="18:00" />
-	<br />
-	Datum Tag 1:
-	<f:form.textfield name="config[dates][0]" placeholder="Datum Tag 1" value="01.09.2016" />
-	<br />
-	Datum Tag 2:
-	<f:form.textfield name="config[dates][1]" placeholder="Datum Tag 2" value="02.09.2016" />
-	<br />
-	Datum Tag 3:
-	<f:form.textfield name="config[dates][2]" placeholder="Datum Tag 3" value="03.09.2016" />
-	<br />
-	Datum Tag 4:
-	<f:form.textfield name="config[dates][3]" placeholder="Datum Tag 4" value="04.09.2016" />
-	<br />
-	Durchläufe: (>1 = shuffle first 9 sessions)
-	<f:form.textfield name="iterations" placeholder="Durchläufe" value="1" />
-	<br />
-	<f:form.submit value="Abschicken" />
+<h1>Generate first schedule</h1>
+
+<f:form action="createTimeTable" id="createTimeTableForm">
+	<div class="form-group">
+		<label for="iterations">Iterations: ( >1 = shuffle first 9 sessions)</label>
+		<f:form.textfield name="iterations" value="1" id="iterations" class="form-control" />
+	</div>
+	<div class="form-group">
+		<label for="considerTopics">Consider topics</label><br />
+		<f:form.checkbox name="considerTopics" value="1" id="considerTopics" />
+	</div>
+	<f:comment>
+		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+			Start scheduling
+		</button>
+	</f:comment>
+	<f:form.submit value="Start scheduling" class="btn btn-default" />
 </f:form>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header alert alert-warning">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Warning</h4>
+			</div>
+			<div class="modal-body">
+				All sessions will be scheduled. Already scheduled sessions will be overriden. Would u like do continue?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" id="confirm" class="btn btn-danger">Start scheduling</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	jQuery(document).ready(function($) {
+
+		$('#confirm').on('click', function(){
+			$('#createTimeTableForm').submit;
+		});
+	}
+</script>

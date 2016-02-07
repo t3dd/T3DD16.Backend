@@ -9,6 +9,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
+use TYPO3\Sessions\Domain\Model\AcceptedSession;
 
 /**
  * Class SessionModuleController
@@ -32,6 +33,24 @@ class SessionModuleController extends ActionController
      * @inject
      */
     protected $sessionRepository;
+
+    /**
+     * @var \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository
+     * @inject
+     */
+    protected $acceptedSessionRepository;
+
+    /**
+     * @var \TYPO3\Sessions\Domain\Repository\AnySessionRepository
+     * @inject
+     */
+    protected $anySessionRepository;
+
+    /**
+     * @var \TYPO3\Sessions\Domain\Repository\ScheduledSessionRepository
+     * @inject
+     */
+    protected $scheduledSessionRepository;
 
     /**
      * @var \TYPO3\Sessions\Service\CreateTimetableService
@@ -181,7 +200,12 @@ class SessionModuleController extends ActionController
         $buttonBar->addButton($shortcutButton);
     }
 
-    public function indexAction()
+    /**
+     *
+     * @param array $incompleteSessions
+     * @param boolean $creationDone
+     */
+    public function indexAction($incompleteSessions = array(), $creationDone = false)
     {
         $days = $this->utility->getDaysArray($this->settings['dd']['start'], $this->settings['dd']['end']);
 
@@ -193,6 +217,11 @@ class SessionModuleController extends ActionController
                 'updatesession' => $this->getHref('ApiModule', 'updateSession')
             ]
         ]));
+
+        $this->view->assignMultiple(array(
+            'incompleteSessions' => $incompleteSessions,
+            'creationDone' => $creationDone
+        ));
     }
 
     public function initializeIndexAction()
@@ -262,31 +291,65 @@ class SessionModuleController extends ActionController
     }
 
     /**
-     * @param array $config
+     * Generate first timetable for sessions
+     *
      * @param boolean $considerTopics
      * @param integer $iterations
+     *
+     * @validate $iterations NumberRangeValidator(minimum = 1, maximum = 20)
      */
-    public function createTimeTableAction($config, $considerTopics, $iterations)
+    public function createTimeTableAction($considerTopics, $iterations)
     {
+	    // Generate Config Array
+	    // TODO: Extract to options or something else
+	    // Room and time slots
+	    $config['roomAndTimeData'][0]['timeSlots'] = 2;
+	    $config['roomAndTimeData'][0]['rooms'] = 6;
+	    $config['roomAndTimeData'][1]['timeSlots'] = 3;
+	    $config['roomAndTimeData'][1]['rooms'] = 6;
+	    $config['roomAndTimeData'][2]['timeSlots'] = 3;
+	    $config['roomAndTimeData'][2]['rooms'] = 6;
+	    $config['roomAndTimeData'][3]['timeSlots'] = 1;
+	    $config['roomAndTimeData'][3]['rooms'] = 6;
+	    // Begin and end of time slots
+	    $config['timeSlots'][0]['begin'] = "09:30";
+	    $config['timeSlots'][0]['end'] = "11:00";
+	    $config['timeSlots'][1]['begin'] = "14:00";
+	    $config['timeSlots'][1]['end'] = "15:30";
+	    $config['timeSlots'][2]['begin'] = "16:30";
+	    $config['timeSlots'][2]['end'] = "18:00";
+	    // Dates of the event
+	    $config['dates'][] = "01.09.2016";
+	    $config['dates'][] = "02.09.2016";
+	    $config['dates'][] = "03.09.2016";
+	    $config['dates'][] = "04.09.2016";
+
+	    // TODO: Alle ScheduledSessions umwandeln in AcceptedSessions
+
 	    // Get all sessions
-	    $sessions = $this->sessionRepository->findAll()->toArray();
+	    $sessions = $this->acceptedSessionRepository->getAllOrderByVoteCount()->toArray();
 	    // Get all rooms
 	    $rooms = $this->roomRepository->findAllLimited(6)->toArray();
 	    // Generate timetable with service
 	    $success = $this->createTimetableService->generateTimetable($config, $sessions, $rooms, $iterations, $considerTopics);
+
 	    $incompleteSessions = array();
 	    if(!$success)
 	    {
 		    $incompleteSessions = $this->createTimetableService->getUnassignedSessions();
 	    }
-
 	    // Save changes on sessions
 	    foreach($this->createTimetableService->getAssignedSessions() as $assignedSession)
 	    {
-		    $this->sessionRepository->update($assignedSession);
+		    // TODO: Umwandeln aller zugewiesenen Sessions in ScheduledSessions
+		    /**
+		     * @var AcceptedSession $assignedSession
+		     */
+		    $assignedSession->_setProperty('type', \TYPO3\Sessions\Domain\Model\ScheduledSession::class);
+		    $this->anySessionRepository->update($assignedSession);
 	    }
 
-	    $this->redirect('index', '', '', array('incompleteSessions' => $incompleteSessions, 'creationDone' => true));
+	    $this->redirect('index', 'SessionModule', 'sessions', array('incompleteSessions' => $incompleteSessions, 'creationDone' => true));
     }
 
     /*public function errorAction(){
