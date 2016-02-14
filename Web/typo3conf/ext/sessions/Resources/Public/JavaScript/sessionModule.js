@@ -11,27 +11,45 @@
 define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/scheduler', 'SessionConfig'], function ($, fullcalendar, scheduler, SessionConfig) {
     var calendar = $('#calendar');
     return $(this.document).ready(function () { // document ready
+        /**
+         * Configuration
+         * @see {@link http://fullcalendar.io/docs/|Fullcalendar Documentation}
+         * @see {@link http://fullcalendar.io/scheduler/|Scheduler Plugin}
+         */
         calendar.fullCalendar({
             schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-            timezoneParam: 'UTC',
-            allDaySlot: false,
-            slotEventOverlap: false,
-            now: SessionConfig.days[0],
-            editable: true,
-            aspectRatio: 2.7,
-            //scrollTime: '06:00',
-            minTime: '05:00',
-            maxTime: '22:00',
+            /**
+             * General Display
+             * @see {@link http://fullcalendar.io/docs/display/}
+             */
+            header: {
+                left: 'today prev,next analyzeBtn',
+                center: 'title',
+                right: 'agendaDay,timelineDay,agendaAllDays,timelineAllDays'
+            },
+            customButtons: {
+                analyzeBtn: {
+                    text: 'Analyze',
+                    click: function() {
+                        analyzeSlot();
+                    }
+                }
+            },
             businessHours: {
                 start: '08:00',
                 end: '20:00',
                 dow: [0, 1, 2, 3, 4, 5, 6, 7]
             },
-            header: {
-                left: 'today prev,next',
-                center: 'title',
-                right: 'agendaDay,timelineDay,agendaAllDays,timelineAllDays'
-            },
+            aspectRatio: 2.7,
+            /**
+             * Timezone
+             * @see {@link http://fullcalendar.io/docs/timezone/}
+             */
+            timezoneParam: 'UTC',
+            /**
+             * Views
+             * @see {@link http://fullcalendar.io/docs/views/}
+             */
             defaultView: 'agendaAllDays',
             views: {
                 agendaDay: {
@@ -55,27 +73,103 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                     duration: {days: SessionConfig.days.length}
                 }
             },
+            /**
+             * Agenda Options
+             * @see {@link http://fullcalendar.io/docs/agenda/}
+             */
+            allDaySlot: false,
+            minTime: '05:00',
+            maxTime: '22:00',
+            slotEventOverlap: false,
+            /**
+             * Current Date
+             * @see {@link http://fullcalendar.io/docs/current_date/}
+             */
+            defaultDate: SessionConfig.days[0],
+            nowIndicator: true,
+            /**
+             * Clicking & Hovering
+             * @see {@link http://fullcalendar.io/docs/mouse/}
+             */
+            dayClick: function( date, jsEvent, view, resourceObj) { },
+            eventClick: function( event, jsEvent, view ) { },
+            /**
+             * Selection
+             * @see {@link http://fullcalendar.io/docs/selection/}
+             */
+            selectable: true,
+            select: function( start, end, jsEvent, view, resource) {},
+            /**
+             * Event Data
+             * @see {@link http://fullcalendar.io/docs/event_data/}
+             */
+            events: SessionConfig.links.getsessions,
+            startParam: 'tx_sessions_web_sessionssession%5Bstart%5D',
+            endParam: 'tx_sessions_web_sessionssession%5Bend%5D',
+            /**
+             * Event Rendering
+             * @see {@link http://fullcalendar.io/docs/event_rendering/}
+             */
             eventRender: function (event, element) {
                 eventRender(event, element);
             },
-            eventOverlap: function (stillEvent, movingEvent) {
-                return overlapEvent(stillEvent, movingEvent);
-            },
+            /**
+             * Event Dragging & Resizing
+             * @see {@link http://fullcalendar.io/docs/event_ui/}
+             */
+            editable: true,
+            eventDurationEditable: false,
             eventDragStart: function (event, jsEvent, ui, view) {
                 eventDragStart(event, jsEvent, ui, view);
             },
+            eventDragStop: function( event, jsEvent, ui, view ) { },
             eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
                 eventDrop(event, delta, revertFunc, jsEvent, ui, view);
             },
+            eventResize: function( event, delta, revertFunc, jsEvent, ui, view ) { },
+            eventOverlap: function (stillEvent, movingEvent) {
+                return overlapEvent(stillEvent, movingEvent);
+            },
+            /**
+             * Dropping External Elements
+             * @see {@link http://fullcalendar.io/docs/dropping/}
+             */
+            droppable: true,
+            dropAccept: '.unscheduled-event',
+            drop: function( date, jsEvent, ui, resourceId ) { },
+            /**
+             * Timeline View
+             * @see {@link http://fullcalendar.io/docs/timeline/}
+             */
             resourceAreaWidth: '15%',
             resourceLabelText: 'Rooms',
-            resources: SessionConfig.links.getrooms,
-            events: SessionConfig.links.getsessions,
-            eventDurationEditable: false
+            /**
+             * Resource Data
+             * @see {@link http://fullcalendar.io/docs/resource_data/}
+             */
+            resources: SessionConfig.links.getrooms
         });
     });
 
     var counter = 0;
+
+    var analyzeSelection = {
+        start: null,
+        end: null
+    };
+
+    function onSelect(start, end, jsEvent, view, resource) {
+        if(view.type === 'agendaAllDays' || view.type === 'timelineAllDays') {
+
+        } else {
+            calendar.fullCalendar( 'unselect' );
+        }
+    }
+
+    function analyzeSlot()
+    {
+
+    }
 
     /**
      * Switch two events when they're overlapping.
