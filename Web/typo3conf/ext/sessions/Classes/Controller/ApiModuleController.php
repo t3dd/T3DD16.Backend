@@ -149,7 +149,7 @@ class ApiModuleController extends ActionController
         // Generate room data
         foreach($allRoomFlatArray as $room)
         {
-            $result[] = array('id' => $room['uid'], 'title' => $room['title']);
+            $result[] = array('id' => $room['uid'], 'title' => $room['title'] . ' (' . $room['size'] . ')');
         }
         return json_encode($result);
 
