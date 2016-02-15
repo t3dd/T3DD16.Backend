@@ -10,7 +10,7 @@
 				<source>You can not update the session, because you are not the owner.</source>
 			</trans-unit>
 			<trans-unit id="validator.speakerCollision">
-                <source>The sessions speaker already speaks at session "%s".</source>
+                <source>One of the sessions speaker already speaks at session "%s".</source>
             </trans-unit>
 			<trans-unit id="module.menu.item.calendar">
 				<source>Calendar</source>
