@@ -244,6 +244,64 @@ class ApiModuleController extends ActionController
 
     }
 
+
+    /**
+     * The error action basically handles validation errors.
+     *
+     * Because there might be a various number, the result always is a collection
+     * of errors.
+     * Since there might be other errors than those related to the actual resource
+     * argument, the error collection is encapsulated in a meta container which
+     * also names the property name of the resource argument.
+     *
+     * E.g.:
+     *
+     * return [
+     *     'errors' => [
+     *         // That's the resource this RESTfull controller targets
+     *         [
+     *             'code' => '1387390192',
+     *             'title' => 'You are not allowed to update comments without changes.',
+     *             'source' => ['pointer' => 'comment'],
+     *         ],
+     *         // That's some other action argument but not the actual resource.
+     *         [
+     *             'code' => '123456789',
+     *             'message' => 'Order only allows "ASC" and "DESC" but "ANY" given.',
+     *             'source' => ['parameter' => 'sort'],
+     *         ],
+     *     ],
+     * ];
+     *
+     * @return string
+     */
+    protected function errorAction()
+    {
+
+        $response = ['errors' => []];
+
+        foreach ($this->arguments->getValidationResults()->getFlattenedErrors() as $fullQualifiedPropertyPath => $propertyErrors) {
+            /** @var \TYPO3\CMS\Extbase\Error\Error $propertyError */
+            foreach ($propertyErrors as $propertyError) {
+                $response['errors'][] = [
+                    'code' => $propertyError->getCode(),
+                    'title' => $propertyError->render(),
+                    'source' => ['pointer' => $fullQualifiedPropertyPath],
+                ];
+            }
+        }
+
+        if($this->response instanceof \TYPO3\CMS\Extbase\Mvc\Web\Response) {
+            $this->response->setStatus(400);
+        }
+
+        return json_encode($response);
+    }
+
+    /*
+     *  INJECTIONS
+     */
+
     /**
      * @param \TYPO3\Sessions\Domain\Repository\RoomRepository $roomRepository
      */
