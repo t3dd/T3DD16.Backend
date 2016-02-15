@@ -4,9 +4,9 @@ namespace TYPO3\Sessions\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
@@ -52,6 +52,11 @@ class ApiModuleController extends ActionController
      * @var \TYPO3\Sessions\Domain\Repository\ScheduledSessionRepository
      */
     protected $sessionRepository;
+
+    /**
+     * @var \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository
+     */
+    protected $acceptedSessionRepository;
 
     /**
      * Initializes the module view.
@@ -164,9 +169,35 @@ class ApiModuleController extends ActionController
         }
     }
 
+    public function initializeScheduleSessionAction()
+    {
+        $this->adjustSessionPropertyMappingConfiguration($this->resourceArgumentName);
+    }
+
     /*public function errorAction(){
         var_dump($this->request->getOriginalRequestMappingResults()->forProperty('session')->getFlattenedErrors());
     }*/
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\AcceptedSession $session
+     * @validate $session \TYPO3\Sessions\Domain\Validator\SpeakerCollisionValidator
+     * @return string
+     */
+    public function scheduleSessionAction(\TYPO3\Sessions\Domain\Model\AcceptedSession $session)
+    {
+        // update properties
+        $this->acceptedSessionRepository->update($session);
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager->persistAll();
+        // change type manually after extbase updated the object
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $res = $db->exec_UPDATEquery('tx_sessions_domain_model_session', 'uid = '.$session->getUid(),
+            ['type' => \TYPO3\Sessions\Domain\Model\ScheduledSession::class]);
+
+        return 'success';
+    }
 
     /**
      * Update session
@@ -227,6 +258,14 @@ class ApiModuleController extends ActionController
     public function injectSessionRepository(\TYPO3\Sessions\Domain\Repository\ScheduledSessionRepository$sessionRepository)
     {
         $this->sessionRepository = $sessionRepository;
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository $acceptedSessionRepository
+     */
+    public function injectAcceptedSessionRepository(\TYPO3\Sessions\Domain\Repository\AcceptedSessionRepository $acceptedSessionRepository)
+    {
+        $this->acceptedSessionRepository = $acceptedSessionRepository;
     }
 
 }
