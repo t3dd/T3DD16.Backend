@@ -203,30 +203,12 @@ class ApiModuleController extends ActionController
      * Update session
      *
      * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
-     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $secondSession
+     * @validate $session \TYPO3\Sessions\Domain\Validator\SpeakerCollisionValidator
      * @return string
      */
-    public function updateSessionAction($session, $secondSession = null)
+    public function updateSessionAction($session)
     {
-        /* // Find session object
-         $sessionObject = $this->sessionRepository->findByUid($session['uid']);
-         // Set session properties
-
-         if(!is_null($sessionObject)) {
-             foreach ($session as $propertyName => $value) {
-                 if($propertyName != 'uid')
-                     $sessionObject->{'set'.ucwords($propertyName)}($value);
-             }
-             $this->sessionRepository->update($sessionObject);
-         }
-         $this->redirect('listSessionAndRoomsForCalender');*/
-
-        //var_dump($session);die;
         $this->sessionRepository->update($session);
-        if($secondSession != null) {
-            $this->sessionRepository->update($secondSession);
-        }
-//        return $session->getTitle();
         return 'success';
     }
 
