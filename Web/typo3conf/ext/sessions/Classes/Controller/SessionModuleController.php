@@ -209,12 +209,17 @@ class SessionModuleController extends ActionController
     {
         $days = $this->utility->getDaysArray($this->settings['dd']['start'], $this->settings['dd']['end']);
 
+        // manually grab accepted sessions since repository will return scheduled sessions as well (which is correct
+        // according to domain modelling)
+        $this->view->assign('unassigned', $this->getFlatSessionObjects('accepted'));
+
         $this->view->assign('jsconf', json_encode([
             'days' => $days,
             'links' =>  [
                 'getsessions' => $this->getHref('ApiModule', 'listSessions'),
                 'getrooms' => $this->getHref('ApiModule', 'listRooms'),
-                'updatesession' => $this->getHref('ApiModule', 'updateSession')
+                'updatesession' => $this->getHref('ApiModule', 'updateSession'),
+                'schedulesession' => $this->getHref('ApiModule', 'scheduleSession')
             ]
         ]));
 

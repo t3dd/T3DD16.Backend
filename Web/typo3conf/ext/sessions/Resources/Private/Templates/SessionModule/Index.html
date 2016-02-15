@@ -21,6 +21,15 @@
 		</f:if>
 	</f:then>
 </f:if>
+<div class="row">
+	<f:if condition="{unassigned}">
+		<div id="unassigned-sessions" class="col-xs-3">
+			<f:for each="{unassigned}" as="event">
+				<div class="fc-event unscheduled-event" data-id="{event.__identity}" data-title="{event.title}">{event.title}</div>
+			</f:for>
+		</div>
+	</f:if>
+</div>
 
 <div id="calendar"></div>
 
@@ -28,5 +37,27 @@
 define('SessionConfig', function(){
     return <f:format.raw>{jsconf}</f:format.raw>;
 });
-require(['TYPO3/CMS/Sessions/SessionModule']);
+require(['TYPO3/CMS/Sessions/SessionModule', 'jquery', 'jquery-ui/draggable'], function(cal, jQuery, draggable) {
+	jQuery(document).ready(function($) {
+		cal.initialize();
+		// make external events droppable
+		$('#unassigned-sessions .unscheduled-event').each(function() {
+			// store data so the calendar knows to render an event upon drop
+			var eventData = {
+				title: $(this).data('title'),
+				id: $(this).data('id'),
+				stick: true
+			 };
+			$(this).data('event', eventData);
+			// make the event draggable using jQuery UI
+			$(this).draggable({
+				zIndex: 999,
+				revert: true,
+				revertDuration: 0
+			});
+
+		});
+
+	});
+});
 </script>
