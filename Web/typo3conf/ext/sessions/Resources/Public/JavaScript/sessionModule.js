@@ -6,8 +6,22 @@
  */
 
 
-define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/scheduler', 'SessionConfig', 'TYPO3/CMS/Backend/Notification', 'moment'],
-    function ($, fullcalendar, scheduler, SessionConfig, Notification, moment) {
+define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/scheduler', 'SessionConfig', 'TYPO3/CMS/Backend/Notification', 'moment', 'TYPO3/CMS/Sessions/rivets'],
+    function ($, fullcalendar, scheduler, SessionConfig, Notification, moment, rivets) {
+
+    var rivetData = {
+        selection: {
+            enabled : false,
+            start : null,
+            end : null
+        },
+        actions: {
+            analyze: analyzeSlot
+        }
+    };
+
+    var rivetViews;
+
     var calendar = {
         instance: $('#calendar'),
         initialize: function () {
@@ -123,6 +137,9 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 select: function (start, end, jsEvent, view, resource) {
                     onSelectionMade(start, end, jsEvent, view, resource);
                 },
+                unselect: function(view, jsEvent) {
+                    onSelectionRemoved(view, jsEvent)
+                },
                 /**
                  * Event Data
                  * @see {@link http://fullcalendar.io/docs/event_data/}
@@ -131,7 +148,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 startParam: 'tx_sessions_web_sessionssession[start]',
                 endParam: 'tx_sessions_web_sessionssession[end]',
                 // changed made here have to be done in externalDrop function as well... for now
-                defaultTimedEventDuration: { hours:1, minutes:30 },
+                defaultTimedEventDuration: moment.duration({ hours:1, minutes:30 }),
                 /**
                  * Event Rendering
                  * @see {@link http://fullcalendar.io/docs/event_rendering/}
@@ -150,7 +167,8 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                     //console.log('eventDragStart'); irrelevant
                 },
                 eventDragStop: function(event, jsEvent, ui, view) {
-                    //console.log('eventDragStop'); irrelevant
+                    //console.log('eventDragStop');
+                    unscheduleIfWanted(event, jsEvent, ui, view);
                 },
                 eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
                     // session was dragged to another position -> start and end changed
@@ -181,42 +199,58 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                  */
                 resources: SessionConfig.links.getrooms
             });
+
+            /**
+             * Initialize rivets {@link http://rivetsjs.com/}
+             * Used as mini MVC :)
+             */
+            rivetView = rivets.bind($('div#rivet-container'), rivetData);
         }
     };
 
-    var analyzeSelection = {
-        start: null,
-        end: null
-    };
+
 
     function onSelectionMade(start, end, jsEvent, view, resource)
     {
+        // happend sometimes. don't know why... prevents wrong callbacks fired
         if(typeof(view) === 'undefined') {
             return;
         }
-        if(view.type === 'agendaAllDays' || view.type === 'timelineAllDays') {
-            analyzeSelection.start = start;
-            analyzeSelection.end = end;
-        } else {
-            calendar.instance.fullCalendar( 'unselect' );
-            resetInternalSelection();
+        // if you draw a selection and then click somewhere there is actually a
+        // selection made with the minimum time span possible. don't register this
+        // as a real selection... rather use this as unselect (whichs callbach is
+        // fired before this one)
+        var duration = calendar.instance.fullCalendar('option', 'slotDuration');
+        if(moment.isDuration(duration) && moment.isMoment(start) && moment.isMoment(end)) {
+            var localStart = start.clone();
+            var localEnd = localStart.add(duration);
+            if(localEnd.isSame(end)) {
+                return;
+            }
         }
+        rivetData.selection.enabled = true;
+        rivetData.selection.start = start;
+        rivetData.selection.end = end;
     }
 
-    function resetInternalSelection()
+    function onSelectionRemoved()
     {
-        analyzeSelection.start = null;
-        analyzeSelection.end = null;
+        rivetData.selection.enabled = false;
+        rivetData.selection.start = null;
+        rivetData.selection.end = null;
     }
 
     function analyzeSlot()
     {
-        if(analyzeSelection.start === null || analyzeSelection.end === null) {
+        if($.type(rivetData) === 'undefined') {
+            return;
+        }
+        if(rivetData.selection.start === null || rivetData.selection.end === null) {
             Notification.info('Warning', 'You must make a selection first!', 1);
             return;
         }
-        console.log('analyzing from %s until %s', analyzeSelection.start, analyzeSelection.end);
-        resetInternalSelection();
+        console.log('analyzing from %s until %s', rivetData.selection.start, rivetData.selection.end);
+        // TODO: implement logic
     }
 
     /**
@@ -336,6 +370,46 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
     }
 
     /**
+     * This callback is fired on eventDragStop.
+     * We check if user dropped the scheduled event on the unschedule area
+     * and do so if positions match.
+     * -> unschedule with backend
+     * -> remove event from fullcalendar
+     * -> add event to the external list for rescheduling
+     * @param event
+     * @param jsEvent
+     * @param ui
+     * @param view
+     */
+    function unscheduleIfWanted(event, jsEvent, ui, view)
+    {
+        var x = jsEvent.clientX, y = jsEvent.clientY;
+        var external_events = $('#unschedule-area');
+        var offset = external_events.offset();
+        offset.right = external_events.width() + offset.left;
+        offset.bottom = external_events.height() + offset.top;
+
+        // Compare
+        if (x >= offset.left
+            && y >= offset.top
+            && x <= offset.right
+            && y <= offset .bottom) {
+
+            // the fullcalendar event was dropped on our unschedule area
+            unscheduleSession(event).done(function(){
+                // successfully unscheduled
+                Notification.success('Event unscheduled!', event.title, 1);
+                // remove it from the calendar
+                removeEvent(event.id);
+                // add back to externals
+                $('div#unassigned-sessions').append('<div class="fc-event unscheduled-event col-xs-3" data-id="'+event.id+'" data-title="'+event.title+'">'+event.title+'</div>');
+            }.bind(this)).fail(function(jqxhr){
+                showErrorMessages('Unscheduling failed!', jqxhr);
+            }.bind(this));
+        }
+    }
+
+    /**
      * Parses the plain text response as json (jquery doesnt do this on error!).
      * Concatenates all found error messages and builds the final errrormsg.
      * @param jqxhr
@@ -396,6 +470,25 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
      * @param event fullcalendar event
      * @returns Deferred jquery ajax deferred for managing callbacks from the calling function
      */
+    function unscheduleSession(event)
+    {
+        var data = buildJsonDataFromEvent(event);
+        return $.ajax({
+            type: 'POST',
+            data: data,
+            url: SessionConfig.links.unschedulesession
+        });
+    }
+
+    /**
+     * Takes a fullcalendar event and persists it to the backend.
+     * Used for Dropping of external events which need special method,
+     * since they also have to change their domain model type from
+     * accepted to scheduled
+     *
+     * @param event fullcalendar event
+     * @returns Deferred jquery ajax deferred for managing callbacks from the calling function
+     */
     function scheduleSession(event)
     {
         var data = buildJsonDataFromEvent(event);
@@ -432,7 +525,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
     {
         "use strict";
         if($.type(element) !== 'undefined') {
-            element.find('.fc-title').append("<br/>" + event.description);
+            element.find('.fc-title').append("<br/><br/>" + event.speakers);
         }
     }
 

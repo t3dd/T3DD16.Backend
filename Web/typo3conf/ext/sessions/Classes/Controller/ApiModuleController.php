@@ -133,12 +133,43 @@ class ApiModuleController extends ActionController
                 'start' => $session['begin'],
                 'end' => $session ['end'],
                 'title' => $session ['title'],
-                'description' => $session ['description']);
+                'description' => $session ['description'],
+                'speakers' => $this->getSpeakers($session['uid'])
+            );
         }
         return json_encode($result);
 
     }
 
+    /**
+     * Fetches the speakers and returns them comma seperated
+     * for displaying in Planning Module
+     *
+     * @param $uid int
+     * @return string
+     */
+    protected function getSpeakers($uid)
+    {
+        if(! \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
+            throw new \InvalidArgumentException('Param $uid must be an integer');
+        }
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $res = $db->exec_SELECTquery('fe_users.username',
+            'tx_sessions_session_record_mm
+            LEFT JOIN fe_users ON tx_sessions_session_record_mm.uid_foreign = fe_users.uid',
+            ' tx_sessions_session_record_mm.uid_local = '.$uid.' AND tx_sessions_session_record_mm.tablenames = \'fe_users\' ',
+            '',
+            ' tx_sessions_session_record_mm.sorting ASC ');
+        if($res === false) {
+            return '';
+        }
+        $speakers = [];
+        while($row = $res->fetch_assoc()) {
+            $speakers[] = $row['username'];
+        }
+        return implode(', ', $speakers);
+    }
 
     /**
      * Get all rooms for FullCalendar
@@ -167,6 +198,24 @@ class ApiModuleController extends ActionController
         if ($this->request->hasArgument('secondSession')) {
             $this->adjustSessionPropertyMappingConfiguration('secondSession');
         }
+    }
+
+    /**
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
+     * @return string
+     */
+    public function unscheduleSessionAction(\TYPO3\Sessions\Domain\Model\ScheduledSession $session)
+    {
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $res = $db->exec_UPDATEquery('tx_sessions_domain_model_session', 'uid = '.$session->getUid(),
+            ['type' => \TYPO3\Sessions\Domain\Model\AcceptedSession::class]);
+        return 'success';
+    }
+
+    public function initializeUnscheduleSessionAction()
+    {
+        $this->adjustSessionPropertyMappingConfiguration($this->resourceArgumentName);
     }
 
     public function initializeScheduleSessionAction()

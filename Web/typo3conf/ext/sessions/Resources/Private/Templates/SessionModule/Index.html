@@ -21,15 +21,53 @@
 		</f:if>
 	</f:then>
 </f:if>
-<div class="row">
-	<f:if condition="{unassigned}">
-		<div id="unassigned-sessions" class="col-xs-3">
+
+
+<div role="tabpanel">
+<ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-DDST" data-store-last-tab="1">
+	<li role="presentation" class="t3js-tabmenu-item">
+		<a href="#DDST-1" title="" aria-controls="DDST-1" role="tab" data-toggle="tab">
+			Unassigned Sessions
+		</a>
+	</li>
+	<li role="presentation" class="t3js-tabmenu-item">
+		<a href="#DDST-2" title="" aria-controls="DDST-2" role="tab" data-toggle="tab">
+			Tools
+		</a>
+	</li>
+</ul>
+<div class="tab-content clearfix">
+	<div role="tabpanel" class="tab-pane" id="DDST-1">
+
+		<div id="unassigned-sessions" class="col-xs-9">
+			<f:if condition="{unassigned}">
 			<f:for each="{unassigned}" as="event">
-				<div class="fc-event unscheduled-event" data-id="{event.__identity}" data-title="{event.title}">{event.title}</div>
+				<!-- changed made here need to be done in js as well! -->
+				<div class="fc-event unscheduled-event col-xs-3" data-id="{event.__identity}" data-title="{event.title}">{event.title}</div>
 			</f:for>
+			</f:if>
 		</div>
-	</f:if>
+
+		<div class="col-xs-3">
+			<div id="unschedule-area">
+				<p>Drop Events here in order to unschedule.</p>
+			</div>
+		</div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="DDST-2">
+		<div id="rivet-container" class="row">
+			<div class="col-xs-5">
+				<span rv-html="selection.start"></span>
+				<span rv-html="selection.end"></span>
+				<button class="btn btn-default" rv-enabled="selection.enabled" rv-on-click="actions.analyze">Analyze</button>
+			</div>
+
+		</div>
+	</div>
 </div>
+</div>
+
+<div class="clearfix"></div>
 
 <div id="calendar"></div>
 
