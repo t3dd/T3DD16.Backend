@@ -100,6 +100,7 @@ class SessionModuleController extends ActionController
         if($this->actionMethodName === 'indexAction') {
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'index.css');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
             $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
