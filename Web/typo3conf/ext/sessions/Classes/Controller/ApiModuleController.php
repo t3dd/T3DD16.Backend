@@ -155,7 +155,7 @@ class ApiModuleController extends ActionController
         }
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
-        $res = $db->exec_SELECTquery('fe_users.username',
+        $res = $db->exec_SELECTquery('fe_users.username, fe_users.name',
             'tx_sessions_session_record_mm
             LEFT JOIN fe_users ON tx_sessions_session_record_mm.uid_foreign = fe_users.uid',
             ' tx_sessions_session_record_mm.uid_local = '.$uid.' AND tx_sessions_session_record_mm.tablenames = \'fe_users\' ',
@@ -166,7 +166,7 @@ class ApiModuleController extends ActionController
         }
         $speakers = [];
         while($row = $res->fetch_assoc()) {
-            $speakers[] = $row['username'];
+            $speakers[] = (empty($row['name'])) ? $row['username'] : $row['name'];
         }
         return implode(', ', $speakers);
     }
