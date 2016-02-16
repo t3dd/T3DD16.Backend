@@ -103,9 +103,15 @@ class SessionModuleController extends ActionController
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
             $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
+                'paths' => [
+                    'sightglass' => $this->getRelativeExtensionPath().'Resources/Public/JavaScript/sightglass'
+                ],
                 'shim'  => [
                     'TYPO3/CMS/Sessions/scheduler' => [
                         'deps'  =>  ['TYPO3/CMS/Sessions/fullcalendar']
+                    ],
+                    'TYPO3/CMS/Sessions/rivets' => [
+                        'deps' => ['sightglass']
                     ]
                 ]
             ]);
