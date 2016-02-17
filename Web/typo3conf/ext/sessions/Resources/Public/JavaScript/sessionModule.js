@@ -308,6 +308,13 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             Notification.info('Warning', 'You must make a selection first!', 1);
             return;
         }
+        // first "validate" the selection. analyzation is intended for one slot and shows comparison
+        // between sessions which are held simultaneously (topics, vote count and room size etc).
+        var duration = moment.duration(moment(rivetData.selection.end).diff(rivetData.selection.start));
+        if(duration.asDays() >= 1 || duration.asHours() > 2) {
+            Notification.info('Length exceeded', 'This tool is not intended for large selections', 3);
+            return;
+        }
         console.log('analyzing from %s until %s', rivetData.selection.start.format(), rivetData.selection.end.format());
         calendar.instance.fullCalendar('unselect');
     }
