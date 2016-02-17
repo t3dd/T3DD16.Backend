@@ -15,8 +15,13 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             start : null,
             end : null
         },
+        swap: {
+            enabled: false,
+            sessions: []
+        },
         actions: {
-            analyze: analyzeSlot
+            analyze: analyzeSlot,
+            swap: function(){console.log('swap'); console.log(rivetData.swap.sessions);}
         }
     };
 
@@ -128,6 +133,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 eventClick: function (event, jsEvent, view) {
                     // clicked on an event
                     console.log('eventClick');
+                    onEventClickedSwapedHandler(event, jsEvent, view);
                 },
                 /**
                  * Selection
@@ -138,7 +144,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                     onSelectionMade(start, end, jsEvent, view, resource);
                 },
                 unselect: function(view, jsEvent) {
-                    onSelectionRemoved(view, jsEvent)
+                    //onSelectionRemoved(view, jsEvent)
                 },
                 /**
                  * Event Data
@@ -204,12 +210,57 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
              * Initialize rivets {@link http://rivetsjs.com/}
              * Used as mini MVC :)
              */
+            rivets.formatters.date = function(value) {
+                return moment(value).format('DD.MM.YYYY HH:mm');
+            };
+            // really didn't get rivets completely yet... sometimes you need a formatter if you want the values showing up...
+            rivets.formatters.passthru = function(value) {
+                return value;
+            };
             rivetView = rivets.bind($('div#rivet-container'), rivetData);
         }
     };
 
 
+    function onEventClickedSwapedHandler(event, jsEvent, view)
+    {
+        // catch user clicking on the same event over and over again. swapping an event with itself doesn't make sense
+        if(rivetData.swap.sessions.length >= 1) {
+            var cancel = false;
+            $.each(rivetData.swap.sessions, function(index, el) {
+                if(el.id == event.id) {
+                    cancel = true;
+                }
+            });
+            if(cancel === true) {
+                return;
+            }
+        }
+        var data = {
+            title: event.title,
+            speakers: event.speakers,
+            id: event.id,
+            start: event.start,
+            end: event.end
+        };
+        rivetData.swap.sessions.push(data);
+        if(rivetData.swap.sessions.length > 2) {
+            // more than two is more too many for swapping :)
+            // simple slice should work since this will fire once there are 3 sessions present
+            rivetData.swap.sessions = rivetData.swap.sessions.slice(1);
+        }
+        rivetData.swap.enabled = rivetData.swap.sessions.length >= 2;
+    }
 
+    /**
+     * Callback fired when the user makes a selection. Basically we filter out selections
+     * that are only 1 grid element long (represents unselect).
+     * @param start
+     * @param end
+     * @param jsEvent
+     * @param view
+     * @param resource
+     */
     function onSelectionMade(start, end, jsEvent, view, resource)
     {
         // happend sometimes. don't know why... prevents wrong callbacks fired
@@ -233,13 +284,21 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
         rivetData.selection.end = end;
     }
 
+    /**
+     * Callback fired when the user removes the selection from calendar.
+     */
     function onSelectionRemoved()
     {
+        console.log('onSelectionRemoved');
         rivetData.selection.enabled = false;
         rivetData.selection.start = null;
         rivetData.selection.end = null;
     }
 
+    /**
+     * This method will make an modal ajax call for analysing the previous
+     * selected slot.
+     */
     function analyzeSlot()
     {
         if($.type(rivetData) === 'undefined') {
@@ -249,8 +308,8 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             Notification.info('Warning', 'You must make a selection first!', 1);
             return;
         }
-        console.log('analyzing from %s until %s', rivetData.selection.start, rivetData.selection.end);
-        // TODO: implement logic
+        console.log('analyzing from %s until %s', rivetData.selection.start.format(), rivetData.selection.end.format());
+        calendar.instance.fullCalendar('unselect');
     }
 
     /**

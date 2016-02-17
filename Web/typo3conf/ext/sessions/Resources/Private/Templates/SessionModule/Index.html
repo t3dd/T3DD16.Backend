@@ -55,13 +55,31 @@
 		</div>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="DDST-2">
-		<div id="rivet-container" class="row">
+		<div id="rivet-container">
 			<div class="col-xs-5">
-				<span rv-html="selection.start"></span>
-				<span rv-html="selection.end"></span>
-				<button class="btn btn-default" rv-enabled="selection.enabled" rv-on-click="actions.analyze">Analyze</button>
+				<h3>Analyze a selected Slot</h3>
+				<p rv-unless="selection.enabled" class="help-block">
+					Draw a selection in calendar and press the button. This will show you a short summary about the
+					sessions in this time slot.
+				</p>
+				<p rv-if="selection.enabled">
+					Begin: {selection.start | date}<br />
+					End: {selection.end | date}
+				</p>
+				<button class="btn btn-default btn-block" rv-enabled="selection.enabled" rv-on-click="actions.analyze">Analyze</button>
 			</div>
-
+			<div class="col-xs-5">
+				<h3>Swap two Sessions</h3>
+				<div rv-if="swap.sessions" class="row">
+					<div rv-each-event="swap.sessions" class="col-xs-6">
+						<strong rv-html="event.title"></strong><br>
+						<em rv-html="event.speakers"></em>
+						<p>{event.start | date} - {event.end | date}<br>
+							</p>
+					</div>
+				</div>
+				<button class="btn btn-default btn-block" rv-enabled="swap.enabled" rv-on-click="actions.swap">Swap</button>
+			</div>
 		</div>
 	</div>
 </div>
