@@ -129,11 +129,13 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 dayClick: function (date, jsEvent, view, resourceObj) {
                     // clicked on a day -> basically not an event
                     console.log('dayClick');
+                    clearSwapEvents();
+                    onSelectionRemoved();
                 },
                 eventClick: function (event, jsEvent, view) {
                     // clicked on an event
                     console.log('eventClick');
-                    onEventClickedSwapedHandler(event, jsEvent, view);
+                    onEventClickedSwapHandler(event, jsEvent, view);
                 },
                 /**
                  * Selection
@@ -221,8 +223,28 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
         }
     };
 
+    /**
+     * Clears the currently stored events for swapping.
+     * Fired from different callbacks that are fired when
+     * the user does NOT click on an event.
+     * @return void
+     */
+    function clearSwapEvents()
+    {
+        rivetData.swap.sessions = [];
+        rivetData.swap.enabled = false;
+    }
 
-    function onEventClickedSwapedHandler(event, jsEvent, view)
+    /**
+     * Called when user clicked on an event. Handles related to the swapping tool.
+     * Adds the clicked event to the swap selection. Catches case when user clicks
+     * on the same event more than once. Limits the selections to 2 if there are
+     * more than 2 events saved for swapping.
+     * @param event
+     * @param jsEvent
+     * @param view
+     */
+    function onEventClickedSwapHandler(event, jsEvent, view)
     {
         // catch user clicking on the same event over and over again. swapping an event with itself doesn't make sense
         if(rivetData.swap.sessions.length >= 1) {
@@ -264,7 +286,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
     function onSelectionMade(start, end, jsEvent, view, resource)
     {
         // happend sometimes. don't know why... prevents wrong callbacks fired
-        if(typeof(view) === 'undefined') {
+        if(typeof view === 'undefined') {
             return;
         }
         // if you draw a selection and then click somewhere there is actually a
@@ -289,7 +311,6 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
      */
     function onSelectionRemoved()
     {
-        console.log('onSelectionRemoved');
         rivetData.selection.enabled = false;
         rivetData.selection.start = null;
         rivetData.selection.end = null;
@@ -566,8 +587,8 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
     }
 
     /**
-     * Takes a fullcalendar event and persists the changed to the backend.
-     * Default function for changed made to already scheduled sessions.
+     * Takes a fullcalendar event and persists the changes to the backend.
+     * Default function for changes made to already scheduled sessions.
      *
      * @param event fullcalendar event
      * @returns Deferred jquery ajax deferred for managing callbacks from the calling function
@@ -590,7 +611,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
     function eventRender(event, element)
     {
         "use strict";
-        if($.type(element) !== 'undefined') {
+        if($.type(element) !== 'undefined' && $.type(event.speakers) !== 'undefined') {
             element.find('.fc-title').append("<br/><br/>" + event.speakers);
         }
     }

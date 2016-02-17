@@ -76,6 +76,17 @@ class ApiModuleController extends ActionController
     }
 
     /**
+     * @param $start \DateTime
+     * @param $end \DateTime
+     * @return string
+     */
+    public function analyzeAction($start, $end)
+    {
+
+        return '{}';
+    }
+
+    /**
      *
      * @param \TYPO3\Sessions\Domain\Model\AnySession $session
      * @return string

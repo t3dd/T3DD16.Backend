@@ -62,22 +62,38 @@
 					Draw a selection in calendar and press the button. This will show you a short summary about the
 					sessions in this time slot.
 				</p>
-				<p rv-if="selection.enabled">
-					Begin: {selection.start | date}<br />
-					End: {selection.end | date}
-				</p>
+				<table rv-if="selection.enabled" class="table table-bordered">
+					<tr>
+						<td><strong>Begin</strong></td>
+						<td>{selection.start | date}</td>
+					</tr>
+					<tr>
+						<td><strong>End</strong></td>
+						<td>{selection.end | date}</td>
+					</tr>
+				</table>
 				<button class="btn btn-default btn-block" rv-enabled="selection.enabled" rv-on-click="actions.analyze">Analyze</button>
 			</div>
 			<div class="col-xs-5">
 				<h3>Swap two Sessions</h3>
-				<div rv-if="swap.sessions" class="row">
-					<div rv-each-event="swap.sessions" class="col-xs-6">
-						<strong rv-html="event.title"></strong><br>
-						<em rv-html="event.speakers"></em>
-						<p>{event.start | date} - {event.end | date}<br>
+				<table rv-if="swap.sessions" class="table table-bordered">
+					<tr>
+						<td rv-each-event="swap.sessions">
+							<strong rv-html="event.title"></strong><br>
 							</p>
-					</div>
-				</div>
+						</td>
+					</tr>
+					<tr>
+						<td rv-each-event="swap.sessions">
+							<em rv-html="event.speakers"></em>
+						</td>
+					</tr>
+					<tr>
+						<td rv-each-event="swap.sessions">
+							{event.start | date} - {event.end | date}
+						</td>
+					</tr>
+				</table>
 				<button class="btn btn-default btn-block" rv-enabled="swap.enabled" rv-on-click="actions.swap">Swap</button>
 			</div>
 		</div>

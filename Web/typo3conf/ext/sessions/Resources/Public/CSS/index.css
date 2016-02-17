@@ -11,6 +11,9 @@
     background-color: #ededed;
     padding: 1em 0;
 }
+.tab-pane.active {
+    min-height: 250px;
+}
 #calendar {
     margin-top: 1em;
 }
