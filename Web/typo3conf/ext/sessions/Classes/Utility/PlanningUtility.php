@@ -100,31 +100,32 @@ class PlanningUtility implements SingletonInterface
         $params[':exludedsession'] = $session->getUid();
         $params[':scheduledtype'] = \TYPO3\Sessions\Domain\Model\ScheduledSession::class;
 
-        $stmt = $this->db->prepare_SELECTquery(' DISTINCT session.uid AS uid ',
-            ' tx_sessions_domain_model_session AS session
-                LEFT JOIN tx_sessions_session_record_mm AS srmm ON session.uid = srmm.uid_local AND srmm.tablenames = \'fe_users\'
+        $stmt = $this->db->prepare_SELECTquery(' DISTINCT tx_sessions_domain_model_session.uid AS uid ',
+            ' tx_sessions_domain_model_session
+                LEFT JOIN tx_sessions_session_record_mm AS srmm ON tx_sessions_domain_model_session.uid = srmm.uid_local AND srmm.tablenames = \'fe_users\'
                 LEFT JOIN fe_users AS user ON srmm.uid_foreign = user.uid
             ',
             ' user.uid IN ('.$inStmt.')
                 AND (
                     /* this session starts while another session is running (start overlaps with other session) */
-                    ( session.begin > :start AND session.begin < :end )
+                    ( tx_sessions_domain_model_session.begin > :start AND tx_sessions_domain_model_session.begin < :end )
                     OR
                     /* this session ends while another session is running (end overlaps with other session) */
-                    ( session.end > :start AND session.end < :end )
+                    ( tx_sessions_domain_model_session.end > :start AND tx_sessions_domain_model_session.end < :end )
                     OR
                     /* this session starts at the same time */
-                    session.begin = :start
+                    tx_sessions_domain_model_session.begin = :start
                     OR
                     /* this session ends at the same time */
-                    session.end = :end
+                    tx_sessions_domain_model_session.end = :end
                     OR
                     /* this session starts before and ends after */
-                    (session.begin < :start AND session.end > :end)
+                    (tx_sessions_domain_model_session.begin < :start AND tx_sessions_domain_model_session.end > :end)
                 )
-                AND session.uid <> :exludedsession
-                AND session.type = :scheduledtype
-            ', '', ' session.uid DESC ', '', $params);
+                AND tx_sessions_domain_model_session.uid <> :exludedsession
+                AND tx_sessions_domain_model_session.type = :scheduledtype
+                '.\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_sessions_domain_model_session').'
+            ', '', ' tx_sessions_domain_model_session.uid DESC ', '', $params);
 
         if($stmt->execute() && $stmt->rowCount() > 0) {
             if($stmt->rowCount() === 1) {

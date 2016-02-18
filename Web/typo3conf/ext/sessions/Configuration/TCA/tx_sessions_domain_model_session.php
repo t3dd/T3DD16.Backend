@@ -26,9 +26,7 @@ return [
         'default_sortby' => 'ORDER BY begin ASC, title ASC',
         'delete' => 'deleted',
         'enablecolumns' => [
-            'disabled' => 'hidden',
-            'starttime' => 'starttime',
-            'endtime' => 'endtime',
+            'disabled' => 'hidden'
         ],
         'searchFields' => 'title',
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/Session.png'
