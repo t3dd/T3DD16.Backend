@@ -73,10 +73,15 @@ class PlanningUtility implements SingletonInterface
      * - surrounds the given session completely
      *
      * @param AbstractSession $session
+     * @param array $exclude array of uids which should be exluded in the check (the given session is excluded by default)
      * @return array|false colliding sessions or false if no session collides
+     * @throws \InvalidArgumentException
      */
-    public function getCollidingSessions(AbstractSession $session)
+    public function getCollidingSessions(AbstractSession $session, $exclude = [])
     {
+        if(!is_array($exclude)) {
+            throw new \InvalidArgumentException('$exclude is not of type array. should be an array of uids');
+        }
         $speakers = $session->getSpeakers();
         // array holding named placeholder values
         $params = [];
@@ -94,10 +99,26 @@ class PlanningUtility implements SingletonInterface
         }
         // flatten the dynamic placeholders for later IN statement use
         $inStmt = implode(',', $inStmt);
+        // helper for dynamic NOT IN statement
+        if(count($exclude) > 0) {
+            $i = 0;
+            $excludeUids = array_merge([$session->getUid()], $exclude);
+            $excludeInStmt = [];
+            foreach($excludeUids as $eUid) {
+                // build unique placeholder name
+                $placeholder = ':excludessessions' . $i++;
+                // assign the correct uid to the placeholder
+                $params[$placeholder] = $eUid;
+                // store the dynamic placeholder for later
+                $excludeInStmt[] = $placeholder;
+            }
+            // flatten dynamic placeholders for usage in IN statement
+            $excludeInStmt = implode(', ', $excludeInStmt);
+        }
         // set the rest of param values (respect DMBS datetime format)
         $params[':start'] = $session->getBegin()->format($this->dbDateTimeFormat);
         $params[':end'] = $session->getEnd()->format($this->dbDateTimeFormat);
-        $params[':exludedsession'] = $session->getUid();
+        $params[':excludedsession'] = $session->getUid();
         $params[':scheduledtype'] = \TYPO3\Sessions\Domain\Model\ScheduledSession::class;
 
         $stmt = $this->db->prepare_SELECTquery(' DISTINCT tx_sessions_domain_model_session.uid AS uid ',
@@ -122,7 +143,7 @@ class PlanningUtility implements SingletonInterface
                     /* this session starts before and ends after */
                     (tx_sessions_domain_model_session.begin < :start AND tx_sessions_domain_model_session.end > :end)
                 )
-                AND tx_sessions_domain_model_session.uid <> :exludedsession
+                AND tx_sessions_domain_model_session.uid ' . (isset($excludeInStmt) ? 'NOT IN(' . $excludeInStmt .')' : '<> :excludedsession') . '
                 AND tx_sessions_domain_model_session.type = :scheduledtype
                 '.\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_sessions_domain_model_session').'
             ', '', ' tx_sessions_domain_model_session.uid DESC ', '', $params);
