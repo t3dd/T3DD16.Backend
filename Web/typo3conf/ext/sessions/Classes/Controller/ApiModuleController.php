@@ -76,6 +76,62 @@ class ApiModuleController extends ActionController
     }
 
     /**
+     * Convenience method. Simplifies swapping process in FE.
+     *
+     * @param $first \TYPO3\Sessions\Domain\Model\ScheduledSession
+     * @param $second \TYPO3\Sessions\Domain\Model\ScheduledSession
+     * @return string
+     */
+    public function swapSessionsAction(\TYPO3\Sessions\Domain\Model\ScheduledSession $first, \TYPO3\Sessions\Domain\Model\ScheduledSession $second)
+    {
+        // first swap the data...
+        $swapData = [
+            'begin' => $first->getBegin(),
+            'end'   => $first->getEnd(),
+            'room' => $first->getRoom()
+        ];
+        $first->setBegin($second->getBegin());
+        $first->setEnd($second->getEnd());
+        $first->setRoom($second->getRoom());
+
+        $second->setBegin($swapData['begin']);
+        $second->setEnd($swapData['end']);
+        $second->setRoom($swapData['room']);
+
+        /** @var \TYPO3\Sessions\Utility\PlanningUtility $planningUtility */
+        $planningUtility = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\Sessions\Utility\PlanningUtility::class);
+        $firstCollides = $planningUtility->getCollidingSessions($first, [$second->getUid()]);
+        $secondCollides = $planningUtility->getCollidingSessions($second, [$first->getUid()]);
+        $errors = [];
+        if(is_array($firstCollides)) {
+            foreach($firstCollides as $session) {
+                /** @var \TYPO3\Sessions\Domain\Model\ScheduledSession $session */
+                $errors[] = 'One speaker of the session "'.$first->getTitle().'" already speaks at session "'.$session->getTitle().'"';
+            }
+        }
+        if(is_array($secondCollides)) {
+            foreach($secondCollides as $session) {
+                /** @var \TYPO3\Sessions\Domain\Model\ScheduledSession $session */
+                $errors[] = 'One speaker of the session "'.$second->getTitle().'" already speaks at session "'.$session->getTitle().'"';
+            }
+        }
+        if(count($errors) === 0) {
+            $this->sessionRepository->update($first);
+            $this->sessionRepository->update($second);
+            /** @var PersistenceManager $persistenceManager */
+            $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
+            $persistenceManager->persistAll();
+        }
+        return !empty($errors) ? $this->customErrorAction($errors) : '{}';
+    }
+
+    public function initializeSwapSessionsAction()
+    {
+        $this->adjustSessionPropertyMappingConfiguration('first');
+        $this->adjustSessionPropertyMappingConfiguration('second');
+    }
+
+    /**
      * @param $start \DateTime
      * @param $end \DateTime
      * @return string
@@ -286,6 +342,23 @@ class ApiModuleController extends ActionController
 
     }
 
+    /**
+     * @param $errors array
+     * @return string
+     */
+    protected function customErrorAction($errors)
+    {
+        $response = ['errors' => []];
+        foreach($errors as $error) {
+            $response['errors'][] = [
+                'title' => $error
+            ];
+        }
+        if($this->response instanceof \TYPO3\CMS\Extbase\Mvc\Web\Response) {
+            $this->response->setStatus(400);
+        }
+        return json_encode($response);
+    }
 
     /**
      * The error action basically handles validation errors.

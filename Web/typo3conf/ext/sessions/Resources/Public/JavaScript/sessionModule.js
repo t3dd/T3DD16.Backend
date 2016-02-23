@@ -21,7 +21,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
         },
         actions: {
             analyze: analyzeSlot,
-            swap: function(){console.log('swap'); console.log(rivetData.swap.sessions);}
+            swap: swapEvents
         }
     };
 
@@ -222,6 +222,32 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
             rivetView = rivets.bind($('div#rivet-container'), rivetData);
         }
     };
+
+    function swapEvents()
+    {
+        var data = {
+            tx_sessions_web_sessionssession: {
+                session: {
+
+                }
+            }
+        };
+        var first = buildJsonDataFromEvent(rivetData.swap.sessions[0]);
+        var second = buildJsonDataFromEvent(rivetData.swap.sessions[1]);
+        data.tx_sessions_web_sessionssession['first'] = first.tx_sessions_web_sessionssession.session;
+        data.tx_sessions_web_sessionssession['second'] = second.tx_sessions_web_sessionssession.session;
+        $.ajax({
+            type: 'POST',
+            data: data,
+            url: SessionConfig.links.swapsessions
+        }).done(function(){
+            clearSwapEvents();
+            Notification.success('Success', 'Swapped Events', 1);
+            calendar.instance.fullCalendar('refetchEvents');
+        }.bind(this)).fail(function(jqxhr){
+            showErrorMessages('Swapping failed', jqxhr);
+        }.bind(this));
+    }
 
     /**
      * Clears the currently stored events for swapping.
