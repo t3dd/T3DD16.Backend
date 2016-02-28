@@ -279,7 +279,7 @@ return [
                     ['ScheduledSession', 'TYPO3\Sessions\Domain\Model\ScheduledSession'],
                     ['DeclinedSession', 'TYPO3\Sessions\Domain\Model\DeclinedSession'],
                 ],
-                'default' => 'TYPO3\Sessions\Domain\Model\Session'
+                'default' => 'TYPO3\Sessions\Domain\Model\AnySession'
             ]
         ],
     ],
