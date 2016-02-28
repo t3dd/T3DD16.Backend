@@ -97,7 +97,10 @@ define('TYPO3/CMS/Sessions/Calendar/Swap', ['TYPO3/CMS/Sessions/Calendar/Module'
             if(this.rivetData.sessions.length > 2) {
                 // more than two is more too many for swapping :)
                 // simple slice should work since this will fire once there are 3 sessions present
-                this.rivetData.sessions = this.rivetData.sessions.slice(1);
+                // rivet does not track slice calls! use shift workaround
+                while(this.rivetData.sessions.length > 2) {
+                    this.rivetData.sessions.shift();
+                }
             }
             this.rivetData.enabled = this.rivetData.sessions.length >= 2;
         };
