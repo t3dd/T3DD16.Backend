@@ -6,26 +6,8 @@
  */
 
 
-define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/scheduler', 'SessionConfig', 'TYPO3/CMS/Backend/Notification', 'moment', 'TYPO3/CMS/Sessions/rivets'],
-    function ($, fullcalendar, scheduler, SessionConfig, Notification, moment, rivets) {
-
-    var rivetData = {
-        selection: {
-            enabled : false,
-            start : null,
-            end : null
-        },
-        swap: {
-            enabled: false,
-            sessions: []
-        },
-        actions: {
-            analyze: analyzeSlot,
-            swap: swapEvents
-        }
-    };
-
-    var rivetViews;
+define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions/Contrib/scheduler', 'TYPO3/CMS/Sessions/Calendar/Utility', 'SessionConfig', 'TYPO3/CMS/Backend/Notification', 'moment', 'TYPO3/CMS/Sessions/Contrib/rivets'],
+    function ($, fullcalendar, scheduler, utility, SessionConfig, Notification, moment, rivets) {
 
     var calendar = {
         instance: $('#calendar'),
@@ -128,14 +110,10 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                  */
                 dayClick: function (date, jsEvent, view, resourceObj) {
                     // clicked on a day -> basically not an event
-                    console.log('dayClick');
-                    clearSwapEvents();
-                    onSelectionRemoved();
+                    callModule('dayClick', arguments);
                 },
-                eventClick: function (event, jsEvent, view) {
-                    // clicked on an event
-                    console.log('eventClick');
-                    onEventClickedSwapHandler(event, jsEvent, view);
+                eventClick: function () {
+                    callModule('eventClick', arguments);
                 },
                 /**
                  * Selection
@@ -143,10 +121,10 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                  */
                 selectable: true,
                 select: function (start, end, jsEvent, view, resource) {
-                    onSelectionMade(start, end, jsEvent, view, resource);
+                    callModule('select', arguments);
                 },
                 unselect: function(view, jsEvent) {
-                    //onSelectionRemoved(view, jsEvent)
+                    callModule('unselect', arguments);
                 },
                 /**
                  * Event Data
@@ -172,21 +150,18 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                 eventDurationEditable: true,
                 eventOverlap: false,
                 eventDragStart: function(event, jsEvent, ui, view) {
-                    //console.log('eventDragStart'); irrelevant
+                    callModule('eventDragStart', arguments);
                 },
                 eventDragStop: function(event, jsEvent, ui, view) {
-                    //console.log('eventDragStop');
-                    unscheduleIfWanted(event, jsEvent, ui, view);
+                    callModule('eventDragStop', arguments);
                 },
                 eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
                     // session was dragged to another position -> start and end changed
-                    //console.log('eventDrop');
-                    eventChanged(event, delta, revertFunc, jsEvent, ui, view);
+                    callModule('eventDrop', arguments);
                 },
                 eventResize: function(event, delta, revertFunc, jsEvent, ui, view) {
                     // session was resized --> start or end changed
-                    //console.log('eventResize');
-                    eventChanged(event, delta, revertFunc, jsEvent, ui, view);
+                    callModule('eventResize', arguments);
                 },
                 /**
                  * Dropping External Elements
@@ -194,7 +169,9 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
                  */
                 droppable: true,
                 dropAccept: '.unscheduled-event',
-                drop: externalDrop,
+                drop: function(date, jsEvent, ui, resourceId) {
+                    callModule('drop', arguments, this);
+                },
                 /**
                  * Timeline View
                  * @see {@link http://fullcalendar.io/docs/timeline/}
@@ -210,160 +187,30 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
 
             /**
              * Initialize rivets {@link http://rivetsjs.com/}
-             * Used as mini MVC :)
+             * Used as mini MVC inside calendar modules :)
              */
             rivets.formatters.date = function(value) {
-                return moment(value).format('DD.MM.YYYY HH:mm');
+                if($.type(value) === 'undefined' || value === null) {
+                    return 'undefined';
+                }
+                value = (moment.isMoment(value)) ? value : moment(value);
+                return value.format('DD.MM.YYYY HH:mm');
             };
             // really didn't get rivets completely yet... sometimes you need a formatter if you want the values showing up...
             rivets.formatters.passthru = function(value) {
                 return value;
             };
-            rivetView = rivets.bind($('div#rivet-container'), rivetData);
+
         }
     };
 
-    function swapEvents()
-    {
-        var data = {
-            tx_sessions_web_sessionssession: {
-                session: {
+    var modules = [];
 
-                }
-            }
-        };
-        var first = buildJsonDataFromEvent(rivetData.swap.sessions[0]);
-        var second = buildJsonDataFromEvent(rivetData.swap.sessions[1]);
-        data.tx_sessions_web_sessionssession['first'] = first.tx_sessions_web_sessionssession.session;
-        data.tx_sessions_web_sessionssession['second'] = second.tx_sessions_web_sessionssession.session;
-        $.ajax({
-            type: 'POST',
-            data: data,
-            url: SessionConfig.links.swapsessions
-        }).done(function(){
-            clearSwapEvents();
-            Notification.success('Success', 'Swapped Events', 1);
-            calendar.instance.fullCalendar('refetchEvents');
-        }.bind(this)).fail(function(jqxhr){
-            showErrorMessages('Swapping failed', jqxhr);
-        }.bind(this));
-    }
-
-    /**
-     * Clears the currently stored events for swapping.
-     * Fired from different callbacks that are fired when
-     * the user does NOT click on an event.
-     * @return void
-     */
-    function clearSwapEvents()
-    {
-        rivetData.swap.sessions = [];
-        rivetData.swap.enabled = false;
-    }
-
-    /**
-     * Called when user clicked on an event. Handles related to the swapping tool.
-     * Adds the clicked event to the swap selection. Catches case when user clicks
-     * on the same event more than once. Limits the selections to 2 if there are
-     * more than 2 events saved for swapping.
-     * @param event
-     * @param jsEvent
-     * @param view
-     */
-    function onEventClickedSwapHandler(event, jsEvent, view)
-    {
-        // catch user clicking on the same event over and over again. swapping an event with itself doesn't make sense
-        if(rivetData.swap.sessions.length >= 1) {
-            var cancel = false;
-            $.each(rivetData.swap.sessions, function(index, el) {
-                if(el.id == event.id) {
-                    cancel = true;
-                }
-            });
-            if(cancel === true) {
-                return;
-            }
-        }
-        var data = {
-            title: event.title,
-            speakers: event.speakers,
-            id: event.id,
-            start: event.start,
-            end: event.end
-        };
-        rivetData.swap.sessions.push(data);
-        if(rivetData.swap.sessions.length > 2) {
-            // more than two is more too many for swapping :)
-            // simple slice should work since this will fire once there are 3 sessions present
-            rivetData.swap.sessions = rivetData.swap.sessions.slice(1);
-        }
-        rivetData.swap.enabled = rivetData.swap.sessions.length >= 2;
-    }
-
-    /**
-     * Callback fired when the user makes a selection. Basically we filter out selections
-     * that are only 1 grid element long (represents unselect).
-     * @param start
-     * @param end
-     * @param jsEvent
-     * @param view
-     * @param resource
-     */
-    function onSelectionMade(start, end, jsEvent, view, resource)
-    {
-        // happend sometimes. don't know why... prevents wrong callbacks fired
-        if(typeof view === 'undefined') {
-            return;
-        }
-        // if you draw a selection and then click somewhere there is actually a
-        // selection made with the minimum time span possible. don't register this
-        // as a real selection... rather use this as unselect (whichs callbach is
-        // fired before this one)
-        var duration = calendar.instance.fullCalendar('option', 'slotDuration');
-        if(moment.isDuration(duration) && moment.isMoment(start) && moment.isMoment(end)) {
-            var localStart = start.clone();
-            var localEnd = localStart.add(duration);
-            if(localEnd.isSame(end)) {
-                return;
-            }
-        }
-        rivetData.selection.enabled = true;
-        rivetData.selection.start = start;
-        rivetData.selection.end = end;
-    }
-
-    /**
-     * Callback fired when the user removes the selection from calendar.
-     */
-    function onSelectionRemoved()
-    {
-        rivetData.selection.enabled = false;
-        rivetData.selection.start = null;
-        rivetData.selection.end = null;
-    }
-
-    /**
-     * This method will make an modal ajax call for analysing the previous
-     * selected slot.
-     */
-    function analyzeSlot()
-    {
-        if($.type(rivetData) === 'undefined') {
-            return;
-        }
-        if(rivetData.selection.start === null || rivetData.selection.end === null) {
-            Notification.info('Warning', 'You must make a selection first!', 1);
-            return;
-        }
-        // first "validate" the selection. analyzation is intended for one slot and shows comparison
-        // between sessions which are held simultaneously (topics, vote count and room size etc).
-        var duration = moment.duration(moment(rivetData.selection.end).diff(rivetData.selection.start));
-        if(duration.asDays() >= 1 || duration.asHours() > 2) {
-            Notification.info('Length exceeded', 'This tool is not intended for large selections', 3);
-            return;
-        }
-        console.log('analyzing from %s until %s', rivetData.selection.start.format(), rivetData.selection.end.format());
-        calendar.instance.fullCalendar('unselect');
+    function callModule(method, params, ctx) {
+        $.each(modules, function(index, module) {
+            var localCtx = ctx || module;
+            module[method].apply(localCtx, params);
+        });
     }
 
     /**
@@ -380,435 +227,37 @@ define(['jquery', 'TYPO3/CMS/Sessions/fullcalendar', 'TYPO3/CMS/Sessions/schedul
     }
 
     /**
-     * Callback triggered when an exisiting event was modified. This happens when the
-     * start or end is dragged or the whole event was dragged to a new position.
-     * Function currently used for resize and drop callback.
-     *
-     * @param event
-     * @param delta
-     * @param revertFunc
-     * @param jsEvent
-     * @param ui
-     * @param view
-     */
-    function eventChanged(event, delta, revertFunc, jsEvent, ui, view)
-    {
-        updateSession(event).done(
-            /**
-             * Session was successfully updated
-             * -> show notification
-             */
-            function(){
-                Notification.success('Session updated!', event.title, 1);
-            }.bind(this))
-            .fail(
-            /**
-             * Sth went wrong with the update
-             * -> show notification with error messages
-             * -> call the revertFunc to position the event back
-             */
-            function(jqxhr){
-                revertFunc();
-                showErrorMessages('Update failed!', jqxhr);
-            }.bind(this));
-    }
-
-    /**
-     * Callback when external events have been dropped
-     * @param date
-     * @param jsEvent
-     * @param ui
-     * @param resourceId
-     */
-    function externalDrop( date, jsEvent, ui, resourceId )
-    {
-
-        // event fires too often... catch wrong calls
-        if($.type(date) === 'undefined') {
-            return;
-        }
-        // we have to save this event manually...
-        var data = {
-            title: $(this).data('title'),
-            id: $(this).data('id')
-        };
-        data['start'] = $.fullCalendar.moment(date);
-        // set end datetime based on the default event length
-        var duration = calendar.instance.fullCalendar('option', 'defaultTimedEventDuration');
-        data['end'] = $.fullCalendar.moment(date).add(duration);
-        if($.isNumeric(resourceId)) {
-            data.resourceId = resourceId;
-        }
-        // hide the dragged event until we know if it can be saved or not
-        $(this).hide();
-        // schedule the event
-        scheduleSession(data).done(
-            /**
-             * Session was successfully scheduled (start and end set + type changed)
-             * -> remove the hidden droppable event
-             * -> show a notification
-             */
-            function(){
-            $(this).remove();
-            Notification.success('Success', 'Session scheduled', 1);
-        }.bind(this)).fail(
-            /**
-             * The session could not be scheduled
-             * -> show the hidden event again, since it can be dropped again
-             * -> remove the event from the calendar (gets added automatically)
-             * -> show a notification with the first error message
-             */
-            function(jqxhr){
-            $(this).show();
-            removeEvent(data.id);
-            showErrorMessages('Scheduling failed!', jqxhr);
-        }.bind(this));
-    }
-
-    /**
-     *  Shows all errors returned from the server as a single error message
-     *  with the given title.
-     * @param title
-     * @param jqxhr
-     */
-    function showErrorMessages(title, jqxhr)
-    {
-        // jquery doesnt parse json onerror ... do it manually
-        var json = $.parseJSON(jqxhr.responseText);
-        if($.isArray(json.errors)) {
-            $.each(json.errors, function(i, obj) {
-                Notification.error(title, obj.title, 3);
-            });
-        }
-    }
-
-    /**
-     * This callback is fired on eventDragStop.
-     * We check if user dropped the scheduled event on the unschedule area
-     * and do so if positions match.
-     * -> unschedule with backend
-     * -> remove event from fullcalendar
-     * -> add event to the external list for rescheduling
-     * @param event
-     * @param jsEvent
-     * @param ui
-     * @param view
-     */
-    function unscheduleIfWanted(event, jsEvent, ui, view)
-    {
-        var x = jsEvent.clientX, y = jsEvent.clientY;
-        var external_events = $('#unschedule-area');
-        var offset = external_events.offset();
-        offset.right = external_events.width() + offset.left;
-        offset.bottom = external_events.height() + offset.top;
-
-        // Compare
-        if (x >= offset.left
-            && y >= offset.top
-            && x <= offset.right
-            && y <= offset .bottom) {
-
-            // the fullcalendar event was dropped on our unschedule area
-            unscheduleSession(event).done(function(){
-                // successfully unscheduled
-                Notification.success('Event unscheduled!', event.title, 1);
-                // remove it from the calendar
-                removeEvent(event.id);
-                // add back to externals
-                $('div#unassigned-sessions').append('<div class="fc-event unscheduled-event col-xs-3" data-id="'+event.id+'" data-title="'+event.title+'">'+event.title+'</div>');
-            }.bind(this)).fail(function(jqxhr){
-                showErrorMessages('Unscheduling failed!', jqxhr);
-            }.bind(this));
-        }
-    }
-
-    /**
-     * Parses the plain text response as json (jquery doesnt do this on error!).
-     * Concatenates all found error messages and builds the final errrormsg.
-     * @param jqxhr
-     */
-    function buildErrorMsgFromJqxhr(jqxhr)
-    {
-        // jquery doesnt parse json onerror ... do it manually
-        var json = $.parseJSON(jqxhr.responseText);
-        var msg = [];
-        if($.isArray(json.errors)) {
-            $.each(json.errors, function(i, obj) {
-                msg.push(obj.title);
-            });
-        }
-        return msg.join('<br><br>');
-    }
-
-    /**
-     * Takes the given event and extracts all information relevant for persistence.
-     * Tests existence and type of exepected properties before adding them to the
-     * final Object.
-     * @param event
-     * @returns object
-     */
-    function buildJsonDataFromEvent(event)
-    {
-        var data = {
-            tx_sessions_web_sessionssession: {
-                session: {
-
-                }
-            }
-        };
-        if(event.hasOwnProperty('id') && $.isNumeric(event.id)) {
-            data.tx_sessions_web_sessionssession.session['__identity'] = event.id;
-        }
-        if(event.hasOwnProperty('start') && moment.isMoment(event.start)) {
-            data.tx_sessions_web_sessionssession.session['begin'] = event.start.utc().format()
-        }
-        if(event.hasOwnProperty('end') && moment.isMoment(event.end)) {
-            data.tx_sessions_web_sessionssession.session['end'] = event.end.utc().format()
-        }
-        if(event.hasOwnProperty('resourceId') && $.isNumeric(event.resourceId)) {
-            data.tx_sessions_web_sessionssession.session['room'] = event.resourceId;
-        }
-        if(event.hasOwnProperty('title') && $.type(event.title) === 'string') {
-            data.tx_sessions_web_sessionssession.session['title'] = event.title;
-        }
-        return data;
-    }
-
-    /**
-     * Takes a fullcalendar event and persists it to the backend.
-     * Used for Dropping of external events which need special method,
-     * since they also have to change their domain model type from
-     * accepted to scheduled
-     *
-     * @param event fullcalendar event
-     * @returns Deferred jquery ajax deferred for managing callbacks from the calling function
-     */
-    function unscheduleSession(event)
-    {
-        var data = buildJsonDataFromEvent(event);
-        return $.ajax({
-            type: 'POST',
-            data: data,
-            url: SessionConfig.links.unschedulesession
-        });
-    }
-
-    /**
-     * Takes a fullcalendar event and persists it to the backend.
-     * Used for Dropping of external events which need special method,
-     * since they also have to change their domain model type from
-     * accepted to scheduled
-     *
-     * @param event fullcalendar event
-     * @returns Deferred jquery ajax deferred for managing callbacks from the calling function
-     */
-    function scheduleSession(event)
-    {
-        var data = buildJsonDataFromEvent(event);
-        return $.ajax({
-            type: 'POST',
-            data: data,
-            url: SessionConfig.links.schedulesession
-        });
-    }
-
-    /**
-     * Takes a fullcalendar event and persists the changes to the backend.
-     * Default function for changes made to already scheduled sessions.
-     *
-     * @param event fullcalendar event
-     * @returns Deferred jquery ajax deferred for managing callbacks from the calling function
-     */
-    function updateSession(event)
-    {
-        var data = buildJsonDataFromEvent(event);
-        return $.ajax({
-            type: 'POST',
-            data: data,
-            url: SessionConfig.links.updatesession
-        });
-    }
-
-    /**
      * Render more information in an event than time and title.
      * @param event
      * @param element
      */
     function eventRender(event, element)
     {
-        "use strict";
         if($.type(element) !== 'undefined' && $.type(event.speakers) !== 'undefined') {
-            element.find('.fc-title').append("<br/><br/>" + event.speakers);
+            var title = element.find('.fc-title').text();
+            element.find('.fc-title').html("<strong>"+title+"</strong><br/><br/>" + event.speakers);
         }
     }
 
-    /*
-     * GRAVEYARD BEGIN
-     */
-    var counter = 0;
-
-    /**
-     * @deprecated
-     * Switch two events when they're overlapping.
-     *
-     * @param stillEvent
-     * @param movingEvent
-     * @param overlapCounter
-     * @returns {boolean} if false, overlap isn't allowed.
-     */
-    function overlapEvent(stillEvent, movingEvent) {
-        console.log('overlapEvent'); return;
-        movingEvent.stillEvent = {
-            id: stillEvent.id,
-            resourceId: stillEvent.resourceId,
-            start: $.extend({}, stillEvent.start),
-            end: $.extend({}, stillEvent.end)
-        };
-        counter++;
-        if (stillEvent.resourceId != movingEvent.resourceId) {
-            return true;
-        } else {
-            if (counter == 3) {
-                return true;
-            } else if (counter > 3 || counter < 3) {
-                //delete(movingEvent['stillEvent']);
-                //delete(movingEvent['movingEvent']);
-                return false;
-            }
-        }
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param event
-     * @param jsEvent Holds the native JavaScript event with low-level information such as mouse coordinates.
-     * @param ui
-     * @param view Holds the current View Object.
-     */
-    function eventDragStart(event, jsEvent, ui, view) {
-        console.log('eventDragStart'); return;
-        if (typeof event.movingEvent != 'undefined') {
-            delete(event['movingEvent']);
-        }
-        if (typeof event.stillEvent !== 'undefined') {
-            delete(event['stillEvent']);
-        }
-        event.movingEvent = {
-            id: event.id,
-            resourceId: event.resourceId,
-            start: $.extend({}, event.start),
-            end: $.extend({}, event.end)
-        };
-        counter = 0;
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param event
-     * @param delta Represents the amount of time the event was moved.
-     * @param reverFunc Reverts the event's start/end datea to the values before the drag.
-     * @param jsEvent Holds the native JavaScript event with low-level information such as mouse coordinates.
-     * @param ui
-     * @param view Holds the current View Object.
-     */
-    function eventDrop(event, delta, revertFunc, jsEvent, ui, view) {
-        console.log('eventDrop'); return;
-        if (typeof event.stillEvent !== 'undefined') {
-            console.log('stillevent defined');
-            var tempStillEvent = calendar.fullCalendar('clientEvents', event.stillEvent.id)[0];
-            if (event.end.toString() == tempStillEvent.end.toString() && event.start.toString() == tempStillEvent.start.toString() && event.resourceId == event.stillEvent.resourceId) {
-                if(view.type != 'agendaAllDays') {
-                    console.log('start/end equals');
-                    var tempStillStart = $.extend({}, tempStillEvent.start);
-                    var tempStillEnd = $.extend({}, tempStillEvent.end);
-                    var tempStillResourceId = $.extend({}, tempStillEvent.resourceId);
-
-                    tempStillEvent.start = event.movingEvent.start;
-                    tempStillEvent.end = event.movingEvent.end;
-                    tempStillEvent.resourceId = event.movingEvent.resourceId;
+    return {
+        initialize: function() {
+            calendar.initialize();
+        },
+        addModule: function(module) {
+            modules.push(new module(utility, {
+                reload: function() {
+                    calendar.instance.fullCalendar('refetchEvents');
+                },
+                removeEvent: function(id) {
+                    removeEvent(id);
+                },
+                getOption: function(name) {
+                    return calendar.instance.fullCalendar('option', name);
+                },
+                unselect: function() {
+                    calendar.instance.fullCalendar('unselect');
                 }
-                saveEvents(event, tempStillEvent, delta);
-
-            } else {
-                if (event.stillEvent.resourceId != event.movingEvent.resourceId && event.resourceId == event.stillEvent.resourceId) {
-                    revertFunc();
-                } else {
-                    saveEvents(event, null, delta);
-                }
-                if (event.end <= tempStillEvent.start || event.start >= tempStillEvent.end) {
-                    saveEvents(event, null, delta);
-                }
-            }
-        } else {
-            console.log('stillevent undefined');
-            saveEvents(event, null, delta);
+            }));
         }
-        if (typeof event.movingEvent != 'undefined') {
-            delete(event['movingEvent']);
-        }
-        if (typeof event.stillEvent !== 'undefined') {
-            delete(event['stillEvent']);
-        }
-    }
-
-    /**
-     * @deprecated
-     *
-     * @param firstEvent
-     * @param secondEvent
-     * @param delta
-     */
-    function saveEvents(firstEvent, secondEvent, delta) {
-
-        var updateSession = SessionConfig.links.updatesession;
-        var savedFirstEventData = {
-            __identity: firstEvent.id,
-            begin: firstEvent.start.utc().format(),
-            end: firstEvent.end.utc().format(),
-            room: firstEvent.resourceId,
-            title: firstEvent.title
-        };
-        var savedFirstEvent = {session: savedFirstEventData};
-
-        var savedSecondEventData = null;
-        if (secondEvent != null) {
-
-            savedSecondEventData = {
-                __identity: secondEvent.id,
-                begin: secondEvent.start.utc().format(),
-                end: secondEvent.end.utc().format(),
-                room: secondEvent.resourceId,
-                title: secondEvent.title
-            };
-            var savedSecondEvent = {session: savedSecondEventData};
-
-        }
-        var eventArr = {
-            tx_sessions_web_sessionssession: {
-                session: savedFirstEventData,
-                secondSession: savedSecondEventData
-            }
-        };
-        console.log(eventArr);
-        //if (delta != null) {
-        $.ajax({
-            type: 'POST',
-            data: eventArr,
-            url: updateSession,
-            success: function (data) {
-                //Get all Rooms
-                //$('#calendar').fullCalendar('refetchResources');
-                //Get all Events
-                //$('#calendar').fullCalendar('refetchEvents');
-            }
-        });
-        //}
-    }
-    /*
-     * GRAVEYARD END
-     */
-
-    return {initialize: function(){calendar.initialize();}};
+    };
 });

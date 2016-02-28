@@ -184,6 +184,9 @@ class ApiModuleController extends ActionController
 
         $result = array();
 
+        /** @var \TYPO3\Sessions\Utility\PlanningUtility $planningUtility */
+        $planningUtility = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\Sessions\Utility\PlanningUtility::class);
+
         // Session properties
         $sessionWhitelist = array('uid', 'title', 'date', 'begin', 'end', 'room', 'description');
         // Generate session data
@@ -201,42 +204,13 @@ class ApiModuleController extends ActionController
                 'end' => $session ['end'],
                 'title' => $session ['title'],
                 'description' => $session ['description'],
-                'speakers' => $this->getSpeakers($session['uid'])
+                'speakers' => $planningUtility->getSpeakers($session['uid'])
             );
         }
         return json_encode($result);
 
     }
 
-    /**
-     * Fetches the speakers and returns them comma seperated
-     * for displaying in Planning Module
-     *
-     * @param $uid int
-     * @return string
-     */
-    protected function getSpeakers($uid)
-    {
-        if(! \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-            throw new \InvalidArgumentException('Param $uid must be an integer');
-        }
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
-        $db = $GLOBALS['TYPO3_DB'];
-        $res = $db->exec_SELECTquery('fe_users.username, fe_users.name',
-            'tx_sessions_session_record_mm
-            LEFT JOIN fe_users ON tx_sessions_session_record_mm.uid_foreign = fe_users.uid',
-            ' tx_sessions_session_record_mm.uid_local = '.$uid.' AND tx_sessions_session_record_mm.tablenames = \'fe_users\' ',
-            '',
-            ' tx_sessions_session_record_mm.sorting ASC ');
-        if($res === false) {
-            return '';
-        }
-        $speakers = [];
-        while($row = $res->fetch_assoc()) {
-            $speakers[] = (empty($row['name'])) ? $row['username'] : $row['name'];
-        }
-        return implode(', ', $speakers);
-    }
 
     /**
      * Get all rooms for FullCalendar

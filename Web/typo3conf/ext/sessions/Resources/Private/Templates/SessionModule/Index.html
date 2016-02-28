@@ -27,7 +27,7 @@
 <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-DDST" data-store-last-tab="1">
 	<li role="presentation" class="t3js-tabmenu-item">
 		<a href="#DDST-1" title="" aria-controls="DDST-1" role="tab" data-toggle="tab">
-			Unassigned Sessions
+			Sessions
 		</a>
 	</li>
 	<li role="presentation" class="t3js-tabmenu-item">
@@ -43,7 +43,8 @@
 			<f:if condition="{unassigned}">
 			<f:for each="{unassigned}" as="event">
 				<!-- changed made here need to be done in js as well! -->
-				<div class="fc-event unscheduled-event col-xs-3" data-id="{event.__identity}" data-title="{event.title}">{event.title}</div>
+				<div id="unassigned-event-{event.__identity}" class="fc-event unscheduled-event col-xs-3"
+					data-title="{event.title}" data-speakers="{event.speakers}" data-id="{event.__identity}"><strong>{event.title}</strong><br><br>{event.speakers}</div>
 			</f:for>
 			</f:if>
 		</div>
@@ -56,45 +57,45 @@
 	</div>
 	<div role="tabpanel" class="tab-pane" id="DDST-2">
 		<div id="rivet-container">
-			<div class="col-xs-5">
+			<div id="analyze-module" class="col-xs-5">
 				<h3>Analyze a selected Slot</h3>
-				<p rv-unless="selection.enabled" class="help-block">
+				<p rv-unless="module.enabled" class="help-block">
 					Draw a selection in calendar and press the button. This will show you a short summary about the
 					sessions in this time slot.
 				</p>
-				<table rv-if="selection.enabled" class="table table-bordered">
+				<table rv-if="module.enabled" class="table table-bordered">
 					<tr>
 						<td><strong>Begin</strong></td>
-						<td>{selection.start | date}</td>
+						<td>{module.start | date}</td>
 					</tr>
 					<tr>
 						<td><strong>End</strong></td>
-						<td>{selection.end | date}</td>
+						<td>{module.end | date}</td>
 					</tr>
 				</table>
-				<button class="btn btn-default btn-block" rv-enabled="selection.enabled" rv-on-click="actions.analyze">Analyze</button>
+				<button class="btn btn-default btn-block" rv-enabled="module.enabled" rv-on-click="module.analyze">Analyze</button>
 			</div>
-			<div class="col-xs-5">
+			<div id="swap-module" class="col-xs-5">
 				<h3>Swap two Sessions</h3>
-				<table rv-if="swap.sessions" class="table table-bordered">
+				<table rv-if="sessions" class="table table-bordered">
 					<tr>
-						<td rv-each-event="swap.sessions">
+						<td rv-each-event="sessions">
 							<strong rv-html="event.title"></strong><br>
 							</p>
 						</td>
 					</tr>
 					<tr>
-						<td rv-each-event="swap.sessions">
+						<td rv-each-event="sessions">
 							<em rv-html="event.speakers"></em>
 						</td>
 					</tr>
 					<tr>
-						<td rv-each-event="swap.sessions">
+						<td rv-each-event="sessions">
 							{event.start | date} - {event.end | date}
 						</td>
 					</tr>
 				</table>
-				<button class="btn btn-default btn-block" rv-enabled="swap.enabled" rv-on-click="actions.swap">Swap</button>
+				<button class="btn btn-default btn-block" rv-enabled="enabled" rv-on-click="swap">Swap</button>
 			</div>
 		</div>
 	</div>
@@ -109,25 +110,18 @@
 define('SessionConfig', function(){
     return <f:format.raw>{jsconf}</f:format.raw>;
 });
-require(['TYPO3/CMS/Sessions/SessionModule', 'jquery', 'jquery-ui/draggable'], function(cal, jQuery, draggable) {
+require(['TYPO3/CMS/Sessions/Calendar/Module']);
+require(['TYPO3/CMS/Sessions/SessionModule', 'jquery'], function(cal, jQuery) {
 	jQuery(document).ready(function($) {
 		cal.initialize();
-		// make external events droppable
-		$('#unassigned-sessions .unscheduled-event').each(function() {
-			// store data so the calendar knows to render an event upon drop
-			var eventData = {
-				title: $(this).data('title'),
-				id: $(this).data('id'),
-				stick: true
-			 };
-			$(this).data('event', eventData);
-			// make the event draggable using jQuery UI
-			$(this).draggable({
-				zIndex: 999,
-				revert: true,
-				revertDuration: 0
+		modules = ['TYPO3/CMS/Sessions/Calendar/Base',
+			'TYPO3/CMS/Sessions/Calendar/Swap',
+			'TYPO3/CMS/Sessions/Calendar/Analyze',
+			'TYPO3/CMS/Sessions/Calendar/Dragdrop'];
+		$.each(modules, function(index, el) {
+			require([el], function(module) {
+				cal.addModule(module);
 			});
-
 		});
 
 	});

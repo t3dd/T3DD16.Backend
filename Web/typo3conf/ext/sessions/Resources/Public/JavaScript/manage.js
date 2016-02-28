@@ -1,4 +1,4 @@
-require(['manageConfig', 'jquery','TYPO3/CMS/Sessions/uri-templates', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(manageConfig, jQuery, UriTemplate, Modal, Notification) {
+require(['manageConfig', 'jquery','TYPO3/CMS/Sessions/Contrib/uri-templates', 'TYPO3/CMS/Backend/Modal', 'TYPO3/CMS/Backend/Notification'], function(manageConfig, jQuery, UriTemplate, Modal, Notification) {
     jQuery(document).ready(function($) {
 
         var $tableBody = $('table#tx-sessions-table tbody');

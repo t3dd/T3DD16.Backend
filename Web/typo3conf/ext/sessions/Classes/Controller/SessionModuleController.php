@@ -101,17 +101,17 @@ class SessionModuleController extends ActionController
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'index.css');
-            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/fullcalendar');
-            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/scheduler');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/Contrib/fullcalendar');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/Contrib/scheduler');
             $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
                 'paths' => [
-                    'sightglass' => $this->getRelativeExtensionPath().'Resources/Public/JavaScript/sightglass'
+                    'sightglass' => $this->getRelativeExtensionPath().'Resources/Public/JavaScript/Contrib/sightglass'
                 ],
                 'shim'  => [
-                    'TYPO3/CMS/Sessions/scheduler' => [
-                        'deps'  =>  ['TYPO3/CMS/Sessions/fullcalendar']
+                    'TYPO3/CMS/Sessions/Contrib/scheduler' => [
+                        'deps'  =>  ['TYPO3/CMS/Sessions/Contrib/fullcalendar']
                     ],
-                    'TYPO3/CMS/Sessions/rivets' => [
+                    'TYPO3/CMS/Sessions/Contrib/rivets' => [
                         'deps' => ['sightglass']
                     ]
                 ]
@@ -120,7 +120,7 @@ class SessionModuleController extends ActionController
 
         if($this->actionMethodName === 'manageAction') {
             $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'manage.css');
-            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/uri-templates');
+            $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/Contrib/uri-templates');
         }
 
         if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
@@ -280,6 +280,8 @@ class SessionModuleController extends ActionController
     /**
      * Fetches a simple array of sessions (with vote count not being transformed into an objectstorage)
      * for a simple list view.
+     * @param $type
+     * @return array
      */
     protected function getFlatSessionObjects($type)
     {
@@ -292,6 +294,8 @@ class SessionModuleController extends ActionController
             '', ' votes DESC ', '', [':type' => ApiModuleController::$slugClassMap[$type]]);
         if($stmt->execute()) {
             while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
+                $row['speakers'] = $this->utility->getSpeakers($row['__identity']);
+                $row['json'] = json_encode($row);
                 $sessions[] = $row;
             }
             $stmt->free();

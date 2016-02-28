@@ -42,6 +42,34 @@ class PlanningUtility implements SingletonInterface
     }
 
     /**
+     * Fetches the speakers and returns them comma seperated
+     * for displaying in Planning Module
+     *
+     * @param $uid int
+     * @return string
+     */
+    public function getSpeakers($uid)
+    {
+        if(! \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
+            throw new \InvalidArgumentException('Param $uid must be an integer');
+        }
+        $res = $this->db->exec_SELECTquery('fe_users.username, fe_users.name',
+            'tx_sessions_session_record_mm
+            LEFT JOIN fe_users ON tx_sessions_session_record_mm.uid_foreign = fe_users.uid',
+            ' tx_sessions_session_record_mm.uid_local = '.$uid.' AND tx_sessions_session_record_mm.tablenames = \'fe_users\' ',
+            '',
+            ' tx_sessions_session_record_mm.sorting ASC ');
+        if($res === false) {
+            return '';
+        }
+        $speakers = [];
+        while($row = $res->fetch_assoc()) {
+            $speakers[] = (empty($row['name'])) ? $row['username'] : $row['name'];
+        }
+        return implode(', ', $speakers);
+    }
+
+    /**
      * @param \DateTime $start
      * @param \DateTime $end
      * @param string|null $format a valid date format or null which will return raw \DateTime objects rather than formatted strings
