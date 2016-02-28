@@ -36,4 +36,22 @@ abstract class AbstractSessionRepository extends \TYPO3\CMS\Extbase\Persistence\
 
         return $query->execute();
     }
+
+    /**
+     * @param $start \DateTime
+     * @param $end \DateTime
+     * @return array|QueryResultInterface
+     */
+    public function findByStartAndEnd($start, $end)
+    {
+        $query = $this->createQuery();
+        $query->matching(
+            $query->logicalAnd(
+                $query->greaterThanOrEqual('begin', $start->format('Y-m-d H:i:s')),
+                $query->lessThanOrEqual('end', $end->format('Y-m-d H:i:s'))
+            )
+        );
+        return $query->execute(true);
+    }
+
 }
