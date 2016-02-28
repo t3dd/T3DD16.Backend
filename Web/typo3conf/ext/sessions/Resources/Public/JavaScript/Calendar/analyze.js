@@ -148,7 +148,6 @@ define('TYPO3/CMS/Sessions/Calendar/Analyze',
          * an event
          */
         this.dayClick = function() {
-            console.log('dayClick');
             this.removeSelection();
         };
 
@@ -159,6 +158,15 @@ define('TYPO3/CMS/Sessions/Calendar/Analyze',
             this.rivetData.enabled = false;
             this.rivetData.start = null;
             this.rivetData.end = null;
+        };
+
+        /**
+         * select time range by event click
+         */
+        this.eventClick = function(event, jsEvent, view) {
+            this.rivetData.enabled = true;
+            this.rivetData.start = event.start;
+            this.rivetData.end = event.end;
         };
 
     };
