@@ -20,6 +20,9 @@
             <trans-unit id="tx_sessions_domain_model_topic_group.title">
                 <source>Title</source>
             </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic_group.color">
+                <source>Color</source>
+            </trans-unit>
             <trans-unit id="tx_sessions_domain_model_topic_group.topics">
                 <source>Topics</source>
             </trans-unit>

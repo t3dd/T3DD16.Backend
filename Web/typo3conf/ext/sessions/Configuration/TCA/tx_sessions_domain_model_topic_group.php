@@ -32,11 +32,11 @@ return [
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/Room.png'
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, topics',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, color, topics',
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, topics'
+            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, color, topics'
         ],
     ],
     'columns' => [
@@ -96,6 +96,27 @@ return [
                 'size' => 30,
                 'eval' => 'trim'
             ],
+        ],
+        'color' => [
+            'exclude' => 1,
+            'label' => $LLL . 'tx_sessions_domain_model_topic_group.color',
+            'l10n_mode' => 'mergeIfNotBlank',
+            'config'    =>  [
+                'type' => 'input',
+                'size' => 10,
+                'eval' => 'trim',
+                'default' => '#ff8700',
+                'wizards' => [
+                    'colorChoice' => [
+                        'type' => 'colorbox',
+                        'title' => 'Pick a color',
+                        'module' => [
+                            'name' => 'wizard_colorpicker',
+                        ],
+                        'JSopenParams' => 'height=600,width=380,status=0,menubar=0,scrollbars=1'
+                    ]
+                ]
+            ]
         ],
         'topics' => [
             'exclude' => 1,

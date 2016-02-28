@@ -196,6 +196,7 @@ CREATE TABLE tx_sessions_domain_model_topic_group (
 	pid int(11) DEFAULT '0' NOT NULL,
 
 	title varchar(255) DEFAULT '' NOT NULL,
+	color varchar(127) DEFAULT '' NOT NULL,
 	topics int(11) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
