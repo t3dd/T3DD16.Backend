@@ -1,9 +1,25 @@
-define('TYPO3/CMS/Sessions/Calendar/Analyze', ['TYPO3/CMS/Sessions/Calendar/Module', 'jquery', 'TYPO3/CMS/Sessions/Contrib/rivets', 'SessionConfig', 'moment', 'TYPO3/CMS/Backend/Notification'], function(Module, $, rivets, SessionConfig, moment, Notification){
+define('TYPO3/CMS/Sessions/Calendar/Analyze',
+    ['TYPO3/CMS/Sessions/Calendar/Module',
+        'jquery',
+        'TYPO3/CMS/Sessions/Contrib/rivets',
+        'SessionConfig',
+        'moment',
+        'TYPO3/CMS/Backend/Notification',
+        'TYPO3/CMS/Sessions/Contrib/uri-templates',
+        'TYPO3/CMS/Sessions/Contrib/Chart.min',
+        'TYPO3/CMS/Backend/Modal'],
+    function(Module, $, rivets, SessionConfig, moment, Notification, UriTemplate, Chart, Modal){
 
     var Analyze = function(utility, calendar) {
         Module.call(this, utility, calendar);
 
+        this.uriTpl = new UriTemplate(SessionConfig.links.analyze.replace(/=%7B(\w+)%7D/g, '={$1}'));
+
         var _this = this;
+
+        this.modal = null;
+
+        this.charts = [];
 
         this.rivetData = {
             enabled: false,
@@ -16,6 +32,42 @@ define('TYPO3/CMS/Sessions/Calendar/Analyze', ['TYPO3/CMS/Sessions/Calendar/Modu
 
         // somehow rivets only recognizes changes to all properties correctly when the data is bound with the . binder on second level...
         this.rivetView = rivets.bind($('div#analyze-module'), {module : this.rivetData});
+
+        this.cleanupModal = function() {
+            $.each(this.charts, function(index, chart) {
+                chart.destroy();
+            }.bind(this));
+            Modal.dismiss();
+            this.charts = [];
+        }.bind(this);
+
+        this.showModal = function(data) {
+            var content = '<div class="row">';
+            $.each(data, function(index, element) {
+                var inner = (element.data.length > 0) ? '<canvas id="modal-analyze-'+element.uid+'" width="200" height="200" style="width:200px;height:200px;" />' : '<p>No topics associated</p>';
+                content = content + '<div class="col-sm-4"><h3>' + element.title + '</h3>'  + inner + '</div>';
+            });
+            content = content + '</div>';
+            // show the modal
+            this.modal = Modal.confirm('Slot analyze', content, -1, [{
+                text: 'OK',
+                btnClass: 'btn-info',
+                name: 'ok'
+            }]);
+            // register handler to cleanup. minimize memory consumption by cleaning up instanitiated charts
+            this.modal.on('button.clicked', this.cleanupModal);
+            // initialize charts when the modal is open. if the canvas elements are not visible Chartjs will fail!
+            this.modal.on('shown.bs.modal', function(){
+                $.each(data, function(index, element) {
+                    if(element.data.length > 0) {
+                        var ctx = this.modal.find("canvas#modal-analyze-"+element.uid)[0].getContext('2d');
+                        this.charts.push(new Chart(ctx).Pie(element.data, {
+                            animation: false
+                        }));
+                    }
+                }.bind(this));
+            }.bind(this));
+        };
 
         /**
          * This method will make an modal ajax call for analysing the previous
@@ -36,7 +88,18 @@ define('TYPO3/CMS/Sessions/Calendar/Analyze', ['TYPO3/CMS/Sessions/Calendar/Modu
                 Notification.info('Length exceeded', 'This tool is not intended for large selections', 3);
                 return;
             }
-            console.log('analyzing from %s until %s', this.rivetData.start.format(), this.rivetData.end.format());
+            $.ajax({
+                dataType: 'json',
+                url: this.uriTpl.fill({start:this.rivetData.start.utc().format(), end:this.rivetData.end.utc().format()})
+            }).done(function(data){
+                if(data.length > 0) {
+                    this.showModal(data);
+                } else {
+                    Notification.error('No data returned', 'The server did not return any data for that selection!', 2);
+                }
+            }.bind(this)).fail(function(){
+                Notification.error('Loading failed', 'Loading of data for analyze failed!', 2);
+            });
             this.calendar.unselect();
             this.removeSelection();
         };

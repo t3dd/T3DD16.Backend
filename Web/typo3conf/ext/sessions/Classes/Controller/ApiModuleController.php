@@ -136,10 +136,49 @@ class ApiModuleController extends ActionController
      * @param $end \DateTime
      * @return string
      */
-    public function analyzeAction($start, $end)
+    public function analyzeAction(\DateTime $start, \DateTime $end)
     {
+        $sessions = $this->sessionRepository->findByStartAndEnd($start, $end);
+        $result = [];
+        foreach($sessions as $session) {
+            $result[] = [
+                'uid' => $session['uid'],
+                'title' => $session['title'],
+                'data' => $this->getTopicMap($session['uid'])
+            ];
+        }
+        return json_encode($result);
+    }
 
-        return '{}';
+    protected function getTopicMap($uid)
+    {
+        if(! \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
+
+        }
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        $stmt = $db->prepare_SELECTquery('tx_sessions_domain_model_topic_group.title, tx_sessions_domain_model_topic_group.color, COUNT(*) AS count',
+            'tx_sessions_domain_model_topic_group
+LEFT JOIN tx_sessions_topic_group_topic_mm ON tx_sessions_topic_group_topic_mm.uid_local = tx_sessions_domain_model_topic_group.uid
+LEFT JOIN tx_sessions_domain_model_topic ON tx_sessions_domain_model_topic.uid = tx_sessions_topic_group_topic_mm.uid_foreign
+LEFT JOIN tx_sessions_session_record_mm ON tx_sessions_session_record_mm.uid_foreign = tx_sessions_domain_model_topic.uid
+LEFT JOIN tx_sessions_domain_model_session ON tx_sessions_domain_model_session.uid = tx_sessions_session_record_mm.uid_local',
+            'tx_sessions_session_record_mm.tablenames = \'tx_sessions_domain_model_topic\'
+AND tx_sessions_domain_model_session.uid = :uid',
+            'tx_sessions_domain_model_topic_group.uid','','',[':uid' => $uid]);
+
+        if($stmt->execute()) {
+            $result = [];
+            while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
+                $result[] = [
+                    'value' => $row['count'],
+                    'label' => $row['title'],
+                    'color' => $row['color']
+                ];
+            }
+            return $result;
+        }
+        return [];
     }
 
     /**

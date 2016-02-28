@@ -228,7 +228,8 @@ class SessionModuleController extends ActionController
                 'updatesession' => $this->getHref('ApiModule', 'updateSession'),
                 'schedulesession' => $this->getHref('ApiModule', 'scheduleSession'),
                 'unschedulesession' => $this->getHref('ApiModule', 'unscheduleSession'),
-                'swapsessions' => $this->getHref('ApiModule', 'swapSessions')
+                'swapsessions' => $this->getHref('ApiModule', 'swapSessions'),
+                'analyze' => $this->getHref('ApiModule', 'analyze', ['start' => '{start}', 'end' => '{end}'])
             ]
         ]));
 
