@@ -9,10 +9,18 @@
   "description": "TYPO3 T3DD16 Base Distribution",
   "license": "GPL-2.0+",
   "require": {
-    "typo3/cms": "7.6.*",
+    "typo3/cms": "dev-TYPO3_7-6 as 7.6.*-dev",
     "etobi/coreapi": "dev-master",
     "helhum/realurl": "2.0.*",
     "gridelementsteam/gridelements": "7.0.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8.0",
+    "mikey179/vfsStream": "1.6.0"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "bin-dir": "bin"
   },
   "extra": {
     "typo3/cms": {
@@ -25,6 +33,12 @@
       "TYPO3\\T3DD16\\": "Web/typo3conf/ext/t3dd16/Classes/",
       "TYPO3\\Sso\\": "Web/typo3conf/ext/sso/Classes/",
       "TYPO3\\Sessions\\": "Web/typo3conf/ext/sessions/Classes/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TYPO3\\CMS\\Core\\Tests\\": "Web/typo3/sysext/core/Tests/",
+      "T3DD\\Sessions\\Tests\\": "Web/typo3conf/ext/sessions/Tests/"
     }
   },
   "replace": {

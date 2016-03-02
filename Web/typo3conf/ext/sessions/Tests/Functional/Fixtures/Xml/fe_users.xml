@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<fe_users>
+		<uid>1</uid>
+		<pid>13</pid>
+		<tstamp>1452006676</tstamp>
+		<username>first.user</username>
+		<usergroup>1</usergroup>
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<name>First User</name>
+		<email>first.user@t3dd15.typo3.org.local</email>
+		<tx_extbase_type>Tx_Extbase_Domain_Model_FrontendUser</tx_extbase_type>
+	</fe_users>
+	<fe_users>
+		<uid>2</uid>
+		<pid>13</pid>
+		<tstamp>1452006676</tstamp>
+		<username>second.user</username>
+		<usergroup>1</usergroup>
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<name>Second User</name>
+		<email>second.user@t3dd15.typo3.org.local</email>
+		<tx_extbase_type>Tx_Extbase_Domain_Model_FrontendUser</tx_extbase_type>
+	</fe_users>
+	<fe_users>
+		<uid>3</uid>
+		<pid>13</pid>
+		<tstamp>1452006676</tstamp>
+		<username>third.user</username>
+		<usergroup>1</usergroup>
+		<disable>0</disable>
+		<starttime>0</starttime>
+		<endtime>0</endtime>
+		<name>Third User</name>
+		<email>third.user@t3dd15.typo3.org.local</email>
+		<tx_extbase_type>Tx_Extbase_Domain_Model_FrontendUser</tx_extbase_type>
+	</fe_users>
+</dataset>

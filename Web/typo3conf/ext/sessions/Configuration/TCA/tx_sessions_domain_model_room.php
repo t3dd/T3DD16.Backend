@@ -32,11 +32,11 @@ return [
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/Room.png'
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, size, location',
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title'
+            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, size, location'
         ],
     ],
     'columns' => [
@@ -49,8 +49,9 @@ return [
                 'foreign_table_where' => 'ORDER BY sys_language.title',
                 'items' => [
                     ['LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages', -1],
-                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0]
+                    ['LLL:EXT:lang/locallang_general.xlf:LGL.default_value', 0],
                 ],
+                'default' => 0
             ],
         ],
         'l10n_parent' => [
@@ -95,6 +96,26 @@ return [
                 'size' => 30,
                 'eval' => 'trim'
             ],
-        ]
+        ],
+        'size'  =>  [
+            'exclude'   =>  1,
+            'label'     =>  $LLL . 'tx_sessions_domain_model_room.size',
+            'l10n_mode' => 'mergeIfNotBlank',
+            'config'    =>  [
+                'type'  =>  'input',
+                'size'  =>  30,
+                'eval'  =>  'int'
+            ]
+        ],
+        'location' => [
+            'exclude' => 1,
+            'label' => $LLL . 'tx_sessions_domain_model_room.location',
+            'l10n_mode' => 'mergeIfNotBlank',
+            'config' => [
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim'
+            ],
+        ],
     ],
 ];

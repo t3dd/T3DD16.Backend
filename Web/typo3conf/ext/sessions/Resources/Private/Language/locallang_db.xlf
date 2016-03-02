@@ -4,12 +4,48 @@
 		<header/>
 		<body>
 
+            <trans-unit id="tx_sessions_domain_model_vote">
+                <source>Vote</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_vote.user">
+                <source>User</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_vote.session">
+                <source>Session</source>
+            </trans-unit>
+
+            <trans-unit id="tx_sessions_domain_model_topic_group">
+                <source>Topic Group</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic_group.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic_group.color">
+                <source>Color</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic_group.topics">
+                <source>Topics</source>
+            </trans-unit>
+
+            <trans-unit id="tx_sessions_domain_model_topic">
+                <source>Topic</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_topic.title">
+                <source>Title</source>
+            </trans-unit>
+
 			<trans-unit id="tx_sessions_domain_model_room">
 				<source>Room</source>
 			</trans-unit>
 			<trans-unit id="tx_sessions_domain_model_room.title">
 				<source>Title</source>
 			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_room.size">
+                <source>Size</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_room.location">
+                <source>Location</source>
+            </trans-unit>
 
 			<trans-unit id="tx_sessions_domain_model_session">
 				<source>Session</source>
@@ -38,15 +74,15 @@
 			<trans-unit id="tx_sessions_domain_model_session.end">
 				<source>End</source>
 			</trans-unit>
-			<trans-unit id="tx_sessions_domain_model_session.speaker1">
-				<source>Speaker 1</source>
-			</trans-unit>
-			<trans-unit id="tx_sessions_domain_model_session.speaker2">
-				<source>Speaker 2</source>
-			</trans-unit>
-			<trans-unit id="tx_sessions_domain_model_session.speaker3">
-				<source>Speaker 3</source>
-			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.speakers">
+                <source>Speaker</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_session.topics">
+                <source>Topics</source>
+            </trans-unit>
+            <trans-unit id="tx_sessions_domain_model_session.votes">
+                <source>Votes</source>
+            </trans-unit>
 
 			<trans-unit id="tx_sessions_domain_model_session.palette.palettesBase">
 				<source>Base</source>
@@ -57,6 +93,9 @@
 			<trans-unit id="tx_sessions_domain_model_session.palette.palettesSpeaker">
 				<source>Speaker</source>
 			</trans-unit>
+			<trans-unit id="tx_sessions_domain_model_session.palette.palettesTopics">
+                <source>Topics</source>
+            </trans-unit>
 
 		</body>
 	</file>

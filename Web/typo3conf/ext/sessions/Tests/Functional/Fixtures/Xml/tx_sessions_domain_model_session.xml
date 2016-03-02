@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<tx_sessions_domain_model_session>
+		<uid>1</uid> 
+		<pid>17</pid> 
+		<title>Opening</title> 
+		<description>Opening Sessions</description>
+		<begin>2016-09-01 14:00:00</begin>
+		<end>2016-09-01 15:00:00</end> 
+		<room>5</room>
+		<highlight>1</highlight>
+		<type>TYPO3\Sessions\Domain\Model\ScheduledSession</type>
+		<speakers>1</speakers> 
+		<topics>0</topics> 
+		<votes>0</votes> 
+	</tx_sessions_domain_model_session>
+	<tx_sessions_domain_model_session>
+		<uid>7</uid> 
+		<pid>17</pid> 
+		<title>test</title> 
+		<description>test</description> 
+		<begin>2016-09-03 14:00:00</begin>
+		<end>2016-09-03 15:00:00</end> 
+		<room>0</room>
+		<highlight>0</highlight> 
+		<type>TYPO3\Sessions\Domain\Model\ScheduledSession</type>
+		<speakers>1</speakers> 
+		<topics>0</topics> 
+		<votes>0</votes> 
+	</tx_sessions_domain_model_session>
+	<tx_sessions_domain_model_session>
+		<uid>8</uid> 
+		<pid>17</pid> 
+		<title>Test session</title> 
+		<description>asdasdasd</description> 
+		<begin>2016-09-02 14:00:00</begin>
+		<end>2016-09-02 15:00:00</end> 
+		<room>0</room>
+		<highlight>0</highlight> 
+		<type>TYPO3\Sessions\Domain\Model\ProposedSessions</type>
+		<speakers>2</speakers> 
+		<topics>0</topics> 
+		<votes>0</votes> 
+	</tx_sessions_domain_model_session>
+</dataset>

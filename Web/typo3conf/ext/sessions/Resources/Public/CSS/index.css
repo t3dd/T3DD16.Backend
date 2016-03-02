@@ -1,0 +1,19 @@
+#unschedule-area {
+    border-radius: 25px;
+    border: 1px dashed black;
+    height: 150px;
+}
+#unschedule-area p {
+    vertical-align: middle;
+    text-align: center;
+}
+.tab-content {
+    background-color: #ededed;
+    padding: 1em 0;
+}
+.tab-pane.active {
+    min-height: 250px;
+}
+#calendar {
+    margin-top: 1em;
+}

@@ -1,0 +1,129 @@
+<h1>Session Module</h1>
+
+<f:if condition="{creationDone}">
+	<f:then>
+		<f:if condition="{incompleteSessions}">
+			<f:then>
+				<div class="alert alert-warning">
+					<strong>{incompleteSessions -> f:count()} session(s) could not be scheduled</strong>
+					<ul>
+						<f:for each="{incompleteSessions}" as="incompleteSession">
+							<li>{incompleteSession.title}</li>
+						</f:for>
+					</ul>
+				</div>
+			</f:then>
+			<f:else>
+				<div class="alert alert-success">
+					Successfully created first timetable
+				</div>
+			</f:else>
+		</f:if>
+	</f:then>
+</f:if>
+
+
+<div role="tabpanel">
+<ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-DDST" data-store-last-tab="1">
+	<li role="presentation" class="t3js-tabmenu-item">
+		<a href="#DDST-1" title="" aria-controls="DDST-1" role="tab" data-toggle="tab">
+			Sessions
+		</a>
+	</li>
+	<li role="presentation" class="t3js-tabmenu-item">
+		<a href="#DDST-2" title="" aria-controls="DDST-2" role="tab" data-toggle="tab">
+			Tools
+		</a>
+	</li>
+</ul>
+<div class="tab-content clearfix">
+	<div role="tabpanel" class="tab-pane" id="DDST-1">
+
+		<div id="unassigned-sessions" class="col-xs-9">
+			<f:if condition="{unassigned}">
+			<f:for each="{unassigned}" as="event">
+				<!-- changed made here need to be done in js as well! -->
+				<div id="unassigned-event-{event.__identity}" class="fc-event unscheduled-event col-xs-3"
+					data-title="{event.title}" data-speakers="{event.speakers}" data-id="{event.__identity}"><strong>{event.title}</strong><br><br>{event.speakers}</div>
+			</f:for>
+			</f:if>
+		</div>
+
+		<div class="col-xs-3">
+			<div id="unschedule-area">
+				<p>Drop Events here in order to unschedule.</p>
+			</div>
+		</div>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="DDST-2">
+		<div id="rivet-container">
+			<div id="analyze-module" class="col-xs-5">
+				<h3>Analyze a selected Slot</h3>
+				<p rv-unless="module.enabled" class="help-block">
+					Draw a selection in calendar and press the button. This will show you a short summary about the
+					sessions in this time slot.
+				</p>
+				<table rv-if="module.enabled" class="table table-bordered">
+					<tr>
+						<td><strong>Begin</strong></td>
+						<td>{module.start | date}</td>
+					</tr>
+					<tr>
+						<td><strong>End</strong></td>
+						<td>{module.end | date}</td>
+					</tr>
+				</table>
+				<button class="btn btn-default btn-block" rv-enabled="module.enabled" rv-on-click="module.analyze">Analyze</button>
+			</div>
+			<div id="swap-module" class="col-xs-5">
+				<h3>Swap two Sessions</h3>
+				<table rv-if="sessions" class="table table-bordered">
+					<tr>
+						<td rv-each-event="sessions">
+							<strong rv-html="event.title"></strong><br>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<td rv-each-event="sessions">
+							<em rv-html="event.speakers"></em>
+						</td>
+					</tr>
+					<tr>
+						<td rv-each-event="sessions">
+							{event.start | date} - {event.end | date}
+						</td>
+					</tr>
+				</table>
+				<button class="btn btn-default btn-block" rv-enabled="enabled" rv-on-click="swap">Swap</button>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<div class="clearfix"></div>
+
+<div id="calendar"></div>
+
+<script type="text/javascript">
+define('SessionConfig', function(){
+    return <f:format.raw>{jsconf}</f:format.raw>;
+});
+require(['TYPO3/CMS/Sessions/Calendar/Module']);
+require(['TYPO3/CMS/Sessions/SessionModule', 'jquery'], function(cal, jQuery) {
+	jQuery(document).ready(function($) {
+		cal.initialize();
+		modules = ['TYPO3/CMS/Sessions/Calendar/Base',
+			'TYPO3/CMS/Sessions/Calendar/Swap',
+			'TYPO3/CMS/Sessions/Calendar/Analyze',
+			'TYPO3/CMS/Sessions/Calendar/Dragdrop'];
+		$.each(modules, function(index, el) {
+			require([el], function(module) {
+				cal.addModule(module);
+			});
+		});
+
+	});
+});
+</script>

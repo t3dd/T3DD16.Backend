@@ -1,0 +1,34 @@
+<h1>Generate first schedule</h1>
+
+<f:form action="createTimeTable" id="createTimeTableForm">
+	<div class="form-group">
+		<label for="iterations">Iterations: ( >1 = shuffle first 9 sessions)</label>
+		<f:form.textfield name="iterations" value="1" id="iterations" class="form-control" />
+	</div>
+	<div class="form-group">
+		<label for="considerTopics">Consider topics</label><br />
+		<f:form.checkbox name="considerTopics" value="1" id="considerTopics" />
+	</div>
+	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#confirmModal">
+		Start scheduling
+	</button>
+
+	<!-- Confirm Modal -->
+	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header alert alert-warning">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Warning</h4>
+				</div>
+				<div class="modal-body">
+					All sessions will be scheduled. Already scheduled sessions will be overriden. Would u like do continue?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<f:form.submit value="Start scheduling" class="btn btn-danger" />
+				</div>
+			</div>
+		</div>
+	</div>
+</f:form>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<tx_sessions_session_record_mm>
+		<uid_local>1</uid_local> 
+		<uid_foreign>2</uid_foreign> 
+		<tablenames>fe_users</tablenames> 
+		<sorting>1</sorting> 
+	</tx_sessions_session_record_mm>
+	<tx_sessions_session_record_mm>
+		<uid_local>8</uid_local> 
+		<uid_foreign>1</uid_foreign> 
+		<tablenames>fe_users</tablenames> 
+		<sorting>1</sorting> 
+	</tx_sessions_session_record_mm>
+	<tx_sessions_session_record_mm>
+		<uid_local>8</uid_local> 
+		<uid_foreign>3</uid_foreign> 
+		<tablenames>fe_users</tablenames> 
+		<sorting>2</sorting> 
+	</tx_sessions_session_record_mm>
+	<tx_sessions_session_record_mm>
+		<uid_local>7</uid_local> 
+		<uid_foreign>1</uid_foreign> 
+		<tablenames>fe_users</tablenames> 
+		<sorting>1</sorting> 
+	</tx_sessions_session_record_mm>
+</dataset>
