@@ -5,6 +5,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\Sessions\Domain\Model\AbstractSession;
+use TYPO3\Sessions\Domain\Model\ProposedSession;
 
 class SessionController extends AbstractRestController
 {
@@ -59,11 +60,11 @@ class SessionController extends AbstractRestController
     }
 
     /**
-     * @param AbstractSession $session
+     * @param ProposedSession $session
      * @validate $session \TYPO3\Sessions\Domain\Validator\ActiveUserValidator
      * @return string
      */
-    public function createAction(AbstractSession $session)
+    public function createAction(ProposedSession $session)
     {
         $user = $this->frontendUserRepository->findCurrentUser();
         $session->addSpeaker($user);
