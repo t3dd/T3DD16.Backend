@@ -41,6 +41,9 @@
 			<trans-unit id="fce.container.color">
 				<source xml:lang="en">Select background color</source>
 			</trans-unit>
+			<trans-unit id="fce.container.alignment">
+				<source xml:lang="en">Horizontal alignment</source>
+			</trans-unit>
 			<trans-unit id="fce.container.image">
 				<source xml:lang="en">Select background image</source>
 			</trans-unit>

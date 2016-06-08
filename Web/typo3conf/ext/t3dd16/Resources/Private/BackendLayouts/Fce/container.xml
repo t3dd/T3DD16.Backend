@@ -53,6 +53,34 @@
 					</config>
 				</TCEforms>
 			</color>
+			<alignment>
+				<TCEforms>
+					<label>LLL:EXT:t3dd16/Resources/Private/Language/Backend.xlf:fce.container.alignment</label>
+					<config>
+						<type>select</type>
+						<size>1</size>
+						<items>
+							<numIndex index="0">
+								<numIndex index="0">None</numIndex>
+								<numIndex index="1"></numIndex>
+							</numIndex>
+							<numIndex index="1">
+								<numIndex index="0">Top</numIndex>
+								<numIndex index="1">layout horizontal start</numIndex>
+							</numIndex>
+							<numIndex index="2">
+								<numIndex index="0">Middle</numIndex>
+								<numIndex index="1">layout horizontal center</numIndex>
+							</numIndex>
+							<numIndex index="3">
+								<numIndex index="0">Bottom</numIndex>
+								<numIndex index="1">layout horizontal end</numIndex>
+							</numIndex>
+						</items>
+						<default></default>
+					</config>
+				</TCEforms>
+			</alignment>
 		</el>
 	</ROOT>
 </T3DataStructure>
