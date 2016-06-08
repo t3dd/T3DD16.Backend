@@ -2,7 +2,20 @@
 <div class="card">
 	<f:if condition="{data.header}">
 		<div class="card__header">
-			<h2>{data.header}</h2>
+			<f:switch expression="{data.header_layout}">
+				<f:case value="2">
+					<h2>{data.header}</h2>
+				</f:case>
+				<f:case value="3">
+					<h3>{data.header}</h3>
+				</f:case>
+				<f:case value="4">
+					<h4>{data.header}</h4>
+				</f:case>
+				<f:case default="true">
+					<h2>{data.header}</h2>
+				</f:case>
+			</f:switch>
 		</div>
 	</f:if>
 	<div class="card__content">

@@ -3,6 +3,10 @@
     {
       "type": "composer",
       "url": "http://composer.typo3.org/"
+    },
+    {
+      "type": "vcs",
+      "url": "https://git.typo3.org/TYPO3CMS/Extensions/gridelements.git"
     }
   ],
   "name": "TYPO3/T3DD16",

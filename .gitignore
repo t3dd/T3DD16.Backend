@@ -7,6 +7,7 @@ vendor
 Build
 node_modules
 bin
+Vagrantfile
 Web/index.php
 Web/typo3
 Web/typo3conf/ENABLE_INSTALL_TOOL

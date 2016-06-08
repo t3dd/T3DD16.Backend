@@ -33,6 +33,10 @@
 								<numIndex index="1">bg-light-grey</numIndex>
 							</numIndex>
 							<numIndex index="5">
+								<numIndex index="0">Light Blue</numIndex>
+								<numIndex index="1">bg-light-blue</numIndex>
+							</numIndex>
+							<numIndex index="5">
 								<numIndex index="0">Medium Blue</numIndex>
 								<numIndex index="1">bg-medium-blue</numIndex>
 							</numIndex>
