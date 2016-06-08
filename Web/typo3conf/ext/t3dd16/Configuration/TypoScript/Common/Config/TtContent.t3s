@@ -2,8 +2,8 @@ tt_content {
 
 	header {
 		variables {
-			layout = CASE
-			layout {
+			alignment = CASE
+			alignment {
 				key.field = layout
 				1 = TEXT
 				1.value = text-left
