@@ -13,5 +13,6 @@ pageId {
 	session {
 		list = 11
 		storage = 17
+		votes = 23
 	}
 }

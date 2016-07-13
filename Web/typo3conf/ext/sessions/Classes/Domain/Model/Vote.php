@@ -3,8 +3,9 @@
 namespace TYPO3\Sessions\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\Sso\Domain\Model\FrontendUser;
 
-class Vote extends AbstractEntity
+class Vote extends AbstractEntity implements \JsonSerializable
 {
 
     /**
@@ -18,19 +19,21 @@ class Vote extends AbstractEntity
     protected $session;
 
     /**
+     * @param FrontendUser $user
+     * @param AbstractSession $session
+     */
+    public function __construct(FrontendUser $user, AbstractSession $session)
+    {
+        $this->user = $user;
+        $this->session = $session;
+    }
+
+    /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
      */
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FrontendUser $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
     }
 
     /**
@@ -40,12 +43,13 @@ class Vote extends AbstractEntity
     {
         return $this->session;
     }
-
     /**
-     * @param AbstractSession $session
+     * @return array
      */
-    public function setSession($session)
+    public function jsonSerialize()
     {
-        $this->session = $session;
+        return [
+            'session' => $this->session->getUid(),
+        ];
     }
 }

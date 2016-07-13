@@ -9,3 +9,10 @@ if (!defined('TYPO3_MODE')) {
     ['Session' => 'index'],
     ['Session' => '']
 );
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'TYPO3.Sessions',
+    'votes',
+    ['Vote' => 'index'],
+    ['Vote' => 'index']
+);

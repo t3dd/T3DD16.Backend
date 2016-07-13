@@ -1,6 +1,7 @@
 <?php
 namespace TYPO3\Sessions\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -38,6 +39,7 @@ class AbstractRestController extends ActionController
      */
     protected function resolveActionMethodName()
     {
+        $this->mapRawGetData();
         if ($this->request->getControllerActionName() === 'index') {
             $actionName = 'index';
             switch ($this->request->getMethod()) {
@@ -128,6 +130,15 @@ class AbstractRestController extends ActionController
         $this->response->setStatus(400);
 
         return json_encode($response);
+    }
+
+    protected function mapRawGetData()
+    {
+        $data = GeneralUtility::_GET($this->resourceArgumentName);
+        if ($data) {
+            $this->request->setArgument($this->resourceArgumentName, $data);
+        }
+
     }
 
     protected function mapRawPostData()

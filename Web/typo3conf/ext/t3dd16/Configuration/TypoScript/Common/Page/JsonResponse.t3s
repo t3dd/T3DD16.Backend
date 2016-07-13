@@ -62,4 +62,14 @@ jsonResponse {
 			pluginName = sessions
 		}
 	}
+
+[globalVar = TSFE:id = {$pageId.session.votes}]
+	jsonResponse {
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sessions
+			pluginName = votes
+		}
+	}
 [GLOBAL]
