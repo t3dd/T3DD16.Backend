@@ -5,6 +5,15 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 abstract class AbstractSessionRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
+
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = [
+        'highlight' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_DESCENDING,
+        'crdate' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
+    ];
+
     /**
      * @param array|int[] $uids array holding multiple unique identifiers
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
