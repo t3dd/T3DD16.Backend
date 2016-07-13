@@ -23,6 +23,7 @@ class ProposedSession extends AnySession
             'speakers'  =>  $this->speakers->toArray(),
             'room' => $this->room ? $this->room->getTitle() : '',
             'highlight' => $this->highlight,
+            'votes' => $this->votes->count(),
             'links' => [
                 'self' => $this->getLink(),
                 'route' => $this->getRoute(),
