@@ -62,7 +62,8 @@ call_user_func(function () {
                         'transOrigPointerField' => 'l10n_parent',
                         'autoUpdate' => 1,
                         'expireDays' => 180,
-                    ]
+                    ],
+                    'optional' => true
                 ],
             ],
         ],
