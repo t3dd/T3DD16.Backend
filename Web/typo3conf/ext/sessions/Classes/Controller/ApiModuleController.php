@@ -82,8 +82,8 @@ class ApiModuleController extends ActionController
     /**
      * Convenience method. Simplifies swapping process in FE.
      *
-     * @param $first ScheduledSession
-     * @param $second ScheduledSession
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $first
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $second
      * @return string
      */
     public function swapSessionsAction(ScheduledSession $first, ScheduledSession $second)
@@ -285,7 +285,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
     }
 
     /**
-     * @param ScheduledSession $session
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
      * @return string
      */
     public function unscheduleSessionAction(ScheduledSession $session)
@@ -335,7 +335,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
     /**
      * Update session
      *
-     * @param ScheduledSession $session
+     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
      * @validate $session \TYPO3\Sessions\Domain\Validator\SpeakerCollisionValidator
      * @return string
      */
