@@ -5,6 +5,7 @@ namespace TYPO3\Sessions\Controller;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\View\JsonView;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
@@ -19,18 +20,12 @@ use TYPO3\Sessions\Utility\PlanningUtility;
  */
 class ApiModuleController extends ActionController
 {
-
-    /**
-     * @var TemplateView
-     */
-    protected $view;
-
     /**
      * BackendTemplateView Container
      *
      * @var TemplateView
      */
-    protected $defaultViewObjectName = TemplateView::class;
+    protected $defaultViewObjectName = JsonView::class;
 
     /**
      * Mapping between slugs and concrete classes
@@ -73,10 +68,9 @@ class ApiModuleController extends ActionController
     protected function initializeView(ViewInterface $view)
     {
         // Skip, if view is initialized in non-backend context
-        if (!($view instanceof TemplateView)) {
-            return;
+        if ($view instanceof TemplateView) {
+            parent::initializeView($view);
         }
-        parent::initializeView($view);
     }
 
     /**
@@ -151,7 +145,7 @@ class ApiModuleController extends ActionController
                 'data' => $this->getTopicMap($session['uid'])
             ];
         }
-        return json_encode($result);
+        $this->view->assign('value', $result);
     }
 
     protected function getTopicMap($uid)
@@ -186,6 +180,14 @@ AND tx_sessions_domain_model_session.uid = :uid',
     }
 
     /**
+     * Assigns the only template based HTML view.
+     */
+    protected function initializeInfoAction()
+    {
+        $this->defaultViewObjectName = TemplateView::class;
+    }
+
+    /**
      *
      * @param \TYPO3\Sessions\Domain\Model\AnySession $session
      * @return string
@@ -212,7 +214,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
         if($this->response instanceof \TYPO3\CMS\Extbase\Mvc\Web\Response) {
             $this->response->setHeader('Content-Type', 'application/json', true);
         }
-        return json_encode(['success' => $updated]);
+        $this->view->assign('value', ['success' => $updated]);
     }
 
 
@@ -250,8 +252,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
                 'speakers' => $planningUtility->getSpeakers($session['uid'])
             );
         }
-        return json_encode($result);
-
+        $this->view->assign('value', $result);
     }
 
 
@@ -271,8 +272,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
         {
             $result[] = array('id' => $room['uid'], 'title' => $room['title'] . ' (' . $room['size'] . ')');
         }
-        return json_encode($result);
-
+        $this->view->assign('value', $result);
     }
 
     public function initializeUpdateSessionAction()
@@ -374,7 +374,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
         if($this->response instanceof \TYPO3\CMS\Extbase\Mvc\Web\Response) {
             $this->response->setStatus(400);
         }
-        return json_encode($response);
+        $this->view->assign('value', $response);
     }
 
     /**
@@ -427,7 +427,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
             $this->response->setStatus(400);
         }
 
-        return json_encode($response);
+        $this->view->assign('value', $response);
     }
 
     /*
