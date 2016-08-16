@@ -12,7 +12,7 @@
     padding: 1em 0;
 }
 .tab-pane.active {
-    min-height: 250px;
+    min-height: 150px;
 }
 #calendar {
     margin-top: 1em;

@@ -94,10 +94,11 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
                  * @see {@link http://fullcalendar.io/docs/agenda/}
                  */
                 allDaySlot: false,
-                minTime: '05:00',
-                maxTime: '22:00',
+                minTime: '07:00',
+                maxTime: '20:00',
+                scrollTime: '09:00',
+                slotDuration: '00:15:00',
                 slotEventOverlap: false,
-                slotDuration: moment.duration(15, 'minutes'),
                 /**
                  * Current Date
                  * @see {@link http://fullcalendar.io/docs/current_date/}
@@ -134,7 +135,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
                 startParam: 'tx_sessions_web_sessionssession[start]',
                 endParam: 'tx_sessions_web_sessionssession[end]',
                 // changed made here have to be done in externalDrop function as well... for now
-                defaultTimedEventDuration: moment.duration({ hours:1, minutes:30 }),
+                defaultTimedEventDuration: '01:00:00',
                 /**
                  * Event Rendering
                  * @see {@link http://fullcalendar.io/docs/event_rendering/}
@@ -201,6 +202,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
                 return value;
             };
 
+            resizeCalendar();
         }
     };
 
@@ -238,6 +240,33 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
             element.find('.fc-title').html("<strong>"+title+"</strong><br/><br/>" + event.speakers);
         }
     }
+
+    function resizeCalendar() {
+        var $moduleBody = $('.module-body');
+        var $calendar = $('#calendar');
+        var reservedHeight = $moduleBody.outerHeight() - $moduleBody.height();
+        var parentOffset = $calendar.offset().top - $moduleBody.children(':first').offset().top;
+        var possibleHeight = $(window).height() - reservedHeight - parentOffset;
+
+        $calendar.fullCalendar('option', 'height', possibleHeight);
+    }
+
+    $(window).resize(resizeCalendar);
+    $('[data-toggle="collapse"]').click(function() {
+        var $target = $(
+            $(this).attr('href')
+        );
+        if ($target.length === 0) {
+            return;
+        }
+        var delegate = function() {
+            if ($target.hasClass('collapsing')) {
+                return setTimeout(delegate, 10);
+            }
+            resizeCalendar();
+        };
+        setTimeout(delegate);
+    });
 
     return {
         initialize: function() {
