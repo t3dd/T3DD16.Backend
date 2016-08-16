@@ -11,6 +11,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\Sessions\Domain\Model\Room;
 use TYPO3\Sessions\Domain\Model\ScheduledSession;
 use TYPO3\Sessions\Utility\PlanningUtility;
 
@@ -258,20 +259,18 @@ AND tx_sessions_domain_model_session.uid = :uid',
 
     /**
      * Get all rooms for FullCalendar
-     *
-     * @return String
      */
     public function listRoomsAction()
     {
-        $allRoomFlatArray = $this->roomRepository->findAllFlat();
-
-        $result = array();
-
-        // Generate room data
-        foreach($allRoomFlatArray as $room)
-        {
-            $result[] = array('id' => $room['uid'], 'title' => $room['title'] . ' (' . $room['size'] . ')');
-        }
+        $result = array_map(
+            function(Room $room) {
+                return array_merge(
+                    $room->jsonSerialize(),
+                    ['id' => $room->getUid()]
+                );
+            },
+            $this->roomRepository->findAll()->toArray()
+        );
         $this->view->assign('value', $result);
     }
 
