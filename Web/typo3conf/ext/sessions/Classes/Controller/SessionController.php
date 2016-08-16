@@ -16,18 +16,26 @@ class SessionController extends AbstractRestController
     protected $resourceArgumentName = 'session';
 
     /**
-     * @var \TYPO3\Sessions\Domain\Repository\AnySessionRepository
      * @inject
+     * @var \TYPO3\Sessions\Domain\Repository\AnySessionRepository
      */
     protected $sessionRepository;
 
     /**
-     * @var \TYPO3\Sso\Domain\Repository\FrontendUserRepository
      * @inject
+     * @var \TYPO3\Sessions\Domain\Repository\ScheduledSessionRepository
+     */
+    protected $scheduledSessionRepository;
+
+    /**
+     * @inject
+     * @var \TYPO3\Sso\Domain\Repository\FrontendUserRepository
      */
     protected $frontendUserRepository;
 
     /**
+     * Lists all(!) proposed, assigned, declined, ... sessions.
+     *
      * @return string
      */
     public function listAction()
@@ -35,6 +43,17 @@ class SessionController extends AbstractRestController
         $this->addTableCacheTags();
 
         return json_encode($this->sessionRepository->findAll()->toArray());
+    }
+
+    /**
+     * Lists all scheduled(!) sessions.
+     *
+     * @return string
+     */
+    public function listScheduledAction()
+    {
+        $this->addTableCacheTags();
+        return json_encode($this->scheduledSessionRepository->findAll()->toArray());
     }
 
     /**
@@ -47,7 +66,6 @@ class SessionController extends AbstractRestController
 
         return json_encode($session);
     }
-
 
     public function initializeCreateAction()
     {

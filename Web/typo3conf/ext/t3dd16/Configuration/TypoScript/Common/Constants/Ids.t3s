@@ -14,5 +14,6 @@ pageId {
 		list = 11
 		storage = 17
 		votes = 23
+		schedule = 26
 	}
 }

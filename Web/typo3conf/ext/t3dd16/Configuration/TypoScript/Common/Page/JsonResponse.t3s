@@ -73,3 +73,14 @@ jsonResponse {
 		}
 	}
 [GLOBAL]
+
+[globalVar = TSFE:id = {$pageId.session.schedule}]
+	jsonResponse {
+		10 {
+			userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+			vendorName = TYPO3
+			extensionName = Sessions
+			pluginName = schedule
+		}
+	}
+[GLOBAL]
