@@ -2,12 +2,16 @@
 
 namespace TYPO3\Sessions\Controller;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\Sessions\Domain\Model\ScheduledSession;
+use TYPO3\Sessions\Utility\PlanningUtility;
 
 /**
  * Class SessionModuleController
@@ -78,11 +82,11 @@ class ApiModuleController extends ActionController
     /**
      * Convenience method. Simplifies swapping process in FE.
      *
-     * @param $first \TYPO3\Sessions\Domain\Model\ScheduledSession
-     * @param $second \TYPO3\Sessions\Domain\Model\ScheduledSession
+     * @param $first ScheduledSession
+     * @param $second ScheduledSession
      * @return string
      */
-    public function swapSessionsAction(\TYPO3\Sessions\Domain\Model\ScheduledSession $first, \TYPO3\Sessions\Domain\Model\ScheduledSession $second)
+    public function swapSessionsAction(ScheduledSession $first, ScheduledSession $second)
     {
         // first swap the data...
         $swapData = [
@@ -98,20 +102,20 @@ class ApiModuleController extends ActionController
         $second->setEnd($swapData['end']);
         $second->setRoom($swapData['room']);
 
-        /** @var \TYPO3\Sessions\Utility\PlanningUtility $planningUtility */
-        $planningUtility = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\Sessions\Utility\PlanningUtility::class);
+        /** @var PlanningUtility $planningUtility */
+        $planningUtility = GeneralUtility::makeInstance(PlanningUtility::class);
         $firstCollides = $planningUtility->getCollidingSessions($first, [$second->getUid()]);
         $secondCollides = $planningUtility->getCollidingSessions($second, [$first->getUid()]);
         $errors = [];
         if(is_array($firstCollides)) {
             foreach($firstCollides as $session) {
-                /** @var \TYPO3\Sessions\Domain\Model\ScheduledSession $session */
+                /** @var ScheduledSession $session */
                 $errors[] = 'One speaker of the session "'.$first->getTitle().'" already speaks at session "'.$session->getTitle().'"';
             }
         }
         if(is_array($secondCollides)) {
             foreach($secondCollides as $session) {
-                /** @var \TYPO3\Sessions\Domain\Model\ScheduledSession $session */
+                /** @var ScheduledSession $session */
                 $errors[] = 'One speaker of the session "'.$second->getTitle().'" already speaks at session "'.$session->getTitle().'"';
             }
         }
@@ -119,7 +123,7 @@ class ApiModuleController extends ActionController
             $this->sessionRepository->update($first);
             $this->sessionRepository->update($second);
             /** @var PersistenceManager $persistenceManager */
-            $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
+            $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
             $persistenceManager->persistAll();
         }
         return !empty($errors) ? $this->customErrorAction($errors) : '{}';
@@ -152,8 +156,8 @@ class ApiModuleController extends ActionController
 
     protected function getTopicMap($uid)
     {
-        if(! \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($uid)) {
-
+        if(!MathUtility::canBeInterpretedAsInteger($uid)) {
+            throw new \RuntimeException('Given $uid must be a valid integer');
         }
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
@@ -223,8 +227,8 @@ AND tx_sessions_domain_model_session.uid = :uid',
 
         $result = array();
 
-        /** @var \TYPO3\Sessions\Utility\PlanningUtility $planningUtility */
-        $planningUtility = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\Sessions\Utility\PlanningUtility::class);
+        /** @var PlanningUtility $planningUtility */
+        $planningUtility = GeneralUtility::makeInstance(PlanningUtility::class);
 
         // Session properties
         $sessionWhitelist = array('uid', 'title', 'date', 'begin', 'end', 'room', 'description');
@@ -281,10 +285,10 @@ AND tx_sessions_domain_model_session.uid = :uid',
     }
 
     /**
-     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
+     * @param ScheduledSession $session
      * @return string
      */
-    public function unscheduleSessionAction(\TYPO3\Sessions\Domain\Model\ScheduledSession $session)
+    public function unscheduleSessionAction(ScheduledSession $session)
     {
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
@@ -317,13 +321,13 @@ AND tx_sessions_domain_model_session.uid = :uid',
         // update properties
         $this->acceptedSessionRepository->update($session);
         /** @var PersistenceManager $persistenceManager */
-        $persistenceManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(PersistenceManager::class);
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $persistenceManager->persistAll();
         // change type manually after extbase updated the object
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
         $res = $db->exec_UPDATEquery('tx_sessions_domain_model_session', 'uid = '.$session->getUid(),
-            ['type' => \TYPO3\Sessions\Domain\Model\ScheduledSession::class]);
+            ['type' => ScheduledSession::class]);
 
         return 'success';
     }
@@ -331,7 +335,7 @@ AND tx_sessions_domain_model_session.uid = :uid',
     /**
      * Update session
      *
-     * @param \TYPO3\Sessions\Domain\Model\ScheduledSession $session
+     * @param ScheduledSession $session
      * @validate $session \TYPO3\Sessions\Domain\Validator\SpeakerCollisionValidator
      * @return string
      */
