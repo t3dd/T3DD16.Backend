@@ -4,7 +4,7 @@ require(['manageConfig', 'jquery','TYPO3/CMS/Sessions/Contrib/uri-templates', 'T
         var $tableBody = $('table#tx-sessions-table tbody');
 
         /*
-            Show a modal without buttons when the info button is cliked inside the list
+            Show a modal without buttons when the info button is clicked inside the list
          */
         $tableBody.on('click', 'a.session-info-trigger', function() {
             var url = $(this).data('url');
@@ -13,8 +13,9 @@ require(['manageConfig', 'jquery','TYPO3/CMS/Sessions/Contrib/uri-templates', 'T
             }
         });
 
-        /*
-            Show a Notification indicating success
+        /**
+         * Show a Notification indicating success
+         * @param {boolean} success
          */
         function showSessionUpdateNotification(success)
         {
