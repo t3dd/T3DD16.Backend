@@ -1,6 +1,7 @@
 <?php
 namespace TYPO3\Sessions\Controller;
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -289,10 +290,20 @@ class SessionModuleController extends ActionController
         $sessions = [];
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
-        $stmt = $db->prepare_SELECTquery('uid AS __identity, title, description, votes',
+        $stmt = $db->prepare_SELECTquery(
+            'uid AS __identity, title, description, '
+            . '(SELECT COUNT(tx_sessions_domain_model_vote.uid) '
+                . 'FROM tx_sessions_domain_model_vote '
+                . 'WHERE tx_sessions_domain_model_vote.session=tx_sessions_domain_model_session.uid '
+                . 'AND tx_sessions_domain_model_vote.deleted=0) as votes',
             'tx_sessions_domain_model_session',
-            ' type = :type AND deleted = 0 '.\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_sessions_domain_model_session'),
-            '', ' votes DESC ', '', [':type' => ApiModuleController::$slugClassMap[$type]]);
+            'type = :type AND deleted = 0 '
+            . BackendUtility::BEenableFields('tx_sessions_domain_model_session'),
+            '', 'votes DESC ', '',
+            [
+                ':type' => ApiModuleController::$slugClassMap[$type]
+            ]
+        );
         if($stmt->execute()) {
             while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
                 $row['speakers'] = $this->utility->getSpeakers($row['__identity']);
