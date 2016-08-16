@@ -5,12 +5,11 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
-use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\Sessions\Domain\Model\AcceptedSession;
+use TYPO3\Sessions\Domain\Model\ScheduledSession;
 
 /**
  * Class SessionModuleController
@@ -91,26 +90,26 @@ class SessionModuleController extends ActionController
      */
     protected function initializeView(ViewInterface $view)
     {
-        $extPath = $this->getRelativeExtensionPath().'Resources/Public/CSS/';
+        $extPath = $this->getRelativeExtensionPath() . 'Resources/Public/CSS/';
         // Skip, if view is initialized in non-backend context
         if (!($view instanceof BackendTemplateView)) {
             return;
         }
 
         parent::initializeView($view);
-        if($this->actionMethodName === 'indexAction') {
-            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'fullcalendar.min.css');
-            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'scheduler.min.css');
-            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'index.css');
+        if ($this->actionMethodName === 'indexAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath . 'fullcalendar.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath . 'scheduler.min.css');
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath . 'index.css');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/Contrib/fullcalendar');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/Contrib/scheduler');
             $view->getModuleTemplate()->getPageRenderer()->addRequireJsConfiguration([
                 'paths' => [
-                    'sightglass' => $this->getRelativeExtensionPath().'Resources/Public/JavaScript/Contrib/sightglass'
+                    'sightglass' => $this->getRelativeExtensionPath() . 'Resources/Public/JavaScript/Contrib/sightglass'
                 ],
-                'shim'  => [
+                'shim' => [
                     'TYPO3/CMS/Sessions/Contrib/scheduler' => [
-                        'deps'  =>  ['TYPO3/CMS/Sessions/Contrib/fullcalendar']
+                        'deps' => ['TYPO3/CMS/Sessions/Contrib/fullcalendar']
                     ],
                     'TYPO3/CMS/Sessions/Contrib/rivets' => [
                         'deps' => ['sightglass']
@@ -119,12 +118,12 @@ class SessionModuleController extends ActionController
             ]);
         }
 
-        if($this->actionMethodName === 'manageAction') {
-            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath.'manage.css');
+        if ($this->actionMethodName === 'manageAction') {
+            $view->getModuleTemplate()->getPageRenderer()->addCssFile($extPath . 'manage.css');
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Sessions/Contrib/uri-templates');
         }
 
-        if(!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
+        if (!in_array($this->actionMethodName, $this->actionsWithoutMenu)) {
             $this->generateModuleMenu();
             $this->generateModuleButtons();
         }
@@ -133,7 +132,8 @@ class SessionModuleController extends ActionController
     /**
      * @return string
      */
-    protected function getRelativeExtensionPath() {
+    protected function getRelativeExtensionPath()
+    {
         return ExtensionManagementUtility::extRelPath('sessions');
     }
 
@@ -143,41 +143,42 @@ class SessionModuleController extends ActionController
     protected function generateModuleMenu()
     {
         $menuItems = [
-                'index' => [
-                        'controller' => 'SessionModule',
-                        'action' => 'index',
-                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
+            'index' => [
+                'controller' => 'SessionModule',
+                'action' => 'index',
+                'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.calendar')
+            ],
+            'manage' => [
+                'controller' => 'SessionModule',
+                'action' => 'manage',
+                'parameters' => [
+                    'type' => 'proposed'
                 ],
-                'manage' => [
-                        'controller' => 'SessionModule',
-                        'action' => 'manage',
-                        'parameters' => [
-                                'type' => 'proposed'
-                        ],
-                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.manage')
-                ],
-                'generateFirstSchedule' => [
-                        'controller' => 'SessionModule',
-                        'action' => 'generateFirstSchedule',
-                        'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.generateFirstSchedule')
-                ],
+                'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.manage')
+            ],
+            'generateFirstSchedule' => [
+                'controller' => 'SessionModule',
+                'action' => 'generateFirstSchedule',
+                'label' => $this->getLanguageService()->sL('LLL:EXT:sessions/Resources/Private/Language/locallang.xml:module.menu.item.generateFirstSchedule')
+            ],
         ];
 
         $menu = $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
         $menu->setIdentifier('BackendUserModuleMenu');
 
-        foreach ($menuItems as  $menuItemConfig) {
+        foreach ($menuItems as $menuItemConfig) {
             if ($this->request->getControllerName() === $menuItemConfig['controller']) {
                 $isActive = $this->request->getControllerActionName() === $menuItemConfig['action'] ? true : false;
             } else {
                 $isActive = false;
             }
-            if(!isset($menuItemConfig['parameters'])) {
+            if (!isset($menuItemConfig['parameters'])) {
                 $menuItemConfig['parameters'] = [];
             }
             $menuItem = $menu->makeMenuItem()
                 ->setTitle($menuItemConfig['label'])
-                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action'], $menuItemConfig['parameters']))
+                ->setHref($this->getHref($menuItemConfig['controller'], $menuItemConfig['action'],
+                    $menuItemConfig['parameters']))
                 ->setActive($isActive);
             $menu->addMenuItem($menuItem);
         }
@@ -223,7 +224,7 @@ class SessionModuleController extends ActionController
 
         $this->view->assign('jsconf', json_encode([
             'days' => $days,
-            'links' =>  [
+            'links' => [
                 'getsessions' => $this->getHref('ApiModule', 'listSessions'),
                 'getrooms' => $this->getHref('ApiModule', 'listRooms'),
                 'updatesession' => $this->getHref('ApiModule', 'updateSession'),
@@ -247,15 +248,15 @@ class SessionModuleController extends ActionController
 
     protected function checkAndTransformTypoScriptConfiguration()
     {
-        if( empty($this->settings['dd']['start']) || ($start = date_create($this->settings['dd']['start'])) === false ) {
+        if (empty($this->settings['dd']['start']) || ($start = date_create($this->settings['dd']['start'])) === false) {
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
         }
-        $this->settings['dd']['start'] = $start->setTime(0,0,0);
-        if( empty($this->settings['dd']['end']) || ($end = date_create($this->settings['dd']['end'])) === false ) {
+        $this->settings['dd']['start'] = $start->setTime(0, 0, 0);
+        if (empty($this->settings['dd']['end']) || ($end = date_create($this->settings['dd']['end'])) === false) {
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Please check your TypoScript Configuration and set \'settings.dd.start\' to a valid date');
         }
-        $this->settings['dd']['end'] = $end->setTime(23,59,59);
-        if ( $this->settings['dd']['start'] > $this->settings['dd']['end'] ) {
+        $this->settings['dd']['end'] = $end->setTime(23, 59, 59);
+        if ($this->settings['dd']['start'] > $this->settings['dd']['end']) {
             throw new \TYPO3\CMS\Core\Resource\Exception\InvalidConfigurationException('Developer Days should have started before ending (\'settings.dd.start\' is before \'settings.dd.end\')');
         }
     }
@@ -266,8 +267,8 @@ class SessionModuleController extends ActionController
      */
     public function manageAction($type = 'proposed')
     {
-        if(!in_array($type, array_keys(ApiModuleController::$slugClassMap))) {
-            throw new \InvalidArgumentException('type parameter must be one of the following: '.implode(array_keys(ApiModuleController::$slugClassMap)));
+        if (!in_array($type, array_keys(ApiModuleController::$slugClassMap))) {
+            throw new \InvalidArgumentException('type parameter must be one of the following: ' . implode(array_keys(ApiModuleController::$slugClassMap)));
         }
         $this->view->assign('manageConfig', json_encode([
             'updateUrl' => $this->getHref('ApiModule', 'toggle', [
@@ -293,9 +294,8 @@ class SessionModuleController extends ActionController
         $stmt = $db->prepare_SELECTquery(
             'uid AS __identity, title, description, highlight, '
             . '(SELECT COUNT(tx_sessions_domain_model_vote.uid) '
-                . 'FROM tx_sessions_domain_model_vote '
-                . 'WHERE tx_sessions_domain_model_vote.session=tx_sessions_domain_model_session.uid '
-                . 'AND tx_sessions_domain_model_vote.deleted=0) as votes',
+            . 'FROM tx_sessions_domain_model_vote '
+            . 'WHERE tx_sessions_domain_model_vote.session=tx_sessions_domain_model_session.uid) as votes',
             'tx_sessions_domain_model_session',
             'type = :type AND deleted = 0 '
             . BackendUtility::BEenableFields('tx_sessions_domain_model_session'),
@@ -304,8 +304,8 @@ class SessionModuleController extends ActionController
                 ':type' => ApiModuleController::$slugClassMap[$type]
             ]
         );
-        if($stmt->execute()) {
-            while($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
+        if ($stmt->execute()) {
+            while ($row = $stmt->fetch(\TYPO3\CMS\Core\Database\PreparedStatement::FETCH_ASSOC)) {
                 $row['speakers'] = $this->utility->getSpeakers($row['__identity']);
                 $row['json'] = json_encode($row);
                 $sessions[] = $row;
@@ -330,56 +330,60 @@ class SessionModuleController extends ActionController
      */
     public function createTimeTableAction($considerTopics, $iterations)
     {
-	    // Generate Config Array
-	    // TODO: Extract to options or something else
-	    // Room and time slots
-	    $config['roomAndTimeData'][0]['timeSlots'] = 2;
-	    $config['roomAndTimeData'][0]['rooms'] = 6;
-	    $config['roomAndTimeData'][1]['timeSlots'] = 3;
-	    $config['roomAndTimeData'][1]['rooms'] = 6;
-	    $config['roomAndTimeData'][2]['timeSlots'] = 3;
-	    $config['roomAndTimeData'][2]['rooms'] = 6;
-	    $config['roomAndTimeData'][3]['timeSlots'] = 1;
-	    $config['roomAndTimeData'][3]['rooms'] = 6;
-	    // Begin and end of time slots
-	    $config['timeSlots'][0]['begin'] = "09:30";
-	    $config['timeSlots'][0]['end'] = "11:00";
-	    $config['timeSlots'][1]['begin'] = "14:00";
-	    $config['timeSlots'][1]['end'] = "15:30";
-	    $config['timeSlots'][2]['begin'] = "16:30";
-	    $config['timeSlots'][2]['end'] = "18:00";
-	    // Dates of the event
-	    $config['dates'][] = "01.09.2016";
-	    $config['dates'][] = "02.09.2016";
-	    $config['dates'][] = "03.09.2016";
-	    $config['dates'][] = "04.09.2016";
+        // Generate Config Array
+        // TODO: Extract to options or something else
+        // Room and time slots
+        $config['roomAndTimeData'][0]['timeSlots'] = 2;
+        $config['roomAndTimeData'][0]['rooms'] = 6;
+        $config['roomAndTimeData'][1]['timeSlots'] = 3;
+        $config['roomAndTimeData'][1]['rooms'] = 6;
+        $config['roomAndTimeData'][2]['timeSlots'] = 3;
+        $config['roomAndTimeData'][2]['rooms'] = 6;
+        $config['roomAndTimeData'][3]['timeSlots'] = 1;
+        $config['roomAndTimeData'][3]['rooms'] = 6;
+        // Begin and end of time slots
+        $config['timeSlots'][0]['begin'] = "09:30";
+        $config['timeSlots'][0]['end'] = "11:00";
+        $config['timeSlots'][1]['begin'] = "14:00";
+        $config['timeSlots'][1]['end'] = "15:30";
+        $config['timeSlots'][2]['begin'] = "16:30";
+        $config['timeSlots'][2]['end'] = "18:00";
+        // Dates of the event
+        $config['dates'][] = "01.09.2016";
+        $config['dates'][] = "02.09.2016";
+        $config['dates'][] = "03.09.2016";
+        $config['dates'][] = "04.09.2016";
 
-	    // TODO: Alle ScheduledSessions umwandeln in AcceptedSessions
+        // TODO: Alle ScheduledSessions umwandeln in AcceptedSessions
 
-	    // Get all sessions
-	    $sessions = $this->acceptedSessionRepository->getAllOrderByVoteCount()->toArray();
-	    // Get all rooms
-	    $rooms = $this->roomRepository->findAllLimited(6)->toArray();
-	    // Generate timetable with service
-	    $success = $this->createTimetableService->generateTimetable($config, $sessions, $rooms, $iterations, $considerTopics);
+        // Get all sessions
+        $sessions = $this->acceptedSessionRepository->getAllOrderByVoteCount()->toArray();
+        // Get all rooms
+        $rooms = $this->roomRepository->findAllLimited(6)->toArray();
+        // Generate timetable with service
+        $success = $this->createTimetableService->generateTimetable($config, $sessions, $rooms, $iterations,
+            $considerTopics);
 
-	    $incompleteSessions = array();
-	    if(!$success)
-	    {
-		    $incompleteSessions = $this->createTimetableService->getUnassignedSessions();
-	    }
-	    // Save changes on sessions
-	    foreach($this->createTimetableService->getAssignedSessions() as $assignedSession)
-	    {
-		    // TODO: Umwandeln aller zugewiesenen Sessions in ScheduledSessions
-		    /**
-		     * @var AcceptedSession $assignedSession
-		     */
-		    $assignedSession->_setProperty('type', \TYPO3\Sessions\Domain\Model\ScheduledSession::class);
-		    $this->anySessionRepository->update($assignedSession);
-	    }
+        $incompleteSessions = array();
+        if (!$success) {
+            $incompleteSessions = $this->createTimetableService->getUnassignedSessions();
+        }
 
-	    $this->redirect('index', 'SessionModule', 'sessions', array('incompleteSessions' => $incompleteSessions, 'creationDone' => true));
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
+        $db = $GLOBALS['TYPO3_DB'];
+        // Save changes on sessions
+
+        /** @var AcceptedSession $assignedSession*/
+        foreach ($this->createTimetableService->getAssignedSessions() as $assignedSession) {
+            $this->anySessionRepository->update($assignedSession, true);
+            $db->exec_UPDATEquery(
+                'tx_sessions_domain_model_session',
+                'uid = ' . $assignedSession->getUid(),
+                ['type' => ScheduledSession::class]
+            );
+        }
+
+        $this->redirect('index', 'SessionModule', 'sessions', ['incompleteSessions' => $incompleteSessions, 'creationDone' => true]);
     }
 
     /*public function errorAction(){
