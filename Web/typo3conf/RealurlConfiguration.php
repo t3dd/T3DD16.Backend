@@ -70,5 +70,6 @@ call_user_func(function () {
     ];
 
     $TYPO3_CONF_VARS['EXTCONF']['realurl']['_DEFAULT']['fixedPostVars'][11] = 'session';
+    $TYPO3_CONF_VARS['EXTCONF']['realurl']['_DEFAULT']['fixedPostVars'][26] = 'session';
 
 });

@@ -72,7 +72,6 @@ jsonResponse {
 			pluginName = votes
 		}
 	}
-[GLOBAL]
 
 [globalVar = TSFE:id = {$pageId.session.schedule}]
 	jsonResponse {
