@@ -16,7 +16,7 @@ class AcceptedSession extends AnySession
             'start' => null,
             'end' => null,
             'speakers'  =>  $this->speakers->toArray(),
-            'room' => $this->room ? $this->room->getTitle() : '',
+            'room' => $this->room,
             'highlight' => $this->highlight,
             'links' => [
                 'self' => $this->getLink(),

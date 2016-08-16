@@ -21,7 +21,7 @@ class ProposedSession extends AnySession
             'start' => null,
             'end' => null,
             'speakers'  =>  $this->speakers->toArray(),
-            'room' => $this->room ? $this->room->getTitle() : '',
+            'room' => $this->room,
             'highlight' => $this->highlight,
             'votes' => $this->votes->count(),
             'links' => [
