@@ -149,7 +149,11 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
                  */
                 editable: true,
                 eventDurationEditable: true,
-                eventOverlap: false,
+                eventOverlap: function(stillEvent, movingEvent) {
+                    var resource = resources[stillEvent.resourceId];
+                    // defaults to false unless room is used as auditorium
+                    return (typeof resource !== 'undefined' && resource.auditorium);
+                },
                 eventDragStart: function(event, jsEvent, ui, view) {
                     callModule('eventDragStart', arguments);
                 },
@@ -183,7 +187,7 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
                  * Resource Data
                  * @see {@link http://fullcalendar.io/docs/resource_data/}
                  */
-                resources: SessionConfig.links.getrooms
+                resources: retrieveResources
             });
 
             /**
@@ -212,6 +216,31 @@ define(['jquery', 'TYPO3/CMS/Sessions/Contrib/fullcalendar', 'TYPO3/CMS/Sessions
         $.each(modules, function(index, module) {
             var localCtx = ctx || module;
             module[method].apply(localCtx, params);
+        });
+    }
+
+    /**
+     * @type {object}
+     */
+    var resources = {};
+
+    /**
+     * @param {function} callback
+     */
+    function retrieveResources(callback) {
+        $.get(SessionConfig.links.getrooms)
+            .done(function(data) {
+                mapResources(data);
+                callback(data);
+            });
+    }
+
+    /**
+     * @param {object[]} data
+     */
+    function mapResources(data) {
+        data.forEach(function(resource) {
+            resources[resource.__identity.toString()] = resource;
         });
     }
 
