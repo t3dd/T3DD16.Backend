@@ -21,7 +21,12 @@
         <f:for each="{sessions}" as="session">
             <tr class="session-row">
                 <td>{session.votes}</td>
-                <td>{session.title}</td>
+                <td>
+                    <f:if condition="{session.highlight}">
+                        <i class="fa fa-star" title="highlight"></i>
+                    </f:if>
+                    {session.title}
+                </td>
                 <td>
                     <a class="btn btn-default session-info-trigger" data-url="{f:uri.action(action: 'info', controller: 'ApiModule', arguments: {session: session.__identity})}" data-title="Session Information" data-severity="-1"><i class="fa fa-info fa-fw fa-lg"></i></a>
                     <f:if condition="{type} == 'proposed'"><f:else><a class="btn btn-default session-change-trigger" data-identity="{session.__identity}" data-state="proposed"><i class="fa fa-undo fa-fw fa-lg"></i></a></f:else></f:if>

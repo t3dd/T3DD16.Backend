@@ -291,7 +291,7 @@ class SessionModuleController extends ActionController
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $db */
         $db = $GLOBALS['TYPO3_DB'];
         $stmt = $db->prepare_SELECTquery(
-            'uid AS __identity, title, description, '
+            'uid AS __identity, title, description, highlight, '
             . '(SELECT COUNT(tx_sessions_domain_model_vote.uid) '
                 . 'FROM tx_sessions_domain_model_vote '
                 . 'WHERE tx_sessions_domain_model_vote.session=tx_sessions_domain_model_session.uid '
