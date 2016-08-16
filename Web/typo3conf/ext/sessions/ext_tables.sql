@@ -58,6 +58,7 @@ CREATE TABLE tx_sessions_domain_model_room (
 	title varchar(255) DEFAULT '' NOT NULL,
 	size int(11) unsigned DEFAULT '0' NOT NULL,
 	location varchar(255) DEFAULT '' NOT NULL,
+	auditorium tinyint(1) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

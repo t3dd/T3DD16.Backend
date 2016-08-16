@@ -32,11 +32,11 @@ return [
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/Room.png'
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, size, location',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, title, size, location, auditorium',
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, size, location'
+            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, title, size, location, auditorium'
         ],
     ],
     'columns' => [
@@ -116,6 +116,14 @@ return [
                 'size' => 30,
                 'eval' => 'trim'
             ],
+        ],
+        'auditorium'  =>  [
+            'exclude'   =>  1,
+            'label'     =>  $LLL . 'tx_sessions_domain_model_room.auditorium',
+            'l10n_mode' => 'mergeIfNotBlank',
+            'config'    =>  [
+                'type'  =>  'check',
+            ]
         ],
     ],
 ];

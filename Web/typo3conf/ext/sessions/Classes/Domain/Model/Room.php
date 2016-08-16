@@ -5,16 +5,25 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Room extends AbstractEntity implements \JsonSerializable
 {
-
     /**
      * @var string
      */
     protected $title;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $size;
+
+    /**
+     * @var string
+     */
+    protected $location;
+
+    /**
+     * @var bool
+     */
+    protected $auditorium = false;
 
     /**
      * @return string
@@ -37,7 +46,13 @@ class Room extends AbstractEntity implements \JsonSerializable
      */
     function jsonSerialize()
     {
-        return ['title' => $this->title];
+        return [
+            '__identity' => $this->uid,
+            'title' => $this->title,
+            'size' => $this->size,
+            'location' => $this->location,
+            'auditorium' => $this->auditorium,
+        ];
     }
 
     /**
@@ -56,5 +71,35 @@ class Room extends AbstractEntity implements \JsonSerializable
         $this->size = $size;
     }
 
+    /**
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
 
+    /**
+     * @param string $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuditorium()
+    {
+        return $this->auditorium;
+    }
+
+    /**
+     * @param bool $auditorium
+     */
+    public function setAuditorium($auditorium)
+    {
+        $this->auditorium = (bool)$auditorium;
+    }
 }
