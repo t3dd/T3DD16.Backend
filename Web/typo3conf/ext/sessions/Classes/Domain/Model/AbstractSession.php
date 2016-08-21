@@ -180,7 +180,23 @@ abstract class AbstractSession extends AbstractEntity implements \JsonSerializab
      */
     protected function getIsoDateTime(\DateTime $date = null)
     {
-        return (!empty($date) ? $date->format('c'): null);
+        if (empty($date)) {
+            return null;
+        }
+
+        /**
+         * This is a work-around
+         * @see https://review.typo3.org/#/c/49527/
+         */
+
+        $utcTimeZone = new \DateTimeZone('UTC');
+        $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+
+        $utcDateTime = clone $date;
+        $utcDateTime->setTimezone($utcTimeZone);
+
+        $localDateTime = new \DateTime($utcDateTime->format('Y-m-d\TH:i:s'), $currentTimeZone);
+        return $localDateTime->format('c');
     }
 
     /**
