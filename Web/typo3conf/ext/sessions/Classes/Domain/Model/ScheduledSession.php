@@ -15,9 +15,11 @@ class ScheduledSession extends AcceptedSession
             'description' => $this->description,
             'start' => $this->getIsoDateTime($this->begin),
             'end' => $this->getIsoDateTime($this->end),
-            'speakers'  =>  $this->speakers->toArray(),
+            'speakers' => $this->speakers->toArray(),
+            'topics' => $this->topics->toArray(),
             'room' => $this->room,
             'highlight' => $this->highlight,
+            'voted' => false,
             'links' => [
                 'self' => $this->getLink(),
                 'route' => $this->getRoute(),
